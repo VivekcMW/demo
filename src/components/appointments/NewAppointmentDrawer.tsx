@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { X, Search, User, Calendar, Clock, Stethoscope, FileText, Phone, MapPin, ShieldAlert, Droplets } from "lucide-react";
+import { Drawer } from "@/components/ui/Drawer";
 import { type ApptType } from "@/data/seedAppointments";
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { usePatientStore } from "@/store/usePatientStore";
@@ -221,16 +222,7 @@ export function NewAppointmentDrawer({ open, onClose, onSuccess, preselectedDate
   if (!open) return null;
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Drawer panel */}
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
+    <Drawer open={open} onClose={onClose} aria-label="New Appointment">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
@@ -673,7 +665,6 @@ export function NewAppointmentDrawer({ open, onClose, onSuccess, preselectedDate
             </button>
           </div>
         </form>
-      </div>
-    </>
+    </Drawer>
   );
 }

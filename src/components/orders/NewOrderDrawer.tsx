@@ -9,6 +9,7 @@ import {
   X, FlaskConical, Pill, ScanLine, UserCheck,
   Stethoscope, UtensilsCrossed, Search, ChevronDown,
 } from "lucide-react";
+import { Drawer } from "@/components/ui/Drawer";
 
 // ── Type config ───────────────────────────────────────────────────────────────
 
@@ -144,12 +145,7 @@ export function NewOrderDrawer({
   if (!open) return null;
 
   return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={handleClose} aria-hidden />
-
-      {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
+    <Drawer open={open} onClose={handleClose} aria-label="New Order">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--border-default)] px-6 py-4">
@@ -364,7 +360,6 @@ export function NewOrderDrawer({
             Place Order
           </button>
         </div>
-      </div>
-    </>
+    </Drawer>
   );
 }

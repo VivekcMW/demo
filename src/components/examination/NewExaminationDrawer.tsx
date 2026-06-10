@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useExaminationStore, type ExamType } from "@/store/useExaminationStore";
+import { Drawer } from "@/components/ui/Drawer";
 import { usePatientStore } from "@/store/usePatientStore";
 import {
   FileText, X, Search, User, Loader2,
@@ -86,9 +87,7 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
     `w-full rounded-lg border bg-[var(--surface-raised)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)] ${err ? "border-[var(--critical-fg)]" : "border-[var(--border-default)]"}`;
 
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
+    <Drawer open={open} onClose={onClose} maxWidth="max-w-md" aria-label="New Examination">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
           <div className="flex items-center gap-2">
@@ -213,7 +212,6 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
             {saving ? <><Loader2 size={14} className="animate-spin" /> Starting…</> : "Start Examination"}
           </button>
         </div>
-      </div>
-    </>
+    </Drawer>
   );
 }

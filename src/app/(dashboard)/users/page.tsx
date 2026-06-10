@@ -9,6 +9,7 @@ import {
   FlaskConical, Pill, PhoneCall, Shield,
   MoreHorizontal, Pencil, Trash2, Lock, CheckCircle2,
 } from "lucide-react";
+import { Drawer } from "@/components/ui/Drawer";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -76,10 +77,8 @@ function FilterDrawer({ open, onClose, roleFilter, setRoleFilter, statusFilter, 
     );
   }
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose} />
-      <aside className="fixed inset-y-0 right-0 z-50 w-80 border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+    <Drawer open={open} onClose={onClose} maxWidth="max-w-xs" aria-label="Filters">
+      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
           <span className="font-semibold text-[var(--text-primary)]">Filters</span>
           <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
         </div>
@@ -112,8 +111,7 @@ function FilterDrawer({ open, onClose, roleFilter, setRoleFilter, statusFilter, 
             </button>
           )}
         </div>
-      </aside>
-    </>
+    </Drawer>
   );
 }
 
@@ -169,10 +167,8 @@ function UserFormDrawer({ open, onClose, editing }: UserFormDrawerProps) {
 
   if (!open) return null;
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30" onClick={() => { onClose(); resetToEditing(); }} />
-      <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+    <Drawer open={open} onClose={() => { onClose(); resetToEditing(); }} maxWidth="max-w-sm" aria-label={isEdit ? "Edit User" : "Add User"}>
+      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
           <span className="font-semibold text-[var(--text-primary)]">{isEdit ? "Edit User" : "Add New User"}</span>
           <button onClick={() => { onClose(); resetToEditing(); }} className="rounded-lg p-1.5 hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
         </div>
@@ -222,8 +218,7 @@ function UserFormDrawer({ open, onClose, editing }: UserFormDrawerProps) {
             {isEdit ? "Save Changes" : "Create User"}
           </button>
         </div>
-      </aside>
-    </>
+    </Drawer>
   );
 }
 

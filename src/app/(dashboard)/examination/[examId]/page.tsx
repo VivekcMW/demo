@@ -210,6 +210,7 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
   const [sysFindings,    setSysFindings] = useState<SystemicFinding[]>(
     exam?.objective.systemicFindings ?? DEFAULT_SYSTEMS.map((s) => ({ system: s, finding: "Normal", normal: true }))
   );
+  const [showAbnormalOnly, setShowAbnormalOnly] = useState(false);
   const [diagnoses,   setDiagnoses] = useState<Diagnosis[]>(exam?.assessment.diagnoses ?? []);
   const [prescriptions, setRx]   = useState<Rx[]>(exam?.plan.prescriptions ?? []);
   const [procedures,  setProcs]  = useState(exam?.plan.procedures  ?? "");
@@ -511,11 +512,34 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
                 />
               </div>
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Systemic Examination</p>
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Systemic Examination</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowAbnormalOnly((v) => !v)}
+                    className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                      showAbnormalOnly
+                        ? "border-[var(--critical-fg)] bg-[var(--critical-bg)] text-[var(--critical-fg)]"
+                        : "border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"
+                    }`}
+                  >
+                    {showAbnormalOnly ? "Showing abnormal" : "Show all"}
+                  </button>
+                </div>
                 <div className="space-y-2">
-                  {sysFindings.map((sf, i) => (
-                    <SystemicRow key={sf.system} sf={sf} onChange={(updated) => updateSysFinding(i, updated)} readOnly={isReadOnly} />
-                  ))}
+                  {sysFindings
+                    .filter((sf) => !showAbnormalOnly || !sf.normal)
+                    .map((sf) => (
+                      <SystemicRow
+                        key={sf.system}
+                        sf={sf}
+                        onChange={(updated) => updateSysFinding(sysFindings.findIndex((s) => s.system === sf.system), updated)}
+                        readOnly={isReadOnly}
+                      />
+                    ))}
+                  {showAbnormalOnly && sysFindings.every((sf) => sf.normal) && (
+                    <p className="rounded-lg border border-[var(--border-default)] px-4 py-3 text-sm text-[var(--text-secondary)]">All systems normal</p>
+                  )}
                 </div>
               </div>
             </div>

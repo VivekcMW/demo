@@ -7,6 +7,7 @@ import {
   Building2, Clock, Megaphone, Plus, X, Pencil, Trash2,
   BedDouble, Users, CheckCircle2, AlertTriangle, ChevronDown,
 } from "lucide-react";
+import { Drawer } from "@/components/ui/Drawer";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -58,10 +59,8 @@ function DeptFormDrawer({ open, onClose, editing }: { open: boolean; onClose: ()
   }
   if (!open) return null;
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30" onClick={() => { onClose(); reset(); }} />
-      <aside className="fixed inset-y-0 right-0 z-50 w-[400px] max-w-full border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+    <Drawer open={open} onClose={() => { onClose(); reset(); }} maxWidth="max-w-sm" aria-label={isEdit ? "Edit Department" : "Add Department"}>
+      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
           <span className="font-semibold text-[var(--text-primary)]">{isEdit ? "Edit Department" : "Add Department"}</span>
           <button onClick={() => { onClose(); reset(); }} className="rounded-lg p-1.5 hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
         </div>
@@ -93,8 +92,7 @@ function DeptFormDrawer({ open, onClose, editing }: { open: boolean; onClose: ()
           <button type="button" onClick={() => { onClose(); reset(); }} className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">Cancel</button>
           <button onClick={handleSubmit as unknown as React.MouseEventHandler} className="rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">{isEdit ? "Save Changes" : "Add Department"}</button>
         </div>
-      </aside>
-    </>
+    </Drawer>
   );
 }
 
@@ -125,10 +123,8 @@ function ShiftFormDrawer({ open, onClose, editing }: { open: boolean; onClose: (
   }
   if (!open) return null;
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30" onClick={() => { onClose(); reset(); }} />
-      <aside className="fixed inset-y-0 right-0 z-50 w-[400px] max-w-full border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+    <Drawer open={open} onClose={() => { onClose(); reset(); }} maxWidth="max-w-sm" aria-label={isEdit ? "Edit Shift" : "Add Shift"}>
+      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
           <span className="font-semibold text-[var(--text-primary)]">{isEdit ? "Edit Shift" : "Add Shift"}</span>
           <button onClick={() => { onClose(); reset(); }} className="rounded-lg p-1.5 hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
         </div>
@@ -184,8 +180,7 @@ function ShiftFormDrawer({ open, onClose, editing }: { open: boolean; onClose: (
           <button type="button" onClick={() => { onClose(); reset(); }} className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">Cancel</button>
           <button onClick={handleSubmit as unknown as React.MouseEventHandler} className="rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">{isEdit ? "Save Changes" : "Add Shift"}</button>
         </div>
-      </aside>
-    </>
+    </Drawer>
   );
 }
 

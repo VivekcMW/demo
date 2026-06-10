@@ -411,6 +411,69 @@ function MedsTab({ medications }: { medications: Medication[] }) {
   );
 }
 
+// ── Tab: Meds & Pharmacy (merged) ────────────────────────────────────────────
+
+function MedsPharmacyTab({ medications, rxHistory }: { medications: Medication[]; rxHistory: PrescriptionRx[] }) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <Pill size={12} /> Medications
+        </p>
+        <MedsTab medications={medications} />
+      </div>
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <Syringe size={12} /> Pharmacy Rx
+        </p>
+        <PharmacyTab rxHistory={rxHistory} />
+      </div>
+    </div>
+  );
+}
+
+// ── Tab: Clinical (Examinations + Orders merged) ──────────────────────────────
+
+function ClinicalTab({ patientId, patientName }: { patientId: string; patientName: string }) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <FileText size={12} /> Examinations
+        </p>
+        <ExaminationsTab patientId={patientId} patientName={patientName} />
+      </div>
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <ClipboardList size={12} /> Orders (CPOE)
+        </p>
+        <OrdersTab patientId={patientId} patientName={patientName} />
+      </div>
+    </div>
+  );
+}
+
+// ── Tab: Admissions & Finance (IPD + Billing merged) ─────────────────────────
+
+function FinanceTab({ admissions, bills }: { admissions: Admission[]; bills: Bill[] }) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <BedDouble size={12} /> IPD Admissions
+        </p>
+        <IPDTab admissions={admissions} />
+      </div>
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <Receipt size={12} /> Billing
+        </p>
+        <BillingTab bills={bills} />
+      </div>
+    </div>
+  );
+}
+
 // ── Tab: Examinations ────────────────────────────────────────────────────────
 
 const EXAM_STATUS_CLS = {
@@ -778,28 +841,36 @@ function PharmacyTab({ rxHistory }: { rxHistory: PrescriptionRx[] }) {
 
 function DemographicsTab({ patient }: { patient: Patient }) {
   return (
-    <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-        <User size={14} className="text-[var(--action-primary)]" /> Demographics
-      </h3>
-      <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-        {([
-          ["Date of Birth", fmtDate(patient.dob)],
-          ["Sex",           patient.sex === "M" ? "Male" : patient.sex === "F" ? "Female" : "Other"],
-          ["Blood Group",   patient.bloodGroup],
-          ["UHID",          patient.uhid],
-          ["ABHA ID",       patient.abhaId ?? "Not linked"],
-          ["Occupation",    patient.occupation ?? "—"],
-          ["Address",       patient.address],
-          [patient.idProofType, patient.idProofNumber],
-          ["Registered",    fmtDate(patient.registeredAt)],
-        ] as [string, string][]).map(([label, value]) => (
-          <div key={label} className="flex flex-col gap-0.5 rounded-lg bg-[var(--surface-sunken)] p-3">
-            <dt className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</dt>
-            <dd className="text-sm font-medium text-[var(--text-primary)]">{value}</dd>
-          </div>
-        ))}
-      </dl>
+    <div className="space-y-5">
+      <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
+        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+          <User size={14} className="text-[var(--action-primary)]" /> Demographics
+        </h3>
+        <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+          {([
+            ["Date of Birth", fmtDate(patient.dob)],
+            ["Sex",           patient.sex === "M" ? "Male" : patient.sex === "F" ? "Female" : "Other"],
+            ["Blood Group",   patient.bloodGroup],
+            ["UHID",          patient.uhid],
+            ["ABHA ID",       patient.abhaId ?? "Not linked"],
+            ["Occupation",    patient.occupation ?? "—"],
+            ["Address",       patient.address],
+            [patient.idProofType, patient.idProofNumber],
+            ["Registered",    fmtDate(patient.registeredAt)],
+          ] as [string, string][]).map(([label, value]) => (
+            <div key={label} className="flex flex-col gap-0.5 rounded-lg bg-[var(--surface-sunken)] p-3">
+              <dt className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</dt>
+              <dd className="text-sm font-medium text-[var(--text-primary)]">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div>
+        <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <Calendar size={12} /> Visit History ({patient.visits.length})
+        </p>
+        <VisitsTab visits={patient.visits} />
+      </div>
     </div>
   );
 }
@@ -812,7 +883,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const patient = usePatientStore((s) => s.getById(id));
   const router  = useRouter();
-  const [activeTab, setActiveTab] = useState<"demographics" | "visits" | "labs" | "meds" | "docs" | "orders" | "examinations" | "ipd" | "billing" | "pharmacy">("visits");
+  const [activeTab, setActiveTab] = useState<"demographics" | "clinical" | "labs" | "meds" | "finance" | "docs">("clinical");
 
   if (!patient) {
     return (
@@ -845,19 +916,19 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const rxHistory = usePharmacyStore((s) => s.getByPatient(patient.id));
   const activeRx = rxHistory.filter((r) => r.status === "Pending" || r.status === "Verified" || r.status === "Dispensing").length;
 
-  type Tab = "demographics" | "visits" | "labs" | "meds" | "examinations" | "orders" | "ipd" | "billing" | "pharmacy" | "docs";
+  type Tab = "demographics" | "clinical" | "labs" | "meds" | "finance" | "docs";
   type TabDef = { id: Tab; label: string; icon: React.ReactNode; badge?: number; critical?: boolean };
   const TABS: TabDef[] = [
-    { id: "demographics",  label: "Info",         icon: <User size={13} /> },
-    { id: "visits",        label: "Visits",       icon: <Calendar size={13} />,      badge: patient.visits.length },
-    { id: "labs",          label: "Labs",          icon: <FlaskConical size={13} />,  badge: criticalLabCount > 0 ? criticalLabCount : undefined, critical: criticalLabCount > 0 },
-    { id: "meds",          label: "Medications",  icon: <Pill size={13} />,          badge: activeMedCount > 0 ? activeMedCount : undefined },
-    { id: "examinations",  label: "Examinations", icon: <FileText size={13} />,      badge: examInProgress > 0 ? examInProgress : examCount > 0 ? examCount : undefined },
-    { id: "orders",        label: "Orders",       icon: <ClipboardList size={13} />, badge: patientPendingOrders > 0 ? patientPendingOrders : patientOrderCount > 0 ? patientOrderCount : undefined },
-    { id: "ipd",           label: "IPD",          icon: <BedDouble size={13} />,     badge: activeAdmission ? 1 : ipdAdmissions.length > 0 ? ipdAdmissions.length : undefined, critical: !!activeAdmission },
-    { id: "billing",       label: "Billing",      icon: <Receipt size={13} />,       badge: bills.length > 0 ? bills.length : undefined, critical: pendingBillTotal > 0 },
-    { id: "pharmacy",      label: "Pharmacy",     icon: <Syringe size={13} />,       badge: activeRx > 0 ? activeRx : rxHistory.length > 0 ? rxHistory.length : undefined },
-    { id: "docs",          label: "Documents",    icon: <FolderOpen size={13} /> },
+    { id: "demographics", label: "Info",                icon: <User size={13} /> },
+    { id: "clinical",     label: "Clinical",            icon: <FileText size={13} />,
+        badge: (examInProgress + patientPendingOrders) > 0 ? examInProgress + patientPendingOrders : (examCount + patientOrderCount) > 0 ? examCount + patientOrderCount : undefined },
+    { id: "labs",         label: "Labs",                icon: <FlaskConical size={13} />, badge: criticalLabCount > 0 ? criticalLabCount : undefined, critical: criticalLabCount > 0 },
+    { id: "meds",         label: "Meds & Pharmacy",     icon: <Pill size={13} />,
+        badge: (activeMedCount + activeRx) > 0 ? activeMedCount + activeRx : undefined },
+    { id: "finance",      label: "Admissions & Finance",icon: <Receipt size={13} />,
+        badge: (ipdAdmissions.length + bills.length) > 0 ? ipdAdmissions.length + bills.length : undefined,
+        critical: !!activeAdmission || pendingBillTotal > 0 },
+    { id: "docs",         label: "Documents",           icon: <FolderOpen size={13} /> },
   ];
 
   return (
@@ -947,16 +1018,12 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           </div>
 
           {/* Tab content */}
-          {activeTab === "demographics"  && <DemographicsTab patient={patient} />}
-          {activeTab === "visits"        && <VisitsTab visits={patient.visits} />}
-          {activeTab === "labs"          && <LabsTab labs={patient.labs} />}
-          {activeTab === "meds"          && <MedsTab medications={patient.medications} />}
-          {activeTab === "examinations"  && <ExaminationsTab patientId={patient.id} patientName={patient.name} />}
-          {activeTab === "orders"        && <OrdersTab patientId={patient.id} patientName={patient.name} />}
-          {activeTab === "ipd"           && <IPDTab admissions={ipdAdmissions} />}
-          {activeTab === "billing"       && <BillingTab bills={bills} />}
-          {activeTab === "pharmacy"      && <PharmacyTab rxHistory={rxHistory} />}
-          {activeTab === "docs"          && <DocsTab documents={patient.documents} />}
+          {activeTab === "demographics" && <DemographicsTab patient={patient} />}
+          {activeTab === "clinical"     && <ClinicalTab patientId={patient.id} patientName={patient.name} />}
+          {activeTab === "labs"         && <LabsTab labs={patient.labs} />}
+          {activeTab === "meds"         && <MedsPharmacyTab medications={patient.medications} rxHistory={rxHistory} />}
+          {activeTab === "finance"      && <FinanceTab admissions={ipdAdmissions} bills={bills} />}
+          {activeTab === "docs"         && <DocsTab documents={patient.documents} />}
         </div>
 
       </div>

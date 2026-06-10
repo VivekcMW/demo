@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { usePatientStore } from "@/store/usePatientStore";
 import type { BloodGroup, ChronicCondition } from "@/data/seedPatients";
@@ -194,6 +194,8 @@ function FilterDrawer({
 
 export default function PatientsPage() {
   const patients = usePatientStore((s) => s.patients);
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
 
   const [query, setQuery] = useState("");
   const [sexFilter, setSexFilter] = useState<"" | "M" | "F" | "O">("");
@@ -355,7 +357,24 @@ export default function PatientsPage() {
           <span />
         </div>
 
-        {filtered.length === 0 ? (
+        {!hydrated ? (
+          <div className="divide-y divide-[var(--border-default)]">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-5 py-4">
+                <div className="skeleton h-9 w-9 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="skeleton h-3.5 w-40" />
+                  <div className="skeleton h-3 w-24" />
+                </div>
+                <div className="hidden md:flex gap-8">
+                  <div className="skeleton h-3 w-16" />
+                  <div className="skeleton h-3 w-16" />
+                  <div className="skeleton h-5 w-20 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Users size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
             <p className="font-medium text-[var(--text-primary)]">No patients found</p>

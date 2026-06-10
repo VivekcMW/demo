@@ -67,16 +67,19 @@ export function Sidebar() {
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto py-3" aria-label="Main navigation">
-          {navigation.map((group) => (
-            <div key={group.group} className="mb-1">
+        <nav className="flex-1 overflow-y-auto py-2" aria-label="Main navigation">
+          {navigation.map((group, gIdx) => (
+            <div key={group.group} className={gIdx > 0 ? "mt-1" : ""}>
               {sidebarOpen && (
-                <p className="mb-0.5 px-3 text-[11px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
+                <p className="mb-0.5 mt-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-60">
                   {group.group}
                 </p>
               )}
+              {!sidebarOpen && gIdx > 0 && (
+                <hr className="mx-3 my-2 border-[var(--border-default)]" />
+              )}
               {group.items.map((item) => {
-                const active = pathname === item.href;
+                const active = pathname === item.href || pathname.startsWith(item.href + "/");
                 const Icon = item.icon;
                 return (
                   <Link
@@ -85,13 +88,13 @@ export function Sidebar() {
                     onClick={() => { if (window.innerWidth < 768) setSidebarOpen(false); }}
                     title={!sidebarOpen ? item.label : undefined}
                     className={[
-                      "relative flex h-10 items-center gap-3 rounded-md mx-2 px-2.5 text-sm transition-colors",
+                      "relative flex h-9 items-center gap-3 rounded-md mx-2 px-2.5 text-sm transition-colors",
                       active
-                        ? "bg-[var(--action-subtle)] font-medium text-[var(--action-primary)] before:absolute before:left-0 before:top-1/2 before:h-6 before:-translate-y-1/2 before:w-[3px] before:rounded-r-full before:bg-[var(--action-primary)]"
+                        ? "bg-[var(--action-subtle)] font-semibold text-[var(--action-primary)] before:absolute before:left-0 before:top-1/2 before:h-5 before:-translate-y-1/2 before:w-[3px] before:rounded-r-full before:bg-[var(--action-primary)]"
                         : "text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)]",
                     ].join(" ")}
                   >
-                    <Icon size={18} className="shrink-0" />
+                    <Icon size={17} className="shrink-0" />
                     {sidebarOpen && <span className="truncate">{item.label}</span>}
                     {sidebarOpen && item.badge && (
                       <span className="ml-auto rounded-full bg-[var(--action-primary)] px-1.5 py-0.5 text-[10px] font-medium text-white">
@@ -101,9 +104,6 @@ export function Sidebar() {
                   </Link>
                 );
               })}
-              {!sidebarOpen && group !== navigation[navigation.length - 1] && (
-                <hr className="my-2 mx-3 border-[var(--border-default)]" />
-              )}
             </div>
           ))}
         </nav>
