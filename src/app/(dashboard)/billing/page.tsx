@@ -3,11 +3,13 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useBillingStore, type Bill, type BillStatus, type BillCategory } from "@/store/useBillingStore";
-import {
-  Receipt, Search, SlidersHorizontal, X, RotateCcw,
-  IndianRupee, AlertTriangle, CheckCircle2, Clock,
-  ChevronRight, TrendingUp,
-} from "lucide-react";
+import { Receipt, IndianRupee, AlertTriangle, Clock, ChevronRight, TrendingUp } from "lucide-react";
+import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -41,65 +43,7 @@ function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-// ── Filter Drawer ─────────────────────────────────────────────────────────────
 
-interface FilterDrawerProps {
-  open: boolean; onClose: () => void;
-  statusFilter: BillStatus | ""; setStatusFilter: (v: BillStatus | "") => void;
-  categoryFilter: BillCategory | ""; setCategoryFilter: (v: BillCategory | "") => void;
-  hasFilters: boolean; onClear: () => void; resultCount: number;
-}
-
-function FilterDrawer({ open, onClose, statusFilter, setStatusFilter, categoryFilter, setCategoryFilter, hasFilters, onClear, resultCount }: FilterDrawerProps) {
-  if (!open) return null;
-  function Btn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button onClick={onClick} className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${active ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"}`}>
-        {children}
-      </button>
-    );
-  }
-  const activeCount = [statusFilter, categoryFilter].filter(Boolean).length;
-  return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={16} className="text-[var(--action-primary)]" />
-            <h2 className="font-semibold text-[var(--text-primary)]">Filters</h2>
-            {activeCount > 0 && <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">{activeCount}</span>}
-          </div>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
-        </div>
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Status</p>
-            <div className="flex flex-wrap gap-2">
-              <Btn active={statusFilter === ""} onClick={() => setStatusFilter("")}>All</Btn>
-              {ALL_STATUSES.map((s) => <Btn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>{s}</Btn>)}
-            </div>
-          </div>
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Category</p>
-            <div className="flex flex-wrap gap-2">
-              <Btn active={categoryFilter === ""} onClick={() => setCategoryFilter("")}>All</Btn>
-              {ALL_CATEGORIES.map((c) => <Btn key={c} active={categoryFilter === c} onClick={() => setCategoryFilter(c)}>{c}</Btn>)}
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-3 border-t border-[var(--border-default)] px-5 py-4">
-          <button onClick={onClear} disabled={!hasFilters} className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] disabled:opacity-40">
-            <RotateCcw size={14} /> Reset
-          </button>
-          <button onClick={onClose} className="flex-1 rounded-lg bg-[var(--action-primary)] py-2.5 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
-            Show {resultCount}
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
@@ -152,58 +96,41 @@ export default function BillingPage() {
 
   return (
     <div className="space-y-5 pb-8">
-      <FilterDrawer
+      <FilterDrawerShell
         open={drawerOpen} onClose={() => setDrawerOpen(false)}
-        statusFilter={statusFilter}   setStatusFilter={setStatusFilter}
-        categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
-        hasFilters={hasFilters} onClear={clearFilters} resultCount={filtered.length}
-      />
+        activeCount={activeCount} resultCount={filtered.length}
+        resultLabel="bill" hasFilters={hasFilters} onClear={clearFilters}
+      >
+        <FilterSection label="Status">
+          <FilterToggleBtn active={statusFilter === ""} onClick={() => setStatusFilter("")}>All</FilterToggleBtn>
+          {ALL_STATUSES.map((s) => (
+            <FilterToggleBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>{s}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Category">
+          <FilterToggleBtn active={categoryFilter === ""} onClick={() => setCategoryFilter("")}>All</FilterToggleBtn>
+          {ALL_CATEGORIES.map((c) => (
+            <FilterToggleBtn key={c} active={categoryFilter === c} onClick={() => setCategoryFilter(c)}>{c}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+      </FilterDrawerShell>
 
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-semibold text-[var(--text-primary)]">Billing</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-0.5">Patient invoices &amp; payment tracking</p>
-      </div>
+      <PageHeader title="Billing" subtitle="Patient invoices &amp; payment tracking" />
 
       {/* KPI bar */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{k.label}</p>
-              <span className={k.cls}>{k.icon}</span>
-            </div>
-            <p className={`mt-2 text-2xl font-bold tabular-nums ${k.cls}`}>{k.value}</p>
-          </div>
+          <KpiCard key={k.label} label={k.label} value={k.value} icon={k.icon} colorClass={k.cls} />
         ))}
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-          <input
-            placeholder="Search by bill ID, patient name or ID…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] py-2.5 pl-9 pr-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)]"
-          />
-        </div>
-
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${hasFilters ? "border-[var(--action-primary)] bg-[var(--action-subtle)] text-[var(--action-primary)]" : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"}`}
-        >
-          <SlidersHorizontal size={14} /> Filters
-          {activeCount > 0 && <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">{activeCount}</span>}
-        </button>
-
-        {hasFilters && (
-          <button onClick={clearFilters} className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] underline hover:text-[var(--critical-fg)]">
-            <RotateCcw size={11} /> Clear
-          </button>
-        )}
-      </div>
+      <SearchBar
+        value={query} onChange={setQuery}
+        placeholder="Search by bill ID, patient name or ID…"
+        onFilterClick={() => setDrawerOpen(true)}
+        hasFilters={hasFilters} activeCount={activeCount}
+        onClear={clearFilters}
+      />
 
       {/* Table */}
       <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">
@@ -220,11 +147,12 @@ export default function BillingPage() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Receipt size={32} className="mb-3 opacity-20 text-[var(--text-secondary)]" />
-            <p className="text-sm text-[var(--text-secondary)]">No bills match your filters</p>
-            {hasFilters && <button onClick={clearFilters} className="mt-2 text-xs text-[var(--action-primary)] underline">Clear filters</button>}
-          </div>
+          <EmptyState
+            icon={<Receipt size={32} />}
+            message="No bills match your filters"
+            actionLabel={hasFilters ? "Clear filters" : undefined}
+            onAction={hasFilters ? clearFilters : undefined}
+          />
         ) : (
           <div className="divide-y divide-[var(--border-default)]">
             {filtered.map((bill) => (
@@ -258,9 +186,7 @@ function BillRow({ bill }: { bill: Bill }) {
       </div>
 
       {/* Category */}
-      <span className={`hidden md:inline-flex w-fit rounded-full px-2 py-0.5 text-xs font-medium ${CATEGORY_CLS[bill.category]}`}>
-        {bill.category}
-      </span>
+      <StatusBadge colorClass={CATEGORY_CLS[bill.category]} label={bill.category} className="hidden md:inline-flex" />
 
       {/* Date */}
       <p className="hidden md:block text-xs text-[var(--text-secondary)]">{fmtDate(bill.createdAt)}</p>
@@ -282,9 +208,7 @@ function BillRow({ bill }: { bill: Bill }) {
       </div>
 
       {/* Status */}
-      <span className={`inline-flex w-fit rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLS[bill.status]}`}>
-        {bill.status}
-      </span>
+      <StatusBadge colorClass={STATUS_CLS[bill.status]} label={bill.status} />
 
       <ChevronRight size={14} className="hidden md:block shrink-0 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
     </Link>

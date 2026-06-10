@@ -5,12 +5,17 @@ import { useUserStore, type SeedUser, type UserRole, type UserStatus } from "@/s
 import { ROLE_LABELS, DEPARTMENTS } from "@/data/seedUsers";
 import { useToast } from "@/components/ui/ToastProvider";
 import {
-  Users, Search, SlidersHorizontal, X, RotateCcw,
-  UserPlus, ShieldCheck, Stethoscope, HeartPulse,
+  Users, UserPlus, ShieldCheck, Stethoscope, HeartPulse,
   FlaskConical, Pill, PhoneCall, Shield,
-  MoreHorizontal, Pencil, Trash2, Lock, CheckCircle2,
+  MoreHorizontal, Pencil, Trash2, Lock, CheckCircle2, X,
 } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
+import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -58,63 +63,7 @@ function fmtDate(d?: string) {
   return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-// ── Filter Drawer ─────────────────────────────────────────────────────────────
-
-interface FilterDrawerProps {
-  open: boolean; onClose: () => void;
-  roleFilter: UserRole | ""; setRoleFilter: (v: UserRole | "") => void;
-  statusFilter: UserStatus | ""; setStatusFilter: (v: UserStatus | "") => void;
-  deptFilter: string; setDeptFilter: (v: string) => void;
-  hasFilters: boolean; onClear: () => void; resultCount: number;
-}
-
-function FilterDrawer({ open, onClose, roleFilter, setRoleFilter, statusFilter, setStatusFilter, deptFilter, setDeptFilter, hasFilters, onClear, resultCount }: FilterDrawerProps) {
-  if (!open) return null;
-  function Btn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button onClick={onClick} className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${active ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"}`}>
-        {children}
-      </button>
-    );
-  }
-  return (
-    <Drawer open={open} onClose={onClose} maxWidth="max-w-xs" aria-label="Filters">
-      <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
-          <span className="font-semibold text-[var(--text-primary)]">Filters</span>
-          <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">Role</p>
-            <div className="flex flex-wrap gap-2">
-              {ALL_ROLES.map((r) => <Btn key={r} active={roleFilter === r} onClick={() => setRoleFilter(roleFilter === r ? "" : r)}>{ROLE_LABELS[r]}</Btn>)}
-            </div>
-          </div>
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">Status</p>
-            <div className="flex flex-wrap gap-2">
-              {ALL_STATUSES.map((s) => <Btn key={s} active={statusFilter === s} onClick={() => setStatusFilter(statusFilter === s ? "" : s)}>{s}</Btn>)}
-            </div>
-          </div>
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">Department</p>
-            <select value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-sm text-[var(--text-primary)]">
-              <option value="">All Departments</option>
-              {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </div>
-        </div>
-        <div className="border-t border-[var(--border-default)] p-4 flex items-center justify-between">
-          <span className="text-xs text-[var(--text-secondary)]">{resultCount} result{resultCount !== 1 ? "s" : ""}</span>
-          {hasFilters && (
-            <button onClick={onClear} className="flex items-center gap-1.5 text-xs text-[var(--action-primary)] hover:underline">
-              <RotateCcw size={12} /> Clear all
-            </button>
-          )}
-        </div>
-    </Drawer>
-  );
-}
+// ── User Form Drawer ─────────────────────────────────────────────────────────────
 
 // ── User Form Drawer ──────────────────────────────────────────────────────────
 
@@ -226,23 +175,6 @@ function UserFormDrawer({ open, onClose, editing }: UserFormDrawerProps) {
   );
 }
 
-// ── Confirm Dialog ────────────────────────────────────────────────────────────
-
-function ConfirmDialog({ open, message, onConfirm, onCancel }: { open: boolean; message: string; onConfirm: () => void; onCancel: () => void }) {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-sm rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 shadow-2xl">
-        <p className="text-sm text-[var(--text-primary)] mb-6">{message}</p>
-        <div className="flex justify-end gap-3">
-          <button onClick={onCancel} className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">Cancel</button>
-          <button onClick={onConfirm} className="rounded-lg bg-[var(--critical-fg)] px-4 py-2 text-sm font-medium text-white hover:opacity-90">Confirm</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Row action menu ───────────────────────────────────────────────────────────
 
 function ActionMenu({ user, onEdit, onToggleStatus, onDelete }: { user: SeedUser; onEdit: () => void; onToggleStatus: () => void; onDelete: () => void }) {
@@ -322,16 +254,15 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-5 pb-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">User Management</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">{total} staff member{total !== 1 ? "s" : ""} · {active} active</p>
-        </div>
-        <button onClick={() => { setEditing(null); setDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
-          <UserPlus size={16} /> Add User
-        </button>
-      </div>
+      <PageHeader
+        title="User Management"
+        subtitle={`${total} staff member${total !== 1 ? "s" : ""} · ${active} active`}
+        action={
+          <button onClick={() => { setEditing(null); setDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
+            <UserPlus size={16} /> Add User
+          </button>
+        }
+      />
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -368,16 +299,14 @@ export default function UsersPage() {
           })}
         </div>
         {/* Search + filter bar */}
-        <div className="flex items-center gap-3 p-4 border-b border-[var(--border-default)]">
-          <div className="relative flex-1 max-w-xs">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name, email, dept…" className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-[var(--action-primary)] outline-none" />
-          </div>
-          <button onClick={() => setFilterOpen(true)} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${hasFilters ? "border-[var(--action-primary)] text-[var(--action-primary)] bg-[var(--action-subtle)]" : "border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"}`}>
-            <SlidersHorizontal size={14} /> Filters {hasFilters && <span className="rounded-full bg-[var(--action-primary)] text-white text-[10px] px-1.5">!</span>}
-          </button>
-          {hasFilters && <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--critical-fg)]"><X size={12} /> Clear</button>}
-          <span className="ml-auto text-xs text-[var(--text-secondary)]">{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
+        <div className="p-4 border-b border-[var(--border-default)]">
+          <SearchBar
+            value={search} onChange={setSearch}
+            placeholder="Search name, email, dept…"
+            onFilterClick={() => setFilterOpen(true)}
+            hasFilters={hasFilters} activeCount={[roleFilter, statusFilter, deptFilter].filter(Boolean).length}
+            onClear={clearFilters}
+          />
         </div>
 
         {/* Table */}
@@ -454,9 +383,38 @@ export default function UsersPage() {
       </div>
 
       {/* Drawers / Dialogs */}
-      <FilterDrawer open={filterOpen} onClose={() => setFilterOpen(false)} roleFilter={roleFilter} setRoleFilter={setRoleFilter} statusFilter={statusFilter} setStatusFilter={setStatusFilter} deptFilter={deptFilter} setDeptFilter={setDeptFilter} hasFilters={hasFilters} onClear={clearFilters} resultCount={filtered.length} />
+      <FilterDrawerShell
+        open={filterOpen} onClose={() => setFilterOpen(false)}
+        activeCount={[roleFilter, statusFilter, deptFilter].filter(Boolean).length}
+        resultCount={filtered.length} resultLabel="user"
+        hasFilters={hasFilters} onClear={clearFilters}
+      >
+        <FilterSection label="Role">
+          {ALL_ROLES.map((r) => (
+            <FilterToggleBtn key={r} active={roleFilter === r} onClick={() => setRoleFilter(roleFilter === r ? "" : r)}>{ROLE_LABELS[r]}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Status">
+          {ALL_STATUSES.map((s) => (
+            <FilterToggleBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(statusFilter === s ? "" : s)}>{s}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">Department</p>
+          <select value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-sm text-[var(--text-primary)]">
+            <option value="">All Departments</option>
+            {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
+          </select>
+        </div>
+      </FilterDrawerShell>
       <UserFormDrawer open={drawerOpen} onClose={() => { setDrawerOpen(false); setEditing(null); }} editing={editing} />
-      <ConfirmDialog open={!!confirmDelete} message={`Permanently delete user "${confirmDelete?.name}"? This cannot be undone.`} onConfirm={() => { if (confirmDelete) { store.deleteUser(confirmDelete.id); setConfirmDelete(null); } }} onCancel={() => setConfirmDelete(null)} />
+      <ConfirmDialog
+        open={!!confirmDelete}
+        message={`Permanently delete user "${confirmDelete?.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => { if (confirmDelete) { store.deleteUser(confirmDelete.id); setConfirmDelete(null); } }}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </div>
   );
 }

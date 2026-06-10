@@ -6,9 +6,14 @@ import { useOrderStore } from "@/store/useOrderStore";
 import type { OrderType, OrderStatus, OrderPriority } from "@/data/seedOrders";
 import {
   ClipboardList, FlaskConical, Pill, ScanLine, UserCheck,
-  Stethoscope, UtensilsCrossed, Plus, Search, ChevronRight,
-  SlidersHorizontal, X, RotateCcw, AlertTriangle, Clock, CheckCircle2,
+  Stethoscope, UtensilsCrossed, Plus, ChevronRight,
+  AlertTriangle, Clock, CheckCircle2, X,
 } from "lucide-react";
+import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -70,124 +75,6 @@ const ALL_TYPES:    (OrderType | "")[]    = ["", "Lab", "Medication", "Imaging",
 const ALL_STATUSES: (OrderStatus | "")[]  = ["", "Ordered", "Acknowledged", "In-Progress", "Completed", "Cancelled"];
 const ALL_PRIORITIES: (OrderPriority | "")[] = ["", "Routine", "Urgent", "STAT"];
 
-// ── Filter Drawer ─────────────────────────────────────────────────────────────
-
-interface FilterDrawerProps {
-  open: boolean;
-  onClose: () => void;
-  typeFilter: OrderType | "";
-  setTypeFilter: (v: OrderType | "") => void;
-  statusFilter: OrderStatus | "";
-  setStatusFilter: (v: OrderStatus | "") => void;
-  priorityFilter: OrderPriority | "";
-  setPriorityFilter: (v: OrderPriority | "") => void;
-  hasFilters: boolean;
-  onClear: () => void;
-  resultCount: number;
-}
-
-function FilterDrawer({
-  open, onClose, typeFilter, setTypeFilter, statusFilter, setStatusFilter,
-  priorityFilter, setPriorityFilter, hasFilters, onClear, resultCount,
-}: FilterDrawerProps) {
-  if (!open) return null;
-
-  function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button
-        onClick={onClick}
-        className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-          active
-            ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white"
-            : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)] hover:text-[var(--action-primary)]"
-        }`}
-      >
-        {children}
-      </button>
-    );
-  }
-
-  function Section({ label, children }: { label: string; children: React.ReactNode }) {
-    return (
-      <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{label}</p>
-        <div className="flex flex-wrap gap-2">{children}</div>
-      </div>
-    );
-  }
-
-  const activeCount = [typeFilter, statusFilter, priorityFilter].filter(Boolean).length;
-
-  return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={onClose} aria-hidden />
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={16} className="text-[var(--action-primary)]" />
-            <h2 className="font-semibold text-[var(--text-primary)]">Filters</h2>
-            {activeCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">
-                {activeCount}
-              </span>
-            )}
-          </div>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors">
-            <X size={16} />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-          <Section label="Order Type">
-            {ALL_TYPES.map((t) => (
-              <ToggleBtn key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>
-                {t || "All"}
-              </ToggleBtn>
-            ))}
-          </Section>
-          <Section label="Status">
-            {ALL_STATUSES.map((s) => (
-              <ToggleBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>
-                {s || "All"}
-              </ToggleBtn>
-            ))}
-          </Section>
-          <Section label="Priority">
-            {ALL_PRIORITIES.map((p) => (
-              <ToggleBtn key={p} active={priorityFilter === p} onClick={() => setPriorityFilter(p)}>
-                {p || "All"}
-              </ToggleBtn>
-            ))}
-          </Section>
-          <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4 text-xs text-[var(--text-secondary)]">
-            <p className="font-semibold text-[var(--text-primary)] mb-1">Active filters</p>
-            <p>Type: <span className="font-medium text-[var(--text-primary)]">{typeFilter || "All"}</span></p>
-            <p>Status: <span className="font-medium text-[var(--text-primary)]">{statusFilter || "All"}</span></p>
-            <p>Priority: <span className="font-medium text-[var(--text-primary)]">{priorityFilter || "All"}</span></p>
-            <p className="mt-2 font-medium text-[var(--action-primary)]">{resultCount} order{resultCount !== 1 ? "s" : ""} match</p>
-          </div>
-        </div>
-
-        <div className="flex gap-3 border-t border-[var(--border-default)] px-5 py-4">
-          <button
-            onClick={onClear}
-            disabled={!hasFilters}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] disabled:opacity-40 transition-colors"
-          >
-            <RotateCcw size={14} /> Reset
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-lg bg-[var(--action-primary)] py-2.5 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors"
-          >
-            Show {resultCount} results
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
-
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function OrdersPage() {
@@ -247,92 +134,71 @@ export default function OrdersPage() {
   return (
     <div className="space-y-5 pb-8">
 
-      <FilterDrawer
+      <FilterDrawerShell
         open={drawerOpen} onClose={() => setDrawerOpen(false)}
-        typeFilter={typeFilter}         setTypeFilter={setTypeFilter}
-        statusFilter={statusFilter}     setStatusFilter={setStatusFilter}
-        priorityFilter={priorityFilter} setPriorityFilter={setPriorityFilter}
-        hasFilters={hasFilters} onClear={clearFilters} resultCount={filtered.length}
-      />
+        activeCount={activeCount} resultCount={filtered.length}
+        resultLabel="order" hasFilters={hasFilters} onClear={clearFilters}
+      >
+        <FilterSection label="Order Type">
+          {ALL_TYPES.map((t) => (
+            <FilterToggleBtn key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>{t || "All"}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Status">
+          {ALL_STATUSES.map((s) => (
+            <FilterToggleBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>{s || "All"}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Priority">
+          {ALL_PRIORITIES.map((p) => (
+            <FilterToggleBtn key={p} active={priorityFilter === p} onClick={() => setPriorityFilter(p)}>{p || "All"}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+      </FilterDrawerShell>
 
-      {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Orders (CPOE)</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">{total} total orders</p>
-        </div>
-        <Link
-          href="/orders/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors"
-        >
-          <Plus size={15} /> New Order
-        </Link>
-      </div>
+      <PageHeader
+        title="Orders (CPOE)"
+        subtitle={`${total} total orders`}
+        action={
+          <Link href="/orders/new" className="inline-flex items-center gap-2 rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors">
+            <Plus size={15} /> New Order
+          </Link>
+        }
+      />
 
       {/* KPI bar */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{k.label}</p>
-              <span className={k.cls}>{k.icon}</span>
-            </div>
-            <p className={`mt-2 text-2xl font-bold tabular-nums ${k.cls}`}>{k.value}</p>
-          </div>
+          <KpiCard key={k.label} label={k.label} value={k.value} icon={k.icon} colorClass={k.cls} />
         ))}
       </div>
 
-      {/* Search + filter bar */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-          <input
-            type="text"
-            placeholder="Search by order ID, patient, title, doctor…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] py-2.5 pl-9 pr-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)]"
-          />
-        </div>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
-            hasFilters
-              ? "border-[var(--action-primary)] bg-[var(--action-subtle)] text-[var(--action-primary)]"
-              : "border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
-          }`}
-        >
-          <SlidersHorizontal size={14} />
-          Filters
-          {activeCount > 0 && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">
-              {activeCount}
+      <SearchBar
+        value={query} onChange={setQuery}
+        placeholder="Search by order ID, patient, title, doctor…"
+        onFilterClick={() => setDrawerOpen(true)}
+        hasFilters={hasFilters} activeCount={activeCount}
+        onClear={clearFilters}
+      />
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          {typeFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {typeFilter} <button onClick={() => setTypeFilter("")}><X size={11} /></button>
             </span>
           )}
-        </button>
-        {hasFilters && (
-          <div className="flex flex-wrap items-center gap-2">
-            {typeFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {typeFilter} <button onClick={() => setTypeFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            {statusFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {statusFilter} <button onClick={() => setStatusFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            {priorityFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {priorityFilter} <button onClick={() => setPriorityFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            <button onClick={clearFilters} className="text-xs text-[var(--text-secondary)] underline hover:text-[var(--critical-fg)]">
-              Clear all
-            </button>
-          </div>
-        )}
-      </div>
+          {statusFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {statusFilter} <button onClick={() => setStatusFilter("")}><X size={11} /></button>
+            </span>
+          )}
+          {priorityFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {priorityFilter} <button onClick={() => setPriorityFilter("")}><X size={11} /></button>
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Table */}
       <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">
@@ -366,15 +232,12 @@ export default function OrdersPage() {
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <ClipboardList size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
-            <p className="font-medium text-[var(--text-primary)]">No orders match your filters</p>
-            {hasFilters && (
-              <button onClick={clearFilters} className="mt-2 text-sm text-[var(--action-primary)] underline">
-                Clear filters
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={<ClipboardList size={36} />}
+            message="No orders match your filters"
+            actionLabel={hasFilters ? "Clear filters" : undefined}
+            onAction={hasFilters ? clearFilters : undefined}
+          />
         ) : (
           <div className="divide-y divide-[var(--border-default)]">
             {filtered.map((o, idx) => (

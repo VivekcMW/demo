@@ -5,10 +5,14 @@ import Link from "next/link";
 import { useOrderStore } from "@/store/useOrderStore";
 import type { Order, OrderStatus, OrderType } from "@/data/seedOrders";
 import {
-  FlaskConical, ScanLine, Search, AlertTriangle, Clock,
-  CheckCircle2, ChevronRight, SlidersHorizontal, X, RotateCcw,
-  Microscope, Activity,
+  FlaskConical, ScanLine, AlertTriangle, Clock,
+  CheckCircle2, ChevronRight, Microscope, Activity,
 } from "lucide-react";
+import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -32,101 +36,6 @@ function fmtDateTime(dt: string) {
 }
 
 // ── Filter Drawer ─────────────────────────────────────────────────────────────
-
-interface FilterDrawerProps {
-  open: boolean;
-  onClose: () => void;
-  typeFilter: "Lab" | "Imaging" | "";
-  setTypeFilter: (v: "Lab" | "Imaging" | "") => void;
-  statusFilter: OrderStatus | "";
-  setStatusFilter: (v: OrderStatus | "") => void;
-  hasFilters: boolean;
-  onClear: () => void;
-  resultCount: number;
-}
-
-function FilterDrawer({
-  open, onClose, typeFilter, setTypeFilter, statusFilter, setStatusFilter,
-  hasFilters, onClear, resultCount,
-}: FilterDrawerProps) {
-  if (!open) return null;
-
-  function Btn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button
-        onClick={onClick}
-        className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-          active
-            ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white"
-            : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"
-        }`}
-      >
-        {children}
-      </button>
-    );
-  }
-
-  const activeCount = [typeFilter, statusFilter].filter(Boolean).length;
-
-  return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={onClose} aria-hidden />
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={16} className="text-[var(--action-primary)]" />
-            <h2 className="font-semibold text-[var(--text-primary)]">Filters</h2>
-            {activeCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">{activeCount}</span>
-            )}
-          </div>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"><X size={16} /></button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Department</p>
-            <div className="flex flex-wrap gap-2">
-              {(["", "Lab", "Imaging"] as const).map((t) => (
-                <Btn key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>{t || "All"}</Btn>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Status</p>
-            <div className="flex flex-wrap gap-2">
-              {(["", "Ordered", "Acknowledged", "In-Progress", "Completed"] as const).map((s) => (
-                <Btn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>{s || "All"}</Btn>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4 text-xs text-[var(--text-secondary)]">
-            <p className="font-semibold text-[var(--text-primary)] mb-1">Active filters</p>
-            <p>Dept: <span className="font-medium text-[var(--text-primary)]">{typeFilter || "All"}</span></p>
-            <p>Status: <span className="font-medium text-[var(--text-primary)]">{statusFilter || "All"}</span></p>
-            <p className="mt-2 font-medium text-[var(--action-primary)]">{resultCount} request{resultCount !== 1 ? "s" : ""} match</p>
-          </div>
-        </div>
-
-        <div className="flex gap-3 border-t border-[var(--border-default)] px-5 py-4">
-          <button
-            onClick={onClear}
-            disabled={!hasFilters}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] disabled:opacity-40"
-          >
-            <RotateCcw size={14} /> Reset
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-lg bg-[var(--action-primary)] py-2.5 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]"
-          >
-            Show {resultCount} results
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
 
 // ── Order row ─────────────────────────────────────────────────────────────────
 
@@ -263,93 +172,56 @@ export default function DiagnosticsPage() {
   return (
     <div className="space-y-5 pb-8">
 
-      <FilterDrawer
+      <FilterDrawerShell
         open={drawerOpen} onClose={() => setDrawerOpen(false)}
-        typeFilter={typeFilter}   setTypeFilter={setTypeFilter}
-        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-        hasFilters={hasFilters} onClear={clearFilters} resultCount={filtered.length}
-      />
+        activeCount={activeCount} resultCount={filtered.length}
+        resultLabel="request" hasFilters={hasFilters} onClear={clearFilters}
+      >
+        <FilterSection label="Department">
+          {(["Lab", "Imaging"] as const).map((t) => (
+            <FilterToggleBtn key={t} active={typeFilter === t} onClick={() => setTypeFilter(typeFilter === t ? "" : t)}>{t}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Status">
+          {(["Ordered", "Acknowledged", "In-Progress", "Completed"] as const).map((s) => (
+            <FilterToggleBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(statusFilter === s ? "" : s)}>{s}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+      </FilterDrawerShell>
 
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-semibold text-[var(--text-primary)]">Diagnostics Lab</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-0.5">Lab &amp; Imaging requests workbench</p>
-      </div>
+      <PageHeader title="Diagnostics Lab" subtitle="Lab &amp; Imaging requests workbench" />
 
       {/* KPI bar */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{k.label}</p>
-              <span className={k.cls}>{k.icon}</span>
-            </div>
-            <p className={`mt-2 text-2xl font-bold tabular-nums ${k.cls}`}>{k.value}</p>
-          </div>
+          <KpiCard key={k.label} label={k.label} value={k.value} icon={k.icon} colorClass={k.cls} />
         ))}
       </div>
 
-      {/* Search + filter */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-          <input
-            type="text"
-            placeholder="Search by order ID, patient, test name…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] py-2.5 pl-9 pr-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)]"
-          />
-        </div>
+      <SearchBar
+        value={query} onChange={setQuery}
+        placeholder="Search by order ID, patient, test name…"
+        onFilterClick={() => setDrawerOpen(true)}
+        hasFilters={hasFilters} activeCount={activeCount}
+        onClear={clearFilters}
+      />
 
-        {/* Type quick-toggle */}
-        <div className="flex gap-1">
-          {(["", "Lab", "Imaging"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTypeFilter(t)}
-              className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-                typeFilter === t
-                  ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white"
-                  : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
-              }`}
-            >
-              {t === "Lab" && <FlaskConical size={12} />}
-              {t === "Imaging" && <ScanLine size={12} />}
-              {t || "All"}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-            hasFilters
-              ? "border-[var(--action-primary)] bg-[var(--action-subtle)] text-[var(--action-primary)]"
-              : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
-          }`}
-        >
-          <SlidersHorizontal size={14} />
-          Filters
-          {activeCount > 0 && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">{activeCount}</span>
-          )}
-        </button>
-
-        {hasFilters && (
-          <button onClick={clearFilters} className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] underline hover:text-[var(--critical-fg)]">
-            <RotateCcw size={11} /> Clear
-          </button>
-        )}
-      </div>
+      <SearchBar
+        value={query} onChange={setQuery}
+        placeholder="Search by order ID, patient, test name…"
+        onFilterClick={() => setDrawerOpen(true)}
+        hasFilters={hasFilters} activeCount={activeCount}
+        onClear={clearFilters}
+      />
 
       {/* Grouped workbench */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Microscope size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
-          <p className="font-medium text-[var(--text-primary)]">No diagnostic requests match your filters</p>
-          {hasFilters && <button onClick={clearFilters} className="mt-2 text-sm text-[var(--action-primary)] underline">Clear filters</button>}
-        </div>
+        <EmptyState
+          icon={<Microscope size={36} />}
+          message="No diagnostic requests match your filters"
+          actionLabel={hasFilters ? "Clear filters" : undefined}
+          onAction={hasFilters ? clearFilters : undefined}
+        />
       ) : (
         <div className="space-y-4">
           <Group

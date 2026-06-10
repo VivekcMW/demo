@@ -4,10 +4,12 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { usePatientStore } from "@/store/usePatientStore";
 import type { BloodGroup, ChronicCondition } from "@/data/seedPatients";
-import {
-  Search, Users, CalendarDays, HeartPulse, ShieldCheck,
-  ChevronRight, SlidersHorizontal, X, UserPlus, RotateCcw,
-} from "lucide-react";
+import { Users, CalendarDays, HeartPulse, ShieldCheck, ChevronRight, UserPlus, X } from "lucide-react";
+import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SearchBar } from "@/components/ui/SearchBar";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 // ── Design-system helpers ─────────────────────────────────────────────────────
 
@@ -42,153 +44,6 @@ const ALL_CONDITIONS: ChronicCondition[] = [
   "DM","HTN","CKD","Asthma","CAD","Hypothyroid","COPD","Arthritis","Epilepsy","Obesity",
 ];
 const ALL_BLOOD_GROUPS: BloodGroup[] = ["A+","A-","B+","B-","AB+","AB-","O+","O-","Unknown"];
-
-// ── Filter Drawer ─────────────────────────────────────────────────────────────
-
-interface FilterDrawerProps {
-  open: boolean;
-  onClose: () => void;
-  sexFilter: "" | "M" | "F" | "O";
-  setSexFilter: (v: "" | "M" | "F" | "O") => void;
-  bgFilter: BloodGroup | "";
-  setBgFilter: (v: BloodGroup | "") => void;
-  condFilter: ChronicCondition | "";
-  setCondFilter: (v: ChronicCondition | "") => void;
-  hasFilters: boolean;
-  onClear: () => void;
-  resultCount: number;
-}
-
-function FilterDrawer({
-  open, onClose,
-  sexFilter, setSexFilter,
-  bgFilter, setBgFilter,
-  condFilter, setCondFilter,
-  hasFilters, onClear, resultCount,
-}: FilterDrawerProps) {
-  if (!open) return null;
-
-  function Section({ label, children }: { label: string; children: React.ReactNode }) {
-    return (
-      <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">{label}</p>
-        {children}
-      </div>
-    );
-  }
-
-  function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button
-        onClick={onClick}
-        className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
-          active
-            ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white"
-            : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)] hover:text-[var(--action-primary)]"
-        }`}
-      >
-        {children}
-      </button>
-    );
-  }
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col border-l border-[var(--border-default)] bg-[var(--surface-raised)] shadow-2xl">
-
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={16} className="text-[var(--action-primary)]" />
-            <h2 className="font-semibold text-[var(--text-primary)]">Filters</h2>
-            {hasFilters && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">
-                {[sexFilter, bgFilter, condFilter].filter(Boolean).length}
-              </span>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        {/* Scrollable filter body */}
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-
-          {/* Gender */}
-          <Section label="Gender">
-            <div className="flex flex-wrap gap-2">
-              {(["", "M", "F", "O"] as const).map((s) => (
-                <ToggleBtn key={s} active={sexFilter === s} onClick={() => setSexFilter(s)}>
-                  {s === "" ? "All" : s === "M" ? "Male" : s === "F" ? "Female" : "Other"}
-                </ToggleBtn>
-              ))}
-            </div>
-          </Section>
-
-          {/* Blood group */}
-          <Section label="Blood Group">
-            <div className="flex flex-wrap gap-2">
-              <ToggleBtn active={bgFilter === ""} onClick={() => setBgFilter("")}>All</ToggleBtn>
-              {ALL_BLOOD_GROUPS.slice(0, 8).map((g) => (
-                <ToggleBtn key={g} active={bgFilter === g} onClick={() => setBgFilter(g)}>{g}</ToggleBtn>
-              ))}
-            </div>
-          </Section>
-
-          {/* Chronic condition */}
-          <Section label="Chronic Condition">
-            <div className="flex flex-wrap gap-2">
-              <ToggleBtn active={condFilter === ""} onClick={() => setCondFilter("")}>All</ToggleBtn>
-              {ALL_CONDITIONS.map((c) => (
-                <ToggleBtn key={c} active={condFilter === c} onClick={() => setCondFilter(c)}>
-                  {c}
-                </ToggleBtn>
-              ))}
-            </div>
-          </Section>
-
-          {/* ABHA / Insurance quick filters — visual separators */}
-          <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4 text-xs text-[var(--text-secondary)]">
-            <p className="font-semibold text-[var(--text-primary)] mb-1">Active filters summary</p>
-            <p>Gender: <span className="font-medium text-[var(--text-primary)]">{sexFilter || "All"}</span></p>
-            <p>Blood group: <span className="font-medium text-[var(--text-primary)]">{bgFilter || "All"}</span></p>
-            <p>Condition: <span className="font-medium text-[var(--text-primary)]">{condFilter || "All"}</span></p>
-            <p className="mt-2 font-medium text-[var(--action-primary)]">{resultCount} patient{resultCount !== 1 ? "s" : ""} match</p>
-          </div>
-        </div>
-
-        {/* Footer actions */}
-        <div className="flex gap-3 border-t border-[var(--border-default)] px-5 py-4">
-          <button
-            onClick={onClear}
-            disabled={!hasFilters}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-sunken)] disabled:opacity-40"
-          >
-            <RotateCcw size={14} /> Reset
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-lg bg-[var(--action-primary)] py-2.5 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors"
-          >
-            Show {resultCount} results
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
@@ -247,103 +102,76 @@ export default function PatientsPage() {
     <div className="space-y-5 pb-8">
 
       {/* ── Filter drawer ───────────────────────────────────────────────────── */}
-      <FilterDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        sexFilter={sexFilter} setSexFilter={setSexFilter}
-        bgFilter={bgFilter}   setBgFilter={setBgFilter}
-        condFilter={condFilter} setCondFilter={setCondFilter}
-        hasFilters={hasFilters}
-        onClear={clearFilters}
-        resultCount={filtered.length}
-      />
+      <FilterDrawerShell
+        open={drawerOpen} onClose={() => setDrawerOpen(false)}
+        activeCount={activeFilterCount} resultCount={filtered.length}
+        resultLabel="patient" hasFilters={hasFilters} onClear={clearFilters}
+      >
+        <FilterSection label="Gender">
+          {(["M", "F", "O"] as const).map((s) => (
+            <FilterToggleBtn key={s} active={sexFilter === s} onClick={() => setSexFilter(sexFilter === s ? "" : s)}>
+              {s === "M" ? "Male" : s === "F" ? "Female" : "Other"}
+            </FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Blood Group">
+          <FilterToggleBtn active={bgFilter === ""} onClick={() => setBgFilter("")}>All</FilterToggleBtn>
+          {ALL_BLOOD_GROUPS.slice(0, 8).map((g) => (
+            <FilterToggleBtn key={g} active={bgFilter === g} onClick={() => setBgFilter(bgFilter === g ? "" : g)}>{g}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+        <FilterSection label="Chronic Condition">
+          <FilterToggleBtn active={condFilter === ""} onClick={() => setCondFilter("")}>All</FilterToggleBtn>
+          {ALL_CONDITIONS.map((c) => (
+            <FilterToggleBtn key={c} active={condFilter === c} onClick={() => setCondFilter(condFilter === c ? "" : c)}>{c}</FilterToggleBtn>
+          ))}
+        </FilterSection>
+      </FilterDrawerShell>
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Patients</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">{total} registered patients</p>
-        </div>
-        <Link
-          href="/patients/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors"
-        >
-          <UserPlus size={15} />
-          New Patient
-        </Link>
-      </div>
+      <PageHeader
+        title="Patients"
+        subtitle={`${total} registered patients`}
+        action={
+          <Link href="/patients/new" className="inline-flex items-center gap-2 rounded-lg bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)] transition-colors">
+            <UserPlus size={15} /> New Patient
+          </Link>
+        }
+      />
 
       {/* ── KPI bar ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {kpis.map((k) => (
-          <div key={k.label} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{k.label}</p>
-              <k.Icon size={16} className={k.iconCls} />
-            </div>
-            <p className={`mt-2 text-2xl font-bold tabular-nums ${k.valCls}`}>{k.value}</p>
-          </div>
+          <KpiCard key={k.label} label={k.label} value={k.value} icon={<k.Icon size={16} />} colorClass={k.iconCls} />
         ))}
       </div>
 
-      {/* ── Search + filter bar ────────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-          <input
-            type="text"
-            placeholder="Search by name, UHID, phone or ABHA ID…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] py-2.5 pl-9 pr-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)]"
-          />
-        </div>
-
-        {/* Filter button */}
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
-            hasFilters
-              ? "border-[var(--action-primary)] bg-[var(--action-subtle)] text-[var(--action-primary)]"
-              : "border-[var(--border-default)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
-          }`}
-        >
-          <SlidersHorizontal size={14} />
-          Filters
-          {activeFilterCount > 0 && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--action-primary)] text-[10px] font-bold text-white">
-              {activeFilterCount}
+      <SearchBar
+        value={query} onChange={setQuery}
+        placeholder="Search by name, UHID, phone or ABHA ID…"
+        onFilterClick={() => setDrawerOpen(true)}
+        hasFilters={hasFilters} activeCount={activeFilterCount}
+        onClear={clearFilters}
+      />
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          {sexFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {sexFilter === "M" ? "Male" : sexFilter === "F" ? "Female" : "Other"}
+              <button onClick={() => setSexFilter("")}><X size={11} /></button>
             </span>
           )}
-        </button>
-
-        {/* Active filter chips */}
-        {hasFilters && (
-          <div className="flex flex-wrap items-center gap-2">
-            {sexFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {sexFilter === "M" ? "Male" : sexFilter === "F" ? "Female" : "Other"}
-                <button onClick={() => setSexFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            {bgFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {bgFilter}
-                <button onClick={() => setBgFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            {condFilter && (
-              <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
-                {condFilter}
-                <button onClick={() => setCondFilter("")}><X size={11} /></button>
-              </span>
-            )}
-            <button onClick={clearFilters} className="text-xs text-[var(--text-secondary)] underline hover:text-[var(--critical-fg)]">
-              Clear all
-            </button>
-          </div>
-        )}
-      </div>
+          {bgFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {bgFilter} <button onClick={() => setBgFilter("")}><X size={11} /></button>
+            </span>
+          )}
+          {condFilter && (
+            <span className="flex items-center gap-1 rounded-full border border-[var(--action-primary)] bg-[var(--action-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--action-primary)]">
+              {condFilter} <button onClick={() => setCondFilter("")}><X size={11} /></button>
+            </span>
+          )}
+        </div>
+      )}
 
       {/* ── Patient table ──────────────────────────────────────────────────── */}
       <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">

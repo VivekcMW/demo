@@ -8,6 +8,7 @@ import {
   BedDouble, Users, CheckCircle2, AlertTriangle, ChevronDown,
 } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -268,28 +269,25 @@ export default function ManagePage() {
 
   return (
     <div className="space-y-5 pb-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Manage</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Departments, staff shifts, and system announcements</p>
-        </div>
-        {tab === "departments" && (
-          <button onClick={() => { setDeptEditing(null); setDeptDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
-            <Plus size={16} /> Add Department
-          </button>
-        )}
-        {tab === "shifts" && (
-          <button onClick={() => { setShiftEditing(null); setShiftDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
-            <Plus size={16} /> Add Shift
-          </button>
-        )}
-        {tab === "announcements" && (
-          <button onClick={() => setAnnDialogOpen(true)} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
-            <Plus size={16} /> Post Announcement
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Manage"
+        subtitle="Departments, staff shifts, and system announcements"
+        action={
+          tab === "departments" ? (
+            <button onClick={() => { setDeptEditing(null); setDeptDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
+              <Plus size={16} /> Add Department
+            </button>
+          ) : tab === "shifts" ? (
+            <button onClick={() => { setShiftEditing(null); setShiftDrawerOpen(true); }} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
+              <Plus size={16} /> Add Shift
+            </button>
+          ) : tab === "announcements" ? (
+            <button onClick={() => setAnnDialogOpen(true)} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--action-primary-hover)]">
+              <Plus size={16} /> Post Announcement
+            </button>
+          ) : null
+        }
+      />
 
       {/* KPI row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
