@@ -387,11 +387,12 @@ export default function PatientsPage() {
           </div>
         ) : (
           <div className="divide-y divide-[var(--border-default)]">
-            {filtered.map((p) => (
+            {filtered.map((p, idx) => (
               <Link
                 key={p.id}
                 href={`/patients/${p.id}`}
-                className="group grid grid-cols-1 gap-3 px-5 py-4 transition-colors hover:bg-[var(--surface-sunken)] md:grid-cols-[2.5fr_1fr_1.5fr_2fr_1fr_auto] md:items-center md:gap-4"
+                style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                className="group grid grid-cols-1 gap-3 px-5 py-4 transition-colors hover:bg-[var(--surface-sunken)] md:grid-cols-[2.5fr_1fr_1.5fr_2fr_1fr_auto] md:items-center md:gap-4 animate-slide-up"
               >
                 {/* Patient name + UHID */}
                 <div className="flex items-center gap-3">

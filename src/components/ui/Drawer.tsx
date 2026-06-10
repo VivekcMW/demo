@@ -100,7 +100,7 @@ export function Drawer({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+        className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm animate-backdrop"
         onClick={onClose}
         aria-hidden="true"
       />

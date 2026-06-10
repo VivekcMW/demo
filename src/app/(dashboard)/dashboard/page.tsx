@@ -21,6 +21,7 @@ import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { useIPDStore } from "@/store/useIPDStore";
 import { useBillingStore } from "@/store/useBillingStore";
 import { useOrderStore } from "@/store/useOrderStore";
+import { useCountUp } from "@/hooks/useCountUp";
 import Link from "next/link";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -74,6 +75,31 @@ function ApptTypeBadge({ type }: { type: string }) {
 // ── critical labs (HH/LL only) ───────────────────────────────────────────────
 const criticalLabs = pendingLabResults.filter((r) => r.flag === "HH" || r.flag === "LL");
 
+// ── Animated KPI card ────────────────────────────────────────────────────────
+function KpiCard({
+  label, target, sub, icon: Icon, href, color, staggerClass,
+}: {
+  label: string; target: number; sub: string;
+  icon: React.ElementType; href: string; color: string; staggerClass: string;
+}) {
+  const value = useCountUp(target, 700);
+  return (
+    <Link
+      href={href}
+      className={`group rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 card-hover animate-slide-up ${staggerClass}`}
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{label}</p>
+        <Icon size={16} style={{ color }} className="transition-transform duration-200 group-hover:scale-110" />
+      </div>
+      <p className="mt-3 text-2xl font-semibold tabular-nums text-[var(--text-primary)]">
+        {value}
+      </p>
+      <p className="mt-0.5 text-xs text-[var(--text-secondary)]">{sub}</p>
+    </Link>
+  );
+}
+
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -106,14 +132,14 @@ export default function DashboardPage() {
     <div className="space-y-5 pb-8">
 
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between animate-slide-up">
         <div>
           <h1 className="text-xl font-semibold text-[var(--text-primary)]">{greeting()}, {userName}</h1>
           <p className="text-sm text-[var(--text-secondary)]">{todayFormatted} · {userDept}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--normal-bg)] px-3 py-1 text-xs font-medium text-[var(--normal-fg)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--normal-fg)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--normal-fg)] pulse-dot" />
             OPD Open
           </span>
         </div>
@@ -121,29 +147,18 @@ export default function DashboardPage() {
 
       {/* ── KPI snapshot ───────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {[
-          { label: "Seen Today",     value: String(completedToday), sub: `${queueLeft} left in queue`,    icon: Activity,     href: "/appointments", color: "var(--normal-fg)" },
-          { label: "Lab Pending",    value: String(pendingLabResults.filter(r => r.flag !== "N").length), sub: `${criticalLabs.length} critical`,            icon: FlaskConical, href: "/diagnostics", color: "var(--critical-fg)" },
-          { label: "Active IPD",     value: String(activeAdmissions), sub: "patients admitted",           icon: BedDouble,    href: "/ipd",          color: "var(--info-fg)" },
-          { label: "Total Patients", value: String(totalPatients),    sub: "registered",                  icon: Users,        href: "/patients",     color: "var(--action-primary)" },
-          { label: "Pending Bills",  value: String(pendingBills),     sub: "unpaid / overdue",             icon: Receipt,      href: "/billing",      color: "var(--warning-fg)" },
-          { label: "Active Orders",  value: String(pendingOrders),    sub: "awaiting action",              icon: FlaskConical, href: "/orders",       color: "var(--text-secondary)" },
-        ].map((c) => (
-          <Link key={c.label} href={c.href} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{c.label}</p>
-              <c.icon size={16} style={{ color: c.color }} />
-            </div>
-            <p className="mt-3 text-2xl font-semibold tabular-nums text-[var(--text-primary)]">{c.value}</p>
-            <p className="mt-0.5 text-xs text-[var(--text-secondary)]">{c.sub}</p>
-          </Link>
-        ))}
+        <KpiCard label="Seen Today"     target={completedToday}  sub={`${queueLeft} left in queue`}    icon={Activity}     href="/appointments" color="var(--normal-fg)"        staggerClass="stagger-1" />
+        <KpiCard label="Lab Pending"    target={pendingLabResults.filter(r => r.flag !== "N").length} sub={`${criticalLabs.length} critical`} icon={FlaskConical} href="/diagnostics"  color="var(--critical-fg)"     staggerClass="stagger-2" />
+        <KpiCard label="Active IPD"     target={activeAdmissions} sub="patients admitted"              icon={BedDouble}    href="/ipd"          color="var(--info-fg)"         staggerClass="stagger-3" />
+        <KpiCard label="Total Patients" target={totalPatients}    sub="registered"                    icon={Users}        href="/patients"     color="var(--action-primary)"  staggerClass="stagger-4" />
+        <KpiCard label="Pending Bills"  target={pendingBills}     sub="unpaid / overdue"               icon={Receipt}      href="/billing"      color="var(--warning-fg)"      staggerClass="stagger-5" />
+        <KpiCard label="Active Orders"  target={pendingOrders}    sub="awaiting action"                icon={FlaskConical} href="/orders"       color="var(--text-secondary)"  staggerClass="stagger-6" />
       </div>
 
       {/* ══ PRIORITY 1 — CRITICAL LAB ALERTS ══════════════════════════
           Doctor MUST see this first. Someone's potassium is 2.8.          */}
       {criticalLabs.length > 0 && !alertDismissed && (
-        <div className="rounded-xl border-2 border-[var(--critical-fg)] bg-[var(--critical-bg)] p-4">
+        <div className="rounded-xl border-2 border-[var(--critical-fg)] bg-[var(--critical-bg)] p-4 animate-scale-in stagger-7">
           <div className="flex items-center gap-2 mb-3">
             <AlertOctagon size={18} className="text-[var(--critical-fg)]" />
             <p className="flex-1 text-sm font-semibold text-[var(--critical-fg)]">

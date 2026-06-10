@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useUserStore, type SeedUser, type UserRole, type UserStatus } from "@/store/useUserStore";
 import { ROLE_LABELS, DEPARTMENTS } from "@/data/seedUsers";
+import { useToast } from "@/components/ui/ToastProvider";
 import {
   Users, Search, SlidersHorizontal, X, RotateCcw,
   UserPlus, ShieldCheck, Stethoscope, HeartPulse,
@@ -126,6 +127,7 @@ interface UserFormDrawerProps {
 function UserFormDrawer({ open, onClose, editing }: UserFormDrawerProps) {
   const store = useUserStore();
   const isEdit = !!editing;
+  const { toast } = useToast();
 
   const [name, setName] = useState(editing?.name ?? "");
   const [email, setEmail] = useState(editing?.email ?? "");
@@ -157,9 +159,11 @@ function UserFormDrawer({ open, onClose, editing }: UserFormDrawerProps) {
     if (isEdit && editing) {
       store.updateUser(editing.id, { name, role, department: dept || undefined, phone: phone || undefined, qualification: qualification || undefined });
       if (password.trim()) store.changePassword(editing.id, password);
+      toast(`${name} updated successfully`, "success");
     } else {
       const res = store.createUser({ name, email, password, role, department: dept || undefined, phone: phone || undefined, qualification: qualification || undefined });
       if (!res.ok) { setError(res.message); return; }
+      toast(`${name} added as ${ROLE_LABELS[role]}`, "success");
     }
     onClose();
     resetToEditing();

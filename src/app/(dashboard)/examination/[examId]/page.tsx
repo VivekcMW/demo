@@ -4,6 +4,7 @@ import { use, useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useExaminationStore } from "@/store/useExaminationStore";
 import { usePharmacyStore } from "@/store/usePharmacyStore";
+import { useToast } from "@/components/ui/ToastProvider";
 import {
   type SystemicFinding, type SystemName,
   type Rx, type Diagnosis,
@@ -199,6 +200,7 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
   const { examId } = use(params);
   const store = useExaminationStore();
   const exam  = store.getById(examId);
+  const { toast } = useToast();
 
   // Local draft state
   const [chiefComplaint, setCC]   = useState(exam?.subjective.chiefComplaint   ?? "");
@@ -222,6 +224,20 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
   const [signed,      setSigned] = useState(false);
   const [rxSent,      setRxSent] = useState(false);
   const [activeSection, setActiveSection] = useState("subjective");
+
+  // Ctrl+S / Cmd+S keyboard shortcut to save
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s" && !isReadOnly) {
+        e.preventDefault();
+        handleSaveRef.current?.();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const handleSaveRef = { current: null as (() => void) | null };
 
   // Sync if store updates externally
   useEffect(() => {
@@ -309,13 +325,16 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
   function handleSave() {
     store.saveExamination(examId, buildPayload());
     setSaved(true);
+    toast("Examination draft saved", "success");
     setTimeout(() => setSaved(false), 2000);
   }
+  handleSaveRef.current = handleSave;
 
   function handleSignOff() {
     store.saveExamination(examId, buildPayload());
     store.signOff(examId, exam?.doctor ?? "Unknown");
     setSigned(true);
+    toast("Examination signed off successfully", "success");
   }
 
   function updateSysFinding(idx: number, sf: SystemicFinding) {
@@ -356,9 +375,20 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
               <>
                 <button
                   onClick={handleSave}
-                  className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${saved ? "border-green-600 bg-green-50 text-green-700" : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"}`}
+                  className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                    saved
+                      ? "border-[var(--normal-fg)] bg-[var(--normal-bg)] text-[var(--normal-fg)] scale-[1.03]"
+                      : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
+                  }`}
                 >
-                  <Save size={13} /> {saved ? "Saved!" : "Save Draft"}
+                  {saved ? (
+                    <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5" stroke="currentColor" strokeWidth={2.5}>
+                      <polyline points="2 7 6 11 12 3" className="animate-check" />
+                    </svg>
+                  ) : (
+                    <Save size={13} />
+                  )}
+                  {saved ? "Saved!" : <span>Save Draft <kbd className="ml-1 rounded border border-[var(--border-default)] px-1 py-0.5 text-[10px] font-mono opacity-50">⌘S</kbd></span>}
                 </button>
                 <button
                   onClick={handleSignOff}
@@ -717,8 +747,20 @@ export default function ExaminationEditorPage({ params }: { params: Promise<{ ex
           {/* Bottom action row */}
           {!isReadOnly && (
             <div className="flex justify-end gap-3">
-              <button onClick={handleSave} className="flex items-center gap-2 rounded-xl border border-[var(--border-default)] px-5 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
-                <Save size={14} /> Save Draft
+              <button
+                onClick={handleSave}
+                className={`flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all duration-200 ${
+                  saved
+                    ? "border-[var(--normal-fg)] bg-[var(--normal-bg)] text-[var(--normal-fg)]"
+                    : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
+                }`}
+              >
+                {saved ? (
+                  <svg viewBox="0 0 14 14" fill="none" className="h-3.5 w-3.5" stroke="currentColor" strokeWidth={2.5}>
+                    <polyline points="2 7 6 11 12 3" className="animate-check" />
+                  </svg>
+                ) : <Save size={14} />}
+                {saved ? "Saved!" : "Save Draft"}
               </button>
               <button onClick={handleSignOff} className="flex items-center gap-2 rounded-xl bg-[var(--action-primary)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--action-primary-hover)]">
                 <ShieldCheck size={14} /> Complete &amp; Sign Off

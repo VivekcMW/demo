@@ -377,11 +377,12 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="divide-y divide-[var(--border-default)]">
-            {filtered.map((o) => (
+            {filtered.map((o, idx) => (
               <Link
                 key={o.id}
                 href={`/orders/${o.id}`}
-                className="group flex flex-col gap-2 px-5 py-4 hover:bg-[var(--surface-sunken)] transition-colors lg:grid lg:grid-cols-[1fr_1.5fr_1fr_2fr_1fr_1.5fr_1fr_1fr_auto] lg:items-center lg:gap-3"
+                style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                className="group flex flex-col gap-2 px-5 py-4 hover:bg-[var(--surface-sunken)] transition-colors lg:grid lg:grid-cols-[1fr_1.5fr_1fr_2fr_1fr_1.5fr_1fr_1fr_auto] lg:items-center lg:gap-3 animate-slide-up"
               >
                 {/* Order ID */}
                 <span className="font-mono text-xs font-semibold text-[var(--action-primary)]">{o.id}</span>

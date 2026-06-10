@@ -106,14 +106,15 @@ export function Navbar() {
           >
             <Bell size={18} />
             {unread > 0 && (
-              <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--action-primary)] px-1 text-[10px] font-semibold text-white">
+              <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--action-primary)] px-1 text-[10px] font-semibold text-white animate-scale-in">
                 {unread}
+                <span className="absolute inset-0 rounded-full bg-[var(--action-primary)] animate-ping opacity-60" />
               </span>
             )}
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] shadow-md">
+            <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] shadow-md animate-scale-in">
               <p className="border-b border-[var(--border-default)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)]">
                 Notifications
               </p>

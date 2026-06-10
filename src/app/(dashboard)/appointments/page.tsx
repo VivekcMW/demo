@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useToast } from "@/components/ui/ToastProvider";
 import {
   CalendarDays, Clock, UserX, Plus, ChevronLeft, ChevronRight,
   Video, Stethoscope, RefreshCw, CheckCircle2, XCircle, AlertCircle, FileText,
@@ -8,7 +9,6 @@ import {
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { NewAppointmentDrawer } from "@/components/appointments/NewAppointmentDrawer";
 import { NewExaminationDrawer } from "@/components/examination/NewExaminationDrawer";
-import { AppointmentToast } from "@/components/appointments/AppointmentToast";
 import {
   type Appointment,
   type ApptStatus,
@@ -92,13 +92,10 @@ export default function AppointmentsPage() {
   const [tab,          setTab]          = useState<Tab>("today");
   const [selectedDate, setSelectedDate] = useState("2026-06-10");
   const [drawerOpen,   setDrawerOpen]   = useState(false);
-  const [toast,        setToast]        = useState({ show: false, message: "" });
   const [confirmCancel,setConfirmCancel]= useState<string | null>(null);
-
-  const handleSuccess  = useCallback((msg: string) => setToast({ show: true, message: msg }), []);
+  const { toast } = useToast();
+  const handleSuccess  = useCallback((msg: string) => toast(msg, "success"), [toast]);
   const [examPatient, setExamPatient] = useState<string | null>(null);
-
-  const handleToastClose = useCallback(() => setToast({ show: false, message: "" }), []);
 
   const todayAppts    = appointments.filter((a) => a.date === "2026-06-10" && a.patient !== "Lunch Break");
   const upcomingAppts = appointments.filter((a) => a.date > "2026-06-10");
@@ -328,7 +325,6 @@ export default function AppointmentsPage() {
       )}
 
       <NewAppointmentDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)} onSuccess={handleSuccess} preselectedDate={selectedDate}/>
-      <AppointmentToast show={toast.show} message={toast.message} onClose={handleToastClose}/>
       {examPatient !== null && (
         <NewExaminationDrawer
           open

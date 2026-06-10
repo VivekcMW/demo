@@ -4,6 +4,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePharmacyStore, type RxStatus, type RxItem } from "@/store/usePharmacyStore";
+import { useToast } from "@/components/ui/ToastProvider";
 import {
   ChevronLeft, Pill, ShieldAlert, ShieldCheck, CheckCircle2,
   AlertCircle, PackageCheck, Package, X, Loader2, User,
@@ -155,6 +156,7 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
   const [holdOpen,    setHoldOpen]   = useState(false);
   const [cancelOpen,  setCancelOpen] = useState(false);
   const [dispensing,  setDispensing] = useState(false);
+  const { toast } = useToast();
 
   if (!rx) {
     return (
@@ -174,6 +176,7 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
 
   function handleVerify() {
     store.verifyRx(rx?.id ?? "", "Pharm. User");
+    toast("Prescription verified", "success");
   }
 
   function handleDispenseAll() {
@@ -181,11 +184,13 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
     setTimeout(() => {
       store.dispenseAll(rx?.id ?? "", "Pharm. User");
       setDispensing(false);
+      toast("All items dispensed successfully", "success");
     }, 500);
   }
 
   function handleItemDispense(itemId: string, qty: number) {
     store.dispenseItem(rx?.id ?? "", itemId, qty, "Pharm. User");
+    toast("Item dispensed", "success");
   }
 
   const grandTotal = rx.items.reduce((s, i) => s + i.qty * i.unitPrice, 0);
