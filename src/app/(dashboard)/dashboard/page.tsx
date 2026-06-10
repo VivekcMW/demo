@@ -5,6 +5,7 @@ import {
   Activity, FlaskConical,
   Clock, AlertTriangle, CheckCircle2, Info,
   AlertOctagon, ChevronRight, CalendarClock, X,
+  Users, BedDouble, Receipt,
 } from "lucide-react";
 import { OpdTrendChart } from "@/components/charts/OpdTrendChart";
 import { CaseTypeDonut } from "@/components/charts/CaseTypeDonut";
@@ -14,6 +15,13 @@ import {
   opdQueue, pendingLabResults, upcomingAppointments, chronicAlerts,
   type LabFlag,
 } from "@/data/seedDashboard";
+import { useAuthStore } from "@/store/useAuthStore";
+import { usePatientStore } from "@/store/usePatientStore";
+import { useAppointmentStore } from "@/store/useAppointmentStore";
+import { useIPDStore } from "@/store/useIPDStore";
+import { useBillingStore } from "@/store/useBillingStore";
+import { useOrderStore } from "@/store/useOrderStore";
+import Link from "next/link";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 function StatusChip({ status }: { status: string }) {
@@ -66,8 +74,33 @@ function ApptTypeBadge({ type }: { type: string }) {
 // ── critical labs (HH/LL only) ───────────────────────────────────────────────
 const criticalLabs = pendingLabResults.filter((r) => r.flag === "HH" || r.flag === "LL");
 
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function DashboardPage() {
   const [alertDismissed, setAlertDismissed] = useState(false);
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const totalPatients = usePatientStore((s) => s.patients.length);
+  const appointments  = useAppointmentStore((s) => s.appointments);
+  const activeAdmissions = useIPDStore((s) => s.admissions.filter((a) => a.status === "Active").length);
+  const pendingBills = useBillingStore((s) => s.bills.filter((b) => b.status === "Pending" || b.status === "Overdue").length);
+  const pendingOrders = useOrderStore((s) => s.orders.filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const todayAppts = appointments.filter((a) => a.date === today);
+  const completedToday = todayAppts.filter((a) => a.status === "Completed").length;
+  const queueLeft = todayAppts.filter((a) => a.status === "Scheduled" || a.status === "In Progress").length;
+
+  const userName = currentUser?.name ?? "Doctor";
+  const userDept = currentUser?.department ?? "OPD";
+
+  const todayFormatted = new Date().toLocaleDateString("en-IN", {
+    weekday: "long", day: "numeric", month: "short", year: "numeric",
+  });
 
   return (
     <div className="space-y-5 pb-8">
@@ -75,8 +108,8 @@ export default function DashboardPage() {
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Good morning, Dr. Sharma</h1>
-          <p className="text-sm text-[var(--text-secondary)]">Tuesday, 10 Jun 2026 · General Medicine OPD</p>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">{greeting()}, {userName}</h1>
+          <p className="text-sm text-[var(--text-secondary)]">{todayFormatted} · {userDept}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--normal-bg)] px-3 py-1 text-xs font-medium text-[var(--normal-fg)]">
@@ -87,20 +120,23 @@ export default function DashboardPage() {
       </div>
 
       {/* ── KPI snapshot ───────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {[
-          { label: "Seen today",  value: "62",     sub: "3 left in queue",         icon: Activity,     color: "var(--normal-fg)" },
-          { label: "Avg wait",    value: "18 min", sub: "↑ 3 min vs yesterday",     icon: Clock,        color: "var(--warning-fg)" },
-          { label: "Lab pending", value: "5",      sub: "2 critical · 2 abnormal", icon: FlaskConical, color: "var(--critical-fg)" },
+          { label: "Seen Today",     value: String(completedToday), sub: `${queueLeft} left in queue`,    icon: Activity,     href: "/appointments", color: "var(--normal-fg)" },
+          { label: "Lab Pending",    value: String(pendingLabResults.filter(r => r.flag !== "N").length), sub: `${criticalLabs.length} critical`,            icon: FlaskConical, href: "/diagnostics", color: "var(--critical-fg)" },
+          { label: "Active IPD",     value: String(activeAdmissions), sub: "patients admitted",           icon: BedDouble,    href: "/ipd",          color: "var(--info-fg)" },
+          { label: "Total Patients", value: String(totalPatients),    sub: "registered",                  icon: Users,        href: "/patients",     color: "var(--action-primary)" },
+          { label: "Pending Bills",  value: String(pendingBills),     sub: "unpaid / overdue",             icon: Receipt,      href: "/billing",      color: "var(--warning-fg)" },
+          { label: "Active Orders",  value: String(pendingOrders),    sub: "awaiting action",              icon: FlaskConical, href: "/orders",       color: "var(--text-secondary)" },
         ].map((c) => (
-          <div key={c.label} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
+          <Link key={c.label} href={c.href} className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors">
             <div className="flex items-center justify-between">
               <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-secondary)]">{c.label}</p>
               <c.icon size={16} style={{ color: c.color }} />
             </div>
             <p className="mt-3 text-2xl font-semibold tabular-nums text-[var(--text-primary)]">{c.value}</p>
             <p className="mt-0.5 text-xs text-[var(--text-secondary)]">{c.sub}</p>
-          </div>
+          </Link>
         ))}
       </div>
 

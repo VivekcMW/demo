@@ -87,6 +87,7 @@ type Tab = "today" | "upcoming" | "all";
 export default function AppointmentsPage() {
   const appointments = useAppointmentStore((s) => s.appointments);
   const cancelAppt   = useAppointmentStore((s) => s.cancelAppointment);
+  const updateStatus = useAppointmentStore((s) => s.updateStatus);
 
   const [tab,          setTab]          = useState<Tab>("today");
   const [selectedDate, setSelectedDate] = useState("2026-06-10");
@@ -182,6 +183,22 @@ export default function AppointmentsPage() {
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       <StatusChip status={appt.status}/>
+                      {appt.status==="Scheduled"&&(
+                        <button
+                          onClick={() => updateStatus(appt.id, "In Progress")}
+                          className="hidden sm:inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs text-[var(--warning-fg)] border border-[var(--warning-fg)] hover:bg-[var(--warning-bg)] transition-colors"
+                        >
+                          Start
+                        </button>
+                      )}
+                      {appt.status==="In Progress"&&(
+                        <button
+                          onClick={() => updateStatus(appt.id, "Completed")}
+                          className="hidden sm:inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs text-[var(--normal-fg)] border border-[var(--normal-fg)] hover:bg-[var(--normal-bg)] transition-colors"
+                        >
+                          Done
+                        </button>
+                      )}
                       {(appt.status==="Scheduled"||appt.status==="In Progress")&&(
                         <button
                           onClick={() => setExamPatient(appt.patient)}

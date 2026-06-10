@@ -86,6 +86,19 @@ export const useExaminationStore = create<ExaminationState>((set, get) => ({
         }
       ),
     }));
+    // Sync vitals to patient record so the clinical sidebar stays current
+    const exam = get().examinations.find((e) => e.id === id);
+    const v = data.objective?.vitals;
+    if (exam && v && Object.keys(v).some((k) => k !== "recordedAt" && v[k as keyof typeof v] != null)) {
+      try {
+        // Dynamic import to avoid circular dependency — patient store is in a sibling file
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { usePatientStore } = require("./usePatientStore");
+        usePatientStore.getState().updatePatient(exam.patientId, {
+          vitals: { ...v, recordedAt: v.recordedAt ?? new Date().toISOString().slice(0, 10) },
+        });
+      } catch { /* ignore if store not available */ }
+    }
   },
 
   completeExamination(id) {

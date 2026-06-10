@@ -11,6 +11,9 @@ import { useOrderStore } from "@/store/useOrderStore";
 import { NewOrderDrawer } from "@/components/orders/NewOrderDrawer";
 import { NewExaminationDrawer } from "@/components/examination/NewExaminationDrawer";
 import { useExaminationStore } from "@/store/useExaminationStore";
+import { useIPDStore } from "@/store/useIPDStore";
+import { useBillingStore } from "@/store/useBillingStore";
+import { usePharmacyStore } from "@/store/usePharmacyStore";
 import type { OrderStatus, OrderType } from "@/data/seedOrders";
 import {
   ArrowLeft, ShieldAlert, HeartPulse, FlaskConical, Pill,
@@ -18,7 +21,7 @@ import {
   ChevronDown, ChevronUp, Building2, Calendar, Activity,
   Phone, User, Thermometer, Wind, Weight, Ruler,
   ClipboardList, ScanLine, UserCheck, Stethoscope, UtensilsCrossed, Plus, ChevronRight,
-  ShieldCheck, PenLine,
+  ShieldCheck, PenLine, BedDouble, Receipt, Syringe,
 } from "lucide-react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -637,6 +640,142 @@ function OrdersTab({ patientId, patientName }: { patientId: string; patientName:
   );
 }
 
+// ── Tab: IPD History ──────────────────────────────────────────────────────────
+
+import type { Admission } from "@/data/seedAdmissions";
+import type { Bill } from "@/data/seedBills";
+import type { PrescriptionRx } from "@/data/seedPharmacy";
+
+function IPDTab({ admissions }: { admissions: Admission[] }) {
+  const sorted = [...admissions].sort((a, b) => b.admittedAt.localeCompare(a.admittedAt));
+  const STATUS_CLS: Record<string, string> = {
+    Active:     "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+    Discharged: "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+    Planned:    "bg-[var(--info-bg)] text-[var(--info-fg)]",
+    Transferred:"bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  };
+  if (sorted.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <BedDouble size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
+      <p className="font-medium text-[var(--text-primary)]">No IPD admissions on record</p>
+    </div>
+  );
+  return (
+    <div className="space-y-3">
+      {sorted.map((a) => (
+        <Link key={a.id} href={`/ipd/${a.id}`} className="group flex items-start gap-4 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--info-bg)]">
+            <BedDouble size={16} className="text-[var(--info-fg)]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs font-semibold text-[var(--action-primary)]">{a.id}</span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLS[a.status] ?? ""}`}>{a.status}</span>
+            </div>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">Ward: {a.ward} · Bed: {a.bed}</p>
+            <p className="text-xs text-[var(--text-secondary)]">Admitted: {fmtDate(a.admittedAt)}{a.status === "Discharged" ? ` · Exp. DC: ${fmtDate(a.expectedDischarge)}` : ""}</p>
+            <p className="text-xs text-[var(--text-secondary)]">{a.attendingDoctor} · {a.admitDiagnosis}</p>
+          </div>
+          <ChevronRight size={13} className="mt-1 shrink-0 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// ── Tab: Billing ──────────────────────────────────────────────────────────────
+
+function BillingTab({ bills }: { bills: Bill[] }) {
+  const sorted = [...bills].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const STATUS_CLS: Record<string, string> = {
+    Draft:            "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+    Pending:          "bg-[var(--info-bg)] text-[var(--info-fg)]",
+    "Partially Paid": "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+    Paid:             "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+    Overdue:          "bg-[var(--critical-bg)] text-[var(--critical-fg)]",
+    Cancelled:        "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+    Waived:           "bg-[var(--action-subtle)] text-[var(--action-primary)]",
+  };
+  const totalDue = bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0);
+  if (sorted.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <Receipt size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
+      <p className="font-medium text-[var(--text-primary)]">No billing records</p>
+    </div>
+  );
+  return (
+    <div className="space-y-3">
+      {totalDue > 0 && (
+        <div className="rounded-xl border border-[var(--warning-fg)]/40 bg-[var(--warning-bg)] px-4 py-3 text-sm">
+          <span className="font-semibold text-[var(--warning-fg)]">Outstanding balance: ₹{totalDue.toLocaleString("en-IN")}</span>
+        </div>
+      )}
+      {sorted.map((b) => (
+        <Link key={b.id} href={`/billing/${b.id}`} className="group flex items-start gap-4 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--action-subtle)]">
+            <Receipt size={16} className="text-[var(--action-primary)]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs font-semibold text-[var(--action-primary)]">{b.id}</span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLS[b.status] ?? ""}`}>{b.status}</span>
+              <span className="text-xs text-[var(--text-secondary)]">{b.category}</span>
+            </div>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{fmtDate(b.createdAt)}</p>
+            <div className="flex items-center gap-3 mt-1">
+              <span className="text-sm font-semibold text-[var(--text-primary)]">₹{b.grandTotal.toLocaleString("en-IN")}</span>
+              {b.amountDue > 0 && <span className="text-xs text-[var(--critical-fg)]">Due: ₹{b.amountDue.toLocaleString("en-IN")}</span>}
+            </div>
+          </div>
+          <ChevronRight size={13} className="mt-1 shrink-0 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// ── Tab: Pharmacy ─────────────────────────────────────────────────────────────
+
+function PharmacyTab({ rxHistory }: { rxHistory: PrescriptionRx[] }) {
+  const sorted = [...rxHistory].sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
+  const STATUS_CLS: Record<string, string> = {
+    Pending:             "bg-[var(--info-bg)] text-[var(--info-fg)]",
+    Verified:            "bg-[var(--action-subtle)] text-[var(--action-primary)]",
+    Dispensing:          "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+    Dispensed:           "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+    "Partially Dispensed":"bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+    "On Hold":           "bg-[var(--critical-bg)] text-[var(--critical-fg)]",
+    Cancelled:           "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  };
+  if (sorted.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <Syringe size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
+      <p className="font-medium text-[var(--text-primary)]">No pharmacy records</p>
+    </div>
+  );
+  return (
+    <div className="space-y-3">
+      {sorted.map((rx) => (
+        <Link key={rx.id} href={`/pharmacy/${rx.id}`} className="group flex items-start gap-4 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--normal-bg)]">
+            <Pill size={16} className="text-[var(--normal-fg)]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs font-semibold text-[var(--action-primary)]">{rx.id}</span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_CLS[rx.status] ?? ""}`}>{rx.status}</span>
+              <span className="text-xs text-[var(--text-secondary)]">{rx.source}</span>
+            </div>
+            <p className="mt-1 text-xs text-[var(--text-secondary)]">{rx.items.length} drug{rx.items.length !== 1 ? "s" : ""} · {rx.prescribedBy}</p>
+            <p className="text-xs text-[var(--text-secondary)]">{fmtDate(rx.receivedAt)}</p>
+          </div>
+          <ChevronRight size={13} className="mt-1 shrink-0 text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function DemographicsTab({ patient }: { patient: Patient }) {
   return (
     <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4">
@@ -673,7 +812,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const patient = usePatientStore((s) => s.getById(id));
   const router  = useRouter();
-  const [activeTab, setActiveTab] = useState<"demographics" | "visits" | "labs" | "meds" | "docs" | "orders" | "examinations">("visits");
+  const [activeTab, setActiveTab] = useState<"demographics" | "visits" | "labs" | "meds" | "docs" | "orders" | "examinations" | "ipd" | "billing" | "pharmacy">("visits");
 
   if (!patient) {
     return (
@@ -699,8 +838,14 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const patientPendingOrders = useOrderStore((s) => s.getByPatient(patient.id).filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length);
   const examCount = useExaminationStore((s) => s.getByPatient(patient.id).length);
   const examInProgress = useExaminationStore((s) => s.getByPatient(patient.id).filter((e) => e.status === "In Progress").length);
+  const ipdAdmissions = useIPDStore((s) => s.getByPatient(patient.id));
+  const activeAdmission = ipdAdmissions.find((a) => a.status === "Active");
+  const bills = useBillingStore((s) => s.getByPatient(patient.id));
+  const pendingBillTotal = bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0);
+  const rxHistory = usePharmacyStore((s) => s.getByPatient(patient.id));
+  const activeRx = rxHistory.filter((r) => r.status === "Pending" || r.status === "Verified" || r.status === "Dispensing").length;
 
-  type Tab = "demographics" | "visits" | "labs" | "meds" | "docs" | "orders" | "examinations";
+  type Tab = "demographics" | "visits" | "labs" | "meds" | "examinations" | "orders" | "ipd" | "billing" | "pharmacy" | "docs";
   type TabDef = { id: Tab; label: string; icon: React.ReactNode; badge?: number; critical?: boolean };
   const TABS: TabDef[] = [
     { id: "demographics",  label: "Info",         icon: <User size={13} /> },
@@ -709,6 +854,9 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
     { id: "meds",          label: "Medications",  icon: <Pill size={13} />,          badge: activeMedCount > 0 ? activeMedCount : undefined },
     { id: "examinations",  label: "Examinations", icon: <FileText size={13} />,      badge: examInProgress > 0 ? examInProgress : examCount > 0 ? examCount : undefined },
     { id: "orders",        label: "Orders",       icon: <ClipboardList size={13} />, badge: patientPendingOrders > 0 ? patientPendingOrders : patientOrderCount > 0 ? patientOrderCount : undefined },
+    { id: "ipd",           label: "IPD",          icon: <BedDouble size={13} />,     badge: activeAdmission ? 1 : ipdAdmissions.length > 0 ? ipdAdmissions.length : undefined, critical: !!activeAdmission },
+    { id: "billing",       label: "Billing",      icon: <Receipt size={13} />,       badge: bills.length > 0 ? bills.length : undefined, critical: pendingBillTotal > 0 },
+    { id: "pharmacy",      label: "Pharmacy",     icon: <Syringe size={13} />,       badge: activeRx > 0 ? activeRx : rxHistory.length > 0 ? rxHistory.length : undefined },
     { id: "docs",          label: "Documents",    icon: <FolderOpen size={13} /> },
   ];
 
@@ -805,6 +953,9 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === "meds"          && <MedsTab medications={patient.medications} />}
           {activeTab === "examinations"  && <ExaminationsTab patientId={patient.id} patientName={patient.name} />}
           {activeTab === "orders"        && <OrdersTab patientId={patient.id} patientName={patient.name} />}
+          {activeTab === "ipd"           && <IPDTab admissions={ipdAdmissions} />}
+          {activeTab === "billing"       && <BillingTab bills={bills} />}
+          {activeTab === "pharmacy"      && <PharmacyTab rxHistory={rxHistory} />}
           {activeTab === "docs"          && <DocsTab documents={patient.documents} />}
         </div>
 
