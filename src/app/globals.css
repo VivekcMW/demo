@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface-page: #f8fafc;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-link: #0f766e;
+  --action-primary: #0d9488;
+  --action-primary-hover: #0f766e;
+  --action-subtle: #f0fdfa;
+  --border-default: #e2e8f0;
+  --focus-ring: #14b8a6;
+  --critical-bg: #fef2f2;
+  --critical-fg: #b91c1c;
+  --warning-bg: #fffbeb;
+  --warning-fg: #92400e;
+  --normal-bg: #f0fdf4;
+  --normal-fg: #15803d;
+  --info-bg: #f0f9ff;
+  --info-fg: #0369a1;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--surface-page);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-data);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html[data-theme="dark"] {
+  --surface-page: #0b1220;
+  --surface-raised: #1e293b;
+  --surface-sunken: #0f172a;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-link: #5eead4;
+  --action-primary: #2dd4bf;
+  --action-primary-hover: #5eead4;
+  --action-subtle: #134e4a;
+  --border-default: #334155;
+  --focus-ring: #5eead4;
+  --critical-bg: #3a1d1d;
+  --critical-fg: #fecaca;
+  --warning-bg: #3a2e14;
+  --warning-fg: #fde68a;
+  --normal-bg: #16321f;
+  --normal-fg: #bbf7d0;
+  --info-bg: #14303f;
+  --info-fg: #bae6fd;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  height: 100%;
+}
+
+* {
+  border-color: var(--border-default);
+}
+
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
