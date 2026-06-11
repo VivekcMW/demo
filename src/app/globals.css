@@ -50,7 +50,6 @@ html[data-theme="dark"] {
   --info-bg: #14303f;
   --info-fg: #bae6fd;
 }
-
 body {
   background: var(--surface-page);
   color: var(--text-primary);

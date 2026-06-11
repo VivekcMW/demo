@@ -18,6 +18,20 @@ type AuthStore = {
   logout: () => void;
 };
 
+function mergeUsersWithSeeds(persistedUsers?: SeedUser[]): SeedUser[] {
+  const byEmail = new Map<string, SeedUser>();
+
+  for (const user of seedUsers) {
+    byEmail.set(user.email.toLowerCase(), user);
+  }
+
+  for (const user of persistedUsers ?? []) {
+    byEmail.set(user.email.toLowerCase(), user);
+  }
+
+  return Array.from(byEmail.values());
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -60,6 +74,21 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "aarogya-auth-store",
       partialize: (state) => ({ users: state.users, currentUser: state.currentUser }),
+      merge: (persistedState, currentState) => {
+        const typedPersisted = (persistedState ?? {}) as Partial<AuthStore>;
+        const users = mergeUsersWithSeeds(typedPersisted.users);
+
+        const currentUser = typedPersisted.currentUser
+          ? users.find((u) => u.email.toLowerCase() === typedPersisted.currentUser!.email.toLowerCase()) ?? typedPersisted.currentUser
+          : null;
+
+        return {
+          ...currentState,
+          ...typedPersisted,
+          users,
+          currentUser,
+        };
+      },
     },
   ),
 );

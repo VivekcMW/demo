@@ -91,10 +91,11 @@ interface IPDState {
   bedMap: BedInfo[];
 
   // Actions
-  admitPatient:     (payload: AdmitPayload) => Admission;
-  dischargePatient: (id: string, summary: string, by: string) => void;
-  transferBed:      (id: string, newWard: string, newBed: string, by: string) => void;
-  updateNotes:      (id: string, notes: string) => void;
+  admitPatient:       (payload: AdmitPayload) => Admission;
+  confirmAdmission:   (id: string) => void;
+  dischargePatient:   (id: string, summary: string, by: string) => void;
+  transferBed:        (id: string, newWard: string, newBed: string, by: string) => void;
+  updateNotes:        (id: string, notes: string) => void;
 
   // Selectors
   getById:         (id: string) => Admission | undefined;
@@ -131,6 +132,23 @@ export const useIPDStore = create<IPDState>((set, get) => ({
       return { admissions, bedMap: buildBedMap(admissions) };
     });
     return admission;
+  },
+
+  confirmAdmission(id) {
+    const now = new Date().toISOString().slice(0, 19);
+    set((s) => {
+      const admissions = s.admissions.map((a) =>
+        a.id !== id ? a : {
+          ...a,
+          status: "Active" as AdmissionStatus,
+          statusHistory: [
+            ...a.statusHistory,
+            { at: now, by: "Reception", status: "Active" as AdmissionStatus, note: "Admission confirmed at reception" },
+          ],
+        }
+      );
+      return { admissions, bedMap: buildBedMap(admissions) };
+    });
   },
 
   dischargePatient(id, summary, by) {

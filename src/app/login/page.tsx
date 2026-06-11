@@ -25,7 +25,9 @@ export default function LoginPage() {
     }
 
     setError("");
-    router.push("/dashboard");
+    const user = useAuthStore.getState().currentUser;
+    const dest = (user as { role?: string } | null)?.role === "receptionist" ? "/reception" : "/dashboard";
+    router.push(dest);
   };
 
   return (
@@ -46,8 +48,18 @@ export default function LoginPage() {
 
             <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm text-[var(--text-secondary)]">
               <p className="font-medium text-[var(--text-primary)]">Seed login</p>
-              <p className="mt-2">Email: doctor@aarogya.app</p>
-              <p>Password: Doctor@123</p>
+              <div className="mt-3 space-y-3">
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Doctor</p>
+                  <p className="mt-1">Email: doctor@aarogya.app</p>
+                  <p>Password: Doctor@123</p>
+                </div>
+                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Receptionist</p>
+                  <p className="mt-1">Email: nalini.das@aarogya.app</p>
+                  <p>Password: Recept@123</p>
+                </div>
+              </div>
             </div>
           </div>
 
