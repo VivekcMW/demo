@@ -1,3 +1,5 @@
+"use client";
+
 import { Container } from "../ui/Container";
 import { SectionHeader } from "../ui/SectionHeader";
 import {
@@ -8,54 +10,51 @@ import {
   Building2,
   CreditCard,
 } from "lucide-react";
-
-const features = [
-  {
-    icon: ShieldCheck,
-    title: "ABDM / ABHA ready",
-    description:
-      "Create and verify ABHA at registration. Push records to the patient's PHR with consent. Full Milestone-3 compliance.",
-  },
-  {
-    icon: Languages,
-    title: "9 Indian languages",
-    description:
-      "Patient-facing screens, prints, and consent forms in Hindi, Tamil, Telugu, Bengali, Kannada, Malayalam, Gujarati, Punjabi, and Odia.",
-  },
-  {
-    icon: Receipt,
-    title: "GST billing",
-    description:
-      "Bill in lakh-crore format with automatic GST breakup. Generate e-invoices and file-ready reports.",
-  },
-  {
-    icon: CreditCard,
-    title: "TPA & insurance",
-    description:
-      "Track every TPA query from submission to settlement. Pre-auth workflows and rejection analytics.",
-  },
-  {
-    icon: FileCheck,
-    title: "NABH audit trails",
-    description:
-      "Export NABH 6th edition audit trails in one click. Continuous readiness, not last-minute scrambles.",
-  },
-  {
-    icon: Building2,
-    title: "DPDP compliance",
-    description:
-      "Built-in consent management, data access controls, and audit logs for Digital Personal Data Protection Act.",
-  },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function IndiaNativeSection() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: ShieldCheck,
+      title: t("indiaNative.abdmTitle"),
+      description: t("indiaNative.abdmDesc"),
+    },
+    {
+      icon: Languages,
+      title: t("indiaNative.languagesTitle"),
+      description: t("indiaNative.languagesDesc"),
+    },
+    {
+      icon: Receipt,
+      title: t("indiaNative.gstTitle"),
+      description: t("indiaNative.gstDesc"),
+    },
+    {
+      icon: CreditCard,
+      title: t("indiaNative.tpaTitle"),
+      description: t("indiaNative.tpaDesc"),
+    },
+    {
+      icon: FileCheck,
+      title: t("indiaNative.nabhTitle"),
+      description: t("indiaNative.nabhDesc"),
+    },
+    {
+      icon: Building2,
+      title: t("indiaNative.dpdpTitle"),
+      description: t("indiaNative.dpdpDesc"),
+    },
+  ];
+
   return (
     <section className="marketing-section">
       <Container>
         <SectionHeader
-          eyebrow="Built for India"
-          title="ABDM, ABHA, GST, TPA, NABH — built in, not bolted on."
-          subtitle="Every compliance requirement and Indian healthcare workflow is native to the system, not a third-party integration."
+          eyebrow={t("indiaNative.eyebrow")}
+          title={t("indiaNative.title")}
+          subtitle={t("indiaNative.subtitle")}
         />
 
         <div className="mt-8 sm:mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

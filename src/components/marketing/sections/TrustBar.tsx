@@ -5,42 +5,42 @@ import { ShieldCheck, Languages, Building2, FileCheck, Scale, CheckCircle2 } fro
 import { ScrollReveal } from "@/hooks/useScrollReveal";
 import { useTranslation } from "@/hooks/useTranslation";
 
-const trustItems = [
-  {
-    icon: ShieldCheck,
-    label: "ABDM Milestone-3 certified",
-  },
-  {
-    icon: FileCheck,
-    label: "NABH 6th edition aligned",
-  },
-  {
-    icon: Scale,
-    label: "DPDP Act ready",
-  },
-  {
-    icon: Building2,
-    label: "ISO 27001",
-  },
-  {
-    icon: Languages,
-    label: "9 Indian languages",
-  },
-];
-
-const hospitalLogos = [
-  { name: "Apollo Hospitals", initials: "AH" },
-  { name: "Fortis Healthcare", initials: "FH" },
-  { name: "Max Healthcare", initials: "MH" },
-  { name: "Manipal Hospitals", initials: "MH" },
-  { name: "Aster DM Healthcare", initials: "AD" },
-  { name: "Narayana Health", initials: "NH" },
-  { name: "KIMS Hospitals", initials: "KH" },
-  { name: "Yashoda Hospitals", initials: "YH" },
-];
-
 export function TrustBar() {
   const { t } = useTranslation();
+
+  const trustItems = [
+    {
+      icon: ShieldCheck,
+      label: t("trust.badgeAbdm"),
+    },
+    {
+      icon: FileCheck,
+      label: t("trust.badgeNabh"),
+    },
+    {
+      icon: Scale,
+      label: t("trust.badgeDpdp"),
+    },
+    {
+      icon: Building2,
+      label: t("trust.badgeIso"),
+    },
+    {
+      icon: Languages,
+      label: t("trust.badgeLanguages"),
+    },
+  ];
+
+  const hospitalLogos = [
+    { name: "Apollo Hospitals", initials: "AH" },
+    { name: "Fortis Healthcare", initials: "FH" },
+    { name: "Max Healthcare", initials: "MH" },
+    { name: "Manipal Hospitals", initials: "MH" },
+    { name: "Aster DM Healthcare", initials: "AD" },
+    { name: "Narayana Health", initials: "NH" },
+    { name: "KIMS Hospitals", initials: "KH" },
+    { name: "Yashoda Hospitals", initials: "YH" },
+  ];
 
   return (
     <section className="py-4 sm:py-6 bg-[var(--surface-sunken)] border-y border-[var(--border-default)]">

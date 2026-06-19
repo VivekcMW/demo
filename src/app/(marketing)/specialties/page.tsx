@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Heart,
@@ -39,17 +40,12 @@ import {
   Users,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
-
-export const metadata: Metadata = {
-  title: "Specialties — AarogyaEHR | 42 specialty workflows",
-  description:
-    "Specialty-deep EHR workflows for 42 medical specialties. Not generic forms — actual cardiology, OBG, nephrology, oncology workflows designed with Indian specialists.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 // Specialty categories with icons
 const specialtyCategories = [
   {
-    title: "Medicine",
+    titleKey: "specialties.medicine",
     specialties: [
       { slug: "general-medicine", name: "General Medicine", icon: Stethoscope },
       { slug: "cardiology", name: "Cardiology", icon: Heart },
@@ -65,7 +61,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Surgery",
+    titleKey: "specialties.surgery",
     specialties: [
       { slug: "general-surgery", name: "General Surgery", icon: Scissors },
       { slug: "orthopaedics", name: "Orthopaedics", icon: Bone },
@@ -79,7 +75,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Women & Children",
+    titleKey: "specialties.womenChildren",
     specialties: [
       { slug: "obstetrics-gynaecology", name: "Obstetrics & Gynaecology", icon: Baby },
       { slug: "pediatrics-neonatology", name: "Pediatrics & Neonatology", icon: Baby },
@@ -89,7 +85,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Senses & ENT",
+    titleKey: "specialties.sensesEnt",
     specialties: [
       { slug: "ophthalmology", name: "Ophthalmology", icon: Eye },
       { slug: "ent", name: "ENT", icon: Ear },
@@ -97,7 +93,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Oncology & Specialised",
+    titleKey: "specialties.oncologySpecialised",
     specialties: [
       { slug: "oncology", name: "Oncology", icon: Radiation },
       { slug: "nuclear-medicine", name: "Nuclear Medicine", icon: Atom },
@@ -106,7 +102,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Critical & Emergency",
+    titleKey: "specialties.criticalEmergency",
     specialties: [
       { slug: "critical-care-icu", name: "Critical Care / ICU", icon: Monitor },
       { slug: "emergency-medicine", name: "Emergency Medicine", icon: Siren },
@@ -114,7 +110,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Mental Health & Lifestyle",
+    titleKey: "specialties.mentalHealth",
     specialties: [
       { slug: "psychiatry-mental-health", name: "Psychiatry & Mental Health", icon: Brain },
       { slug: "dermatology-cosmetology", name: "Dermatology & Cosmetology", icon: Sparkles },
@@ -122,7 +118,7 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Rehabilitation & Wellness",
+    titleKey: "specialties.rehabilitation",
     specialties: [
       { slug: "physiotherapy-rehab", name: "Physiotherapy & Rehab", icon: Dumbbell },
       { slug: "sports-medicine", name: "Sports Medicine", icon: Activity },
@@ -131,14 +127,37 @@ const specialtyCategories = [
     ],
   },
   {
-    title: "Traditional Medicine",
+    titleKey: "specialties.traditional",
     specialties: [
       { slug: "ayush", name: "AYUSH", icon: Leaf },
     ],
   },
 ];
 
+const featuredSpecialties = [
+  {
+    slug: "obstetrics-gynaecology",
+    name: "Obstetrics & Gynaecology",
+    description: "ANC tracking, fetal monitoring, labor suite, c-section documentation",
+    icon: Baby,
+  },
+  {
+    slug: "nephrology-dialysis",
+    name: "Nephrology & Dialysis",
+    description: "Dialysis scheduling, session documentation, vascular access tracking",
+    icon: Activity,
+  },
+  {
+    slug: "oncology",
+    name: "Oncology",
+    description: "Protocol management, chemo scheduling, tumor board, survival tracking",
+    icon: Pill,
+  },
+];
+
 export default function SpecialtiesIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -147,17 +166,15 @@ export default function SpecialtiesIndexPage() {
           <div className="max-w-3xl mx-auto text-center px-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-xs sm:text-sm font-medium mb-4 sm:mb-6">
               <Stethoscope className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>42 specialties</span>
+              <span>{t("specialties.viewAll")}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight tracking-tight">
-              Specialty-deep. Not specialty-wide.
+              {t("specialties.title")}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed mb-6 sm:mb-8">
-              A cardiologist needs a cath lab report, not a customizable form.
-              Each specialty workflow was built with practicing Indian specialists —
-              not adapted from generic templates.
+              {t("specialties.subtitle")}
             </p>
-            <Button href="/book-demo" className="w-full sm:w-auto">Book a demo for your specialties</Button>
+            <Button href="/book-demo" className="w-full sm:w-auto">{t("common.bookDemoForYourFacility")}</Button>
           </div>
         </Container>
       </section>
@@ -166,32 +183,12 @@ export default function SpecialtiesIndexPage() {
       <section className="py-12 sm:py-16 md:py-24">
         <Container>
           <SectionHeader
-            eyebrow="Featured"
             title="Our deepest specialty workflows"
             subtitle="Start here if you're evaluating specialty depth."
             className="mb-8 sm:mb-12"
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
-            {[
-              {
-                slug: "obstetrics-gynaecology",
-                name: "Obstetrics & Gynaecology",
-                description: "ANC tracking, fetal monitoring, labor suite, c-section documentation",
-                icon: Baby,
-              },
-              {
-                slug: "nephrology-dialysis",
-                name: "Nephrology & Dialysis",
-                description: "Dialysis scheduling, session documentation, vascular access tracking",
-                icon: Activity,
-              },
-              {
-                slug: "oncology",
-                name: "Oncology",
-                description: "Protocol management, chemo scheduling, tumor board, survival tracking",
-                icon: Pill,
-              },
-            ].map((specialty) => (
+            {featuredSpecialties.map((specialty) => (
               <Link
                 key={specialty.slug}
                 href={`/specialties/${specialty.slug}`}
@@ -205,7 +202,7 @@ export default function SpecialtiesIndexPage() {
                   {specialty.description}
                 </p>
                 <span className="inline-flex items-center text-[var(--action-primary)] font-medium text-sm">
-                  View workflow
+                  {t("common.learnMore")}
                   <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Link>
@@ -217,12 +214,12 @@ export default function SpecialtiesIndexPage() {
       {/* All specialties by category */}
       <section className="py-12 sm:py-16 md:py-24 bg-[var(--bg-subtle)]">
         <Container>
-          <SectionHeader title="All 42 specialties" className="mb-8 sm:mb-12" />
+          <SectionHeader title={t("common.exploreAll42Specialties")} className="mb-8 sm:mb-12" />
           <div className="space-y-8 sm:space-y-10 md:space-y-12">
             {specialtyCategories.map((category) => (
-              <div key={category.title}>
+              <div key={category.titleKey}>
                 <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 pb-2 border-b border-[var(--border-default)]">
-                  {category.title}
+                  {t(category.titleKey)}
                 </h3>
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {category.specialties.map((specialty) => (
@@ -249,14 +246,13 @@ export default function SpecialtiesIndexPage() {
         <Container>
           <div className="text-center px-2">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-              See your specialties in action.
+              {t("cta.title")}
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
-              Tell us your specialty mix. We'll configure the demo to show workflows
-              your doctors will actually recognize.
+              {t("cta.subtitle")}
             </p>
             <Button href="/book-demo" variant="inverse" className="w-full sm:w-auto">
-              Book a demo
+              {t("common.bookDemo")}
             </Button>
           </div>
         </Container>

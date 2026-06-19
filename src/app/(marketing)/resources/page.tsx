@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   BookOpen,
@@ -12,66 +13,63 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
-
-export const metadata: Metadata = {
-  title: "Resources — AarogyaEHR",
-  description:
-    "Guides, case studies, webinars, API docs, and help center for AarogyaEHR users.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const resources = [
   {
     slug: "help-center",
-    name: "Help Center",
-    description: "Searchable knowledge base for users and administrators.",
+    nameKey: "resources.helpCenterName",
+    descKey: "resources.helpCenterDesc",
     icon: HelpCircle,
-    cta: "Browse articles",
+    ctaKey: "common.browseArticles",
   },
   {
     slug: "guides",
-    name: "Guides",
-    description: "Step-by-step guides for common workflows and configurations.",
+    nameKey: "resources.guidesName",
+    descKey: "resources.guidesDesc",
     icon: BookOpen,
-    cta: "View guides",
+    ctaKey: "common.viewGuides",
   },
   {
     slug: "case-studies",
-    name: "Case Studies",
-    description: "How hospitals like yours implemented AarogyaEHR.",
+    nameKey: "resources.caseStudiesName",
+    descKey: "resources.caseStudiesDesc",
     icon: FileText,
-    cta: "Read stories",
+    ctaKey: "common.readStories",
   },
   {
     slug: "webinars",
-    name: "Webinars",
-    description: "Live and recorded sessions on features, best practices, and compliance.",
+    nameKey: "resources.webinarsName",
+    descKey: "resources.webinarsDesc",
     icon: Video,
-    cta: "Watch webinars",
+    ctaKey: "common.watchWebinars",
   },
   {
     slug: "roi-calculator",
-    name: "ROI Calculator",
-    description: "Estimate time and cost savings for your facility.",
+    nameKey: "resources.roiName",
+    descKey: "resources.roiDesc",
     icon: Calculator,
-    cta: "Calculate ROI",
+    ctaKey: "common.calculateRoi",
   },
   {
     slug: "api-docs",
-    name: "API Documentation",
-    description: "REST API reference for integrations and custom development.",
+    nameKey: "resources.apiDocsName",
+    descKey: "resources.apiDocsDesc",
     icon: Code,
-    cta: "View API docs",
+    ctaKey: "common.viewApiDocs",
   },
   {
     slug: "blog",
-    name: "Blog",
-    description: "Product updates, healthcare insights, and best practices.",
+    nameKey: "resources.blogName",
+    descKey: "resources.blogDesc",
     icon: Newspaper,
-    cta: "Read blog",
+    ctaKey: "common.readBlog",
   },
 ];
 
 export default function ResourcesIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -80,14 +78,13 @@ export default function ResourcesIndexPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <GraduationCap className="w-4 h-4" />
-              Resources
+              {t("resources.heroBadge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              Learn, implement, succeed.
+              {t("resources.heroTitle")}
             </h1>
             <p className="text-xl text-[var(--text-secondary)] leading-relaxed mb-8">
-              Guides, case studies, webinars, and documentation to help you
-              get the most from AarogyaEHR.
+              {t("resources.heroSubtitle")}
             </p>
           </div>
         </Container>
@@ -105,13 +102,13 @@ export default function ResourcesIndexPage() {
               >
                 <resource.icon className="w-10 h-10 text-[var(--action-primary)] mb-4" />
                 <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[var(--action-primary)] transition-colors">
-                  {resource.name}
+                  {t(resource.nameKey)}
                 </h3>
                 <p className="text-[var(--text-secondary)] mb-4">
-                  {resource.description}
+                  {t(resource.descKey)}
                 </p>
                 <span className="inline-flex items-center text-[var(--action-primary)] font-medium text-sm">
-                  {resource.cta}
+                  {t(resource.ctaKey)}
                   <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Link>
@@ -125,17 +122,17 @@ export default function ResourcesIndexPage() {
         <Container>
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Can't find what you need?
+              {t("resources.ctaTitle")}
             </h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Our support team is available via WhatsApp and email.
+              {t("resources.ctaSubtitle")}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button href="/company/contact" variant="inverse">
-                Contact support
+                {t("common.contactSupport")}
               </Button>
               <Button href="/book-demo" variant="ghost" className="text-white border-white/30 hover:bg-white/10">
-                Book a demo
+                {t("common.bookDemo")}
               </Button>
             </div>
           </div>

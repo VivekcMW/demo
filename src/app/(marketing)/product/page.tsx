@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Stethoscope,
@@ -17,52 +18,48 @@ import {
   Ambulance,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
-import { getAllSlugs } from "@/lib/content";
-
-export const metadata: Metadata = {
-  title: "Product — AarogyaEHR modules",
-  description:
-    "Complete hospital management: OPD, IPD, EMR, pharmacy, lab, radiology, billing, emergency, OT, and more. All ABDM-ready.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const productCategories = [
   {
-    title: "Clinical",
+    titleKey: "product.categoryClinical",
     products: [
-      { slug: "clinical-emr", name: "Clinical EMR", icon: FileText },
-      { slug: "e-prescription", name: "e-Prescription", icon: Pill },
-      { slug: "opd-management", name: "OPD Management", icon: Calendar },
-      { slug: "ipd-wards", name: "IPD & Wards", icon: Bed },
+      { slug: "clinical-emr", nameKey: "product.prodClinicalEmr", icon: FileText },
+      { slug: "e-prescription", nameKey: "product.prodEPrescription", icon: Pill },
+      { slug: "opd-management", nameKey: "product.prodOpdManagement", icon: Calendar },
+      { slug: "ipd-wards", nameKey: "product.prodIpdWards", icon: Bed },
     ],
   },
   {
-    title: "Diagnostics",
+    titleKey: "product.categoryDiagnostics",
     products: [
-      { slug: "laboratory-lis", name: "Laboratory (LIS)", icon: FlaskConical },
-      { slug: "radiology-ris-pacs", name: "Radiology (RIS/PACS)", icon: Activity },
+      { slug: "laboratory-lis", nameKey: "product.prodLaboratoryLis", icon: FlaskConical },
+      { slug: "radiology-ris-pacs", nameKey: "product.prodRadiologyRisPacs", icon: Activity },
     ],
   },
   {
-    title: "Operations",
+    titleKey: "product.categoryOperations",
     products: [
-      { slug: "pharmacy-inventory", name: "Pharmacy & Inventory", icon: Pill },
-      { slug: "billing-tpa-insurance", name: "Billing & TPA", icon: CreditCard },
-      { slug: "ot-anaesthesia", name: "OT & Anaesthesia", icon: Stethoscope },
-      { slug: "emergency-triage", name: "Emergency & Triage", icon: Ambulance },
-      { slug: "daycare-workflows", name: "Daycare Workflows", icon: Calendar },
+      { slug: "pharmacy-inventory", nameKey: "product.prodPharmacyInventory", icon: Pill },
+      { slug: "billing-tpa-insurance", nameKey: "product.prodBillingTpa", icon: CreditCard },
+      { slug: "ot-anaesthesia", nameKey: "product.prodOtAnaesthesia", icon: Stethoscope },
+      { slug: "emergency-triage", nameKey: "product.prodEmergencyTriage", icon: Ambulance },
+      { slug: "daycare-workflows", nameKey: "product.prodDaycareWorkflows", icon: Calendar },
     ],
   },
   {
-    title: "Platform",
+    titleKey: "product.categoryPlatform",
     products: [
-      { slug: "analytics-mis-nabh", name: "Analytics & NABH", icon: BarChart3 },
-      { slug: "abdm-abha", name: "ABDM & ABHA", icon: Shield },
-      { slug: "telemedicine-patient-app", name: "Telemedicine & Patient App", icon: Smartphone },
+      { slug: "analytics-mis-nabh", nameKey: "product.prodAnalyticsNabh", icon: BarChart3 },
+      { slug: "abdm-abha", nameKey: "product.prodAbdmAbha", icon: Shield },
+      { slug: "telemedicine-patient-app", nameKey: "product.prodTelemedicinePatientApp", icon: Smartphone },
     ],
   },
 ];
 
 export default function ProductIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -70,13 +67,12 @@ export default function ProductIndexPage() {
         <Container>
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              One platform. Every department.
+              {t("product.heroTitle")}
             </h1>
             <p className="text-xl text-[var(--text-secondary)] leading-relaxed mb-8">
-              14 modules that work together from registration to discharge —
-              no integrations to maintain, no data silos to bridge.
+              {t("product.heroSubtitle")}
             </p>
-            <Button href="/book-demo">Book a demo</Button>
+            <Button href="/book-demo">{t("common.bookDemo")}</Button>
           </div>
         </Container>
       </section>
@@ -86,9 +82,9 @@ export default function ProductIndexPage() {
         <Container>
           <div className="space-y-16">
             {productCategories.map((category) => (
-              <div key={category.title}>
+              <div key={category.titleKey}>
                 <h2 className="text-2xl font-bold text-foreground mb-8">
-                  {category.title}
+                  {t(category.titleKey)}
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {category.products.map((product) => (
@@ -99,7 +95,7 @@ export default function ProductIndexPage() {
                     >
                       <product.icon className="w-10 h-10 text-[var(--action-primary)] mb-4" />
                       <h3 className="font-semibold text-foreground group-hover:text-[var(--action-primary)] transition-colors">
-                        {product.name}
+                        {t(product.nameKey)}
                       </h3>
                     </Link>
                   ))}
@@ -115,14 +111,13 @@ export default function ProductIndexPage() {
         <Container>
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              See how the modules work together.
+              {t("product.ctaTitle")}
             </h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              A 45-minute demo walks through the complete patient journey —
-              from registration to discharge.
+              {t("product.ctaSubtitle")}
             </p>
             <Button href="/book-demo" variant="inverse">
-              Book a demo
+              {t("common.bookDemo")}
             </Button>
           </div>
         </Container>

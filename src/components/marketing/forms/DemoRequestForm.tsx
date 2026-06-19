@@ -4,67 +4,68 @@ import { useState, useEffect } from "react";
 import { MessageSquare, Phone, MapPin } from "lucide-react";
 import { MultiSelectDropdown } from "@/components/marketing/ui/MultiSelectDropdown";
 import { useLocationStore } from "@/store/locationStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const facilityTypes = [
-  "Clinic",
-  "Nursing home",
-  "Multi-specialty",
-  "Super-specialty or chain",
-  "Single-specialty chain",
-  "Diagnostic center",
+  "facilities.clinic",
+  "facilities.nursingHome",
+  "facilities.multiSpecialty",
+  "facilities.superSpecialty",
+  "facilities.singleSpecialtyChain",
+  "facilities.diagnosticCenter",
 ];
 
 const specialties = [
-  "Anaesthesiology",
-  "Cardiology",
-  "Critical Care/ICU",
-  "Dermatology",
-  "Emergency Medicine",
-  "ENT",
-  "Gastroenterology",
-  "General Medicine",
-  "General Surgery",
-  "Nephrology/Dialysis",
-  "Neurology",
-  "Obstetrics & Gynaecology",
-  "Oncology",
-  "Ophthalmology",
-  "Orthopaedics",
-  "Pediatrics",
-  "Psychiatry",
-  "Pulmonology",
-  "Radiology",
-  "Urology",
-  "Other",
+  "demoForm.specialtyAnaesthesiology",
+  "demoForm.specialtyCardiology",
+  "demoForm.specialtyCriticalCare",
+  "demoForm.specialtyDermatology",
+  "demoForm.specialtyEmergency",
+  "demoForm.specialtyEnt",
+  "demoForm.specialtyGastroenterology",
+  "demoForm.specialtyGeneralMedicine",
+  "demoForm.specialtyGeneralSurgery",
+  "demoForm.specialtyNephrology",
+  "demoForm.specialtyNeurology",
+  "demoForm.specialtyObg",
+  "demoForm.specialtyOncology",
+  "demoForm.specialtyOphthalmology",
+  "demoForm.specialtyOrthopaedics",
+  "demoForm.specialtyPediatrics",
+  "demoForm.specialtyPsychiatry",
+  "demoForm.specialtyPulmonology",
+  "demoForm.specialtyRadiology",
+  "demoForm.specialtyUrology",
+  "demoForm.specialtyOther",
 ];
 
 const languages = [
-  "English",
-  "Hindi",
-  "Kannada",
-  "Marathi",
+  "demoForm.languageEnglish",
+  "demoForm.languageHindi",
+  "demoForm.languageKannada",
+  "demoForm.languageMarathi",
 ];
 
 const steps = [
   {
     number: "1",
-    title: "We confirm a slot",
-    description: "Within one working day of your request.",
+    titleKey: "demo.step1Title",
+    descriptionKey: "demo.step1Desc",
   },
   {
     number: "2",
-    title: "Pre-demo checklist",
-    description: "You receive a short form so we can configure your specialties.",
+    titleKey: "demo.step2Title",
+    descriptionKey: "demo.step2Desc",
   },
   {
     number: "3",
-    title: "Live product demo",
-    description:
-      "45 minutes with a product specialist — bring your CMO and one skeptical doctor.",
+    titleKey: "demo.step3Title",
+    descriptionKey: "demo.step3Desc",
   },
 ];
 
 export function DemoRequestForm() {
+  const { t } = useTranslation();
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [city, setCity] = useState("");
   const { city: detectedCity, isDetected } = useLocationStore();
@@ -87,14 +88,14 @@ export function DemoRequestForm() {
                 htmlFor="name"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                Name <span className="text-red-500">*</span>
+                {t("form.nameRequired")}
               </label>
               <input
                 id="name"
                 type="text"
                 required
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-                placeholder="Dr. Priya Sharma"
+                placeholder={t("demoForm.namePlaceholder")}
               />
             </div>
             <div>
@@ -102,14 +103,14 @@ export function DemoRequestForm() {
                 htmlFor="email"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                Work email <span className="text-red-500">*</span>
+                {t("form.emailRequired")}
               </label>
               <input
                 id="email"
                 type="email"
                 required
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-                placeholder="priya@hospital.in"
+                placeholder={t("demoForm.emailPlaceholder")}
               />
             </div>
           </div>
@@ -120,14 +121,14 @@ export function DemoRequestForm() {
                 htmlFor="phone"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                Phone (+91) <span className="text-red-500">*</span>
+                {t("form.phoneRequired")}
               </label>
               <input
                 id="phone"
                 type="tel"
                 required
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-                placeholder="98765 43210"
+                placeholder={t("demoForm.phonePlaceholder")}
               />
             </div>
             <div>
@@ -135,14 +136,14 @@ export function DemoRequestForm() {
                 htmlFor="hospital"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                Hospital/clinic name <span className="text-red-500">*</span>
+                {t("form.hospitalRequired")}
               </label>
               <input
                 id="hospital"
                 type="text"
                 required
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-                placeholder="City Care Hospital"
+                placeholder={t("demoForm.hospitalPlaceholder")}
               />
             </div>
           </div>
@@ -153,11 +154,11 @@ export function DemoRequestForm() {
                 htmlFor="city"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                City <span className="text-red-500">*</span>
+                {t("form.cityRequired")}
                 {isDetected && detectedCity && (
                   <span className="ml-2 text-xs font-normal text-[var(--action-primary)] inline-flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
-                    Detected
+                    {t("form.detected")}
                   </span>
                 )}
               </label>
@@ -168,7 +169,7 @@ export function DemoRequestForm() {
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-                placeholder="Pune"
+                placeholder={t("demoForm.cityPlaceholder")}
               />
             </div>
             <div>
@@ -176,17 +177,17 @@ export function DemoRequestForm() {
                 htmlFor="facility-type"
                 className="block text-sm font-medium text-foreground mb-2"
               >
-                Facility type <span className="text-red-500">*</span>
+                {t("form.facilityRequired")}
               </label>
               <select
                 id="facility-type"
                 required
                 className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
               >
-                <option value="">Select facility type</option>
-                {facilityTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
+                <option value="">{t("form.selectFacility")}</option>
+                {facilityTypes.map((key) => (
+                  <option key={key} value={key}>
+                    {t(key)}
                   </option>
                 ))}
               </select>
@@ -198,25 +199,25 @@ export function DemoRequestForm() {
               htmlFor="beds"
               className="block text-sm font-medium text-foreground mb-2"
             >
-              Number of beds (if hospital)
+              {t("form.beds")}
             </label>
             <input
               id="beds"
               type="number"
               className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-              placeholder="50"
+              placeholder={t("demoForm.bedsPlaceholder")}
             />
           </div>
 
           {/* Multi-select specialty dropdown */}
           <MultiSelectDropdown
             id="specialties"
-            label="Specialties of interest"
+            label={t("form.specialties")}
             options={specialties}
             selected={selectedSpecialties}
             onChange={setSelectedSpecialties}
-            placeholder="Select specialties..."
-            searchPlaceholder="Search specialties..."
+            placeholder={t("form.selectSpecialties")}
+            searchPlaceholder={t("form.searchSpecialties")}
           />
 
           <div>
@@ -224,13 +225,13 @@ export function DemoRequestForm() {
               htmlFor="current-software"
               className="block text-sm font-medium text-foreground mb-2"
             >
-              Current software (optional)
+              {t("form.currentSoftware")}
             </label>
             <input
               id="current-software"
               type="text"
               className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
-              placeholder="e.g., Paper-based, Tally, Other HIMS"
+              placeholder={t("demoForm.softwarePlaceholder")}
             />
           </div>
 
@@ -239,15 +240,15 @@ export function DemoRequestForm() {
               htmlFor="language"
               className="block text-sm font-medium text-foreground mb-2"
             >
-              Preferred language for demo
+              {t("form.preferredLanguage")}
             </label>
             <select
               id="language"
               className="w-full px-4 py-3 rounded-lg border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
             >
-              {languages.map((lang) => (
-                <option key={lang} value={lang}>
-                  {lang}
+              {languages.map((key) => (
+                <option key={key} value={key}>
+                  {t(key)}
                 </option>
               ))}
             </select>
@@ -257,7 +258,7 @@ export function DemoRequestForm() {
             type="submit"
             className="w-full py-3 sm:py-4 px-5 sm:px-6 bg-[var(--action-primary)] text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-[var(--action-primary-hover)] transition-colors"
           >
-            Request demo
+            {t("demo.requestDemo")}
           </button>
         </form>
       </div>
@@ -268,7 +269,7 @@ export function DemoRequestForm() {
           {/* What happens next */}
           <div className="p-5 sm:p-6 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)]">
             <h3 className="font-semibold text-sm sm:text-base text-foreground mb-4 sm:mb-6">
-              What happens next
+              {t("demo.whatHappensNext")}
             </h3>
             <div className="space-y-4 sm:space-y-6">
               {steps.map((step) => (
@@ -277,9 +278,9 @@ export function DemoRequestForm() {
                     {step.number}
                   </div>
                   <div>
-                    <h4 className="font-medium text-sm sm:text-base text-foreground">{step.title}</h4>
+                    <h4 className="font-medium text-sm sm:text-base text-foreground">{t(step.titleKey)}</h4>
                     <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
-                      {step.description}
+                      {t(step.descriptionKey)}
                     </p>
                   </div>
                 </div>
@@ -290,7 +291,7 @@ export function DemoRequestForm() {
           {/* Contact options */}
           <div className="p-5 sm:p-6 rounded-xl border border-[var(--border-default)]">
             <h3 className="font-semibold text-sm sm:text-base text-foreground mb-3 sm:mb-4">
-              Prefer to talk now?
+              {t("demo.talkNow")}
             </h3>
             <div className="space-y-2 sm:space-y-3">
               <a
@@ -298,14 +299,14 @@ export function DemoRequestForm() {
                 className="flex items-center gap-2 sm:gap-3 text-[var(--text-secondary)] hover:text-[var(--action-primary)] transition-colors"
               >
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="text-xs sm:text-sm">WhatsApp: +91 98765 43210</span>
+                <span className="text-xs sm:text-sm">{t("demoForm.whatsappContact")}</span>
               </a>
               <a
                 href="mailto:hello@aarogyaehr.com"
                 className="flex items-center gap-2 sm:gap-3 text-[var(--text-secondary)] hover:text-[var(--action-primary)] transition-colors"
               >
                 <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="text-xs sm:text-sm">hello@aarogyaehr.com</span>
+                <span className="text-xs sm:text-sm">{t("demoForm.emailContact")}</span>
               </a>
             </div>
           </div>

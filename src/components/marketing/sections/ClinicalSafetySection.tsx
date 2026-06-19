@@ -1,44 +1,45 @@
+"use client";
+
 import { Container } from "../ui/Container";
 import { SectionHeader } from "../ui/SectionHeader";
 import { AlertTriangle, Eye, Palette, Bell } from "lucide-react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
-const features = [
-  {
-    icon: Bell,
-    title: "Allergy-first banner",
-    description:
-      "Patient allergies are always visible at the top of every screen. Never collapses, never hides.",
-  },
-  {
-    icon: AlertTriangle,
-    title: "Four-level alert system",
-    description:
-      "Red is reserved for genuine danger. Graduated severity prevents alert fatigue.",
-  },
-  {
-    icon: Eye,
-    title: "Color-never-alone",
-    description:
-      "Every status is communicated by color + icon + text. Safe for color-blind staff.",
-  },
-  {
-    icon: Palette,
-    title: "Monitor-proof design",
-    description:
-      "Tested on washed-out hospital monitors. Critical information stays readable.",
-  },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function ClinicalSafetySection() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: Bell,
+      title: t("clinicalSafety.allergyTitle"),
+      description: t("clinicalSafety.allergyDesc"),
+    },
+    {
+      icon: AlertTriangle,
+      title: t("clinicalSafety.alertTitle"),
+      description: t("clinicalSafety.alertDesc"),
+    },
+    {
+      icon: Eye,
+      title: t("clinicalSafety.colorTitle"),
+      description: t("clinicalSafety.colorDesc"),
+    },
+    {
+      icon: Palette,
+      title: t("clinicalSafety.monitorTitle"),
+      description: t("clinicalSafety.monitorDesc"),
+    },
+  ];
+
   return (
     <section className="marketing-section">
       <Container>
         <SectionHeader
-          eyebrow="Clinical safety"
-          title="Designed so the critical value is never missed."
-          subtitle="Safety isn't a feature — it's the foundation. Every design decision prioritizes clinical correctness over aesthetics."
+          eyebrow={t("clinicalSafety.eyebrow")}
+          title={t("clinicalSafety.title")}
+          subtitle={t("clinicalSafety.subtitle")}
         />
 
         <div className="mt-8 sm:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -62,7 +63,7 @@ export function ClinicalSafetySection() {
             href="/platform/safety"
             className="inline-flex items-center gap-2 text-sm sm:text-base text-[var(--action-primary)] font-medium hover:gap-3 transition-all"
           >
-            How we designed for safety
+            {t("clinicalSafety.safetyLink")}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

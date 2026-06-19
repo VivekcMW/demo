@@ -1,35 +1,37 @@
+"use client";
+
 import { Container } from "../ui/Container";
 import { SectionHeader } from "../ui/SectionHeader";
 import { FileSpreadsheet, Stethoscope, TrendingUp } from "lucide-react";
-
-const painPoints = [
-  {
-    icon: FileSpreadsheet,
-    title: "Billing-first design",
-    description:
-      "Legacy HIMS started as billing terminals with patient records bolted on. Clinical workflows are an afterthought.",
-  },
-  {
-    icon: Stethoscope,
-    title: "Doctors fight the EMR",
-    description:
-      "Generic forms slow down consultations. Nurses keep paper backups because the system doesn't match ward reality.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Revenue leakage at month-end",
-    description:
-      "Promoters discover missed charges, unbilled procedures, and TPA rejections only when it's too late to fix.",
-  },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function ProblemSection() {
+  const { t } = useTranslation();
+
+  const painPoints = [
+    {
+      icon: FileSpreadsheet,
+      title: t("problem.billingFirstTitle"),
+      description: t("problem.billingFirstDesc"),
+    },
+    {
+      icon: Stethoscope,
+      title: t("problem.doctorsFightTitle"),
+      description: t("problem.doctorsFightDesc"),
+    },
+    {
+      icon: TrendingUp,
+      title: t("problem.revenueLeakageTitle"),
+      description: t("problem.revenueLeakageDesc"),
+    },
+  ];
+
   return (
     <section className="marketing-section">
       <Container>
         <SectionHeader
-          title="Most hospital software was built for billing. Yours should be built for care."
-          subtitle="Indian hospitals run on systems designed twenty years ago as billing terminals with a patient file bolted on. AarogyaEHR starts from the clinical workflow — and billing, compliance, and analytics fall out of it correctly."
+          title={t("problem.title")}
+          subtitle={t("problem.subtitle")}
         />
 
         <div className="mt-10 sm:mt-16 grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">

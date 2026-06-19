@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   User,
@@ -12,66 +13,63 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
-
-export const metadata: Metadata = {
-  title: "Solutions by Role — AarogyaEHR",
-  description:
-    "Role-specific workflows: doctors, nurses, front desk, billing, lab technicians, pharmacists, administrators.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const roles = [
   {
     slug: "doctors",
-    name: "For Doctors",
-    tagline: "90-second notes, voice dictation, results that find you",
+    nameKey: "roles.doctorName",
+    taglineKey: "roles.doctorTagline",
     icon: Stethoscope,
-    description: "Specialty templates, favorite prescriptions, and rounds from your phone.",
+    descKey: "roles.doctorDesc",
   },
   {
     slug: "nurses",
-    name: "For Nurses",
-    tagline: "e-MAR, vitals, handoffs — without the clipboard",
+    nameKey: "roles.nurseName",
+    taglineKey: "roles.nurseTagline",
     icon: HeartPulse,
-    description: "Medication administration records, shift handoffs, and critical-value alerts.",
+    descKey: "roles.nurseDesc",
   },
   {
     slug: "front-desk",
-    name: "For Front Desk",
-    tagline: "60-second registration, queue visibility",
+    nameKey: "roles.frontDeskName",
+    taglineKey: "roles.frontDeskTagline",
     icon: ClipboardList,
-    description: "Fast patient registration, Aadhaar-assisted demographics, and appointment management.",
+    descKey: "roles.frontDeskDesc",
   },
   {
     slug: "billing-tpa-teams",
-    name: "For Billing & TPA Teams",
-    tagline: "Pre-auth to settlement in one workflow",
+    nameKey: "roles.billingName",
+    taglineKey: "roles.billingTagline",
     icon: CreditCard,
-    description: "TPA claim tracking, query management, and automatic document assembly.",
+    descKey: "roles.billingDesc",
   },
   {
     slug: "lab-technicians",
-    name: "For Lab Technicians",
-    tagline: "Sample to report, analyzer-connected",
+    nameKey: "roles.labName",
+    taglineKey: "roles.labTagline",
     icon: FlaskConical,
-    description: "Barcode-driven workflows, analyzer integration, and auto-validation rules.",
+    descKey: "roles.labDesc",
   },
   {
     slug: "pharmacists",
-    name: "For Pharmacists",
-    tagline: "Dispense, stock, and indents in one place",
+    nameKey: "roles.pharmacistName",
+    taglineKey: "roles.pharmacistTagline",
     icon: Pill,
-    description: "Inventory management, batch tracking, and prescription verification.",
+    descKey: "roles.pharmacistDesc",
   },
   {
     slug: "administrators",
-    name: "For Administrators",
-    tagline: "Occupancy, revenue, and quality at a glance",
+    nameKey: "roles.adminName",
+    taglineKey: "roles.adminTagline",
     icon: UserCog,
-    description: "MIS dashboards, NABH indicators, and department-wise analytics.",
+    descKey: "roles.adminDesc",
   },
 ];
 
 export default function RolesIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -80,17 +78,15 @@ export default function RolesIndexPage() {
           <div className="max-w-3xl mx-auto text-center px-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-xs sm:text-sm font-medium mb-4 sm:mb-6">
               <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>By role</span>
+              <span>{t("roles.heroBadge")}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight tracking-tight">
-              Your role. Your screen.
+              {t("roles.heroTitle")}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed mb-6 sm:mb-8">
-              A nurse shouldn't navigate a monolith to chart vitals. Each role
-              gets their own working screen — focused on what they do, not what
-              everyone does.
+              {t("roles.heroSubtitle")}
             </p>
-            <Button href="/book-demo" className="w-full sm:w-auto">Book a demo</Button>
+            <Button href="/book-demo" className="w-full sm:w-auto">{t("common.bookDemo")}</Button>
           </div>
         </Container>
       </section>
@@ -107,16 +103,16 @@ export default function RolesIndexPage() {
               >
                 <role.icon className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--action-primary)] mb-3 sm:mb-4" />
                 <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 group-hover:text-[var(--action-primary)] transition-colors">
-                  {role.name}
+                  {t(role.nameKey)}
                 </h3>
                 <p className="text-xs sm:text-sm text-[var(--action-primary)] mb-2 sm:mb-3">
-                  {role.tagline}
+                  {t(role.taglineKey)}
                 </p>
                 <p className="text-sm sm:text-base text-[var(--text-secondary)] mb-3 sm:mb-4 leading-relaxed">
-                  {role.description}
+                  {t(role.descKey)}
                 </p>
                 <span className="inline-flex items-center text-[var(--action-primary)] font-medium text-sm">
-                  See their screen
+                  {t("common.seeTheirScreen")}
                   <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Link>
@@ -130,14 +126,13 @@ export default function RolesIndexPage() {
         <Container>
           <div className="text-center px-2">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-              See the screens your team will use.
+              {t("roles.ctaTitle")}
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
-              Bring a doctor, a nurse, and a billing executive to the demo — they'll
-              each see their own workflow.
+              {t("roles.ctaSubtitle")}
             </p>
             <Button href="/book-demo" variant="inverse" className="w-full sm:w-auto">
-              Book a demo
+              {t("common.bookDemo")}
             </Button>
           </div>
         </Container>

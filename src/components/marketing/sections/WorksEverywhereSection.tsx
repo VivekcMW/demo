@@ -1,42 +1,43 @@
+"use client";
+
 import { Container } from "../ui/Container";
 import { SectionHeader } from "../ui/SectionHeader";
 import { Monitor, Wifi, WifiOff, Users } from "lucide-react";
-
-const features = [
-  {
-    icon: Monitor,
-    title: "1366×768 friendly",
-    description:
-      "Designed for the screens actually in Indian hospitals — not just the latest MacBook.",
-  },
-  {
-    icon: Wifi,
-    title: "Loads in under 3 seconds",
-    description:
-      "Optimized for hospital broadband. No heavy animations or bloated bundles.",
-  },
-  {
-    icon: WifiOff,
-    title: "Offline-tolerant",
-    description:
-      "Data entry continues when the network drops. Syncs automatically when connection returns.",
-  },
-  {
-    icon: Users,
-    title: "Shared-terminal mode",
-    description:
-      "Built for nursing stations where multiple staff share one PC. Fast user switching, session isolation.",
-  },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function WorksEverywhereSection() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: Monitor,
+      title: t("worksEverywhere.screenTitle"),
+      description: t("worksEverywhere.screenDesc"),
+    },
+    {
+      icon: Wifi,
+      title: t("worksEverywhere.speedTitle"),
+      description: t("worksEverywhere.speedDesc"),
+    },
+    {
+      icon: WifiOff,
+      title: t("worksEverywhere.offlineTitle"),
+      description: t("worksEverywhere.offlineDesc"),
+    },
+    {
+      icon: Users,
+      title: t("worksEverywhere.sharedTitle"),
+      description: t("worksEverywhere.sharedDesc"),
+    },
+  ];
+
   return (
     <section className="marketing-section bg-section-alt">
       <Container>
         <SectionHeader
-          eyebrow="Infrastructure reality"
-          title="Tested on the oldest PC at your nursing station."
-          subtitle="AarogyaEHR is built for the infrastructure Indian hospitals actually have, not the infrastructure vendors wish they had."
+          eyebrow={t("worksEverywhere.eyebrow")}
+          title={t("worksEverywhere.title")}
+          subtitle={t("worksEverywhere.subtitle")}
         />
 
         <div className="mt-8 sm:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

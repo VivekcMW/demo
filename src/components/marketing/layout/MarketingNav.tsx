@@ -8,29 +8,29 @@ import { Button } from "../ui/Button";
 import { LanguageSwitcher } from "../ui/LanguageSwitcher";
 import { useTranslation } from "@/hooks/useTranslation";
 
-const productLinks = [
-  { name: "OPD management", href: "/product/opd-management", description: "Queue, tokens, consultations" },
-  { name: "IPD & wards", href: "/product/ipd-wards", description: "Bed board, admissions, discharge" },
-  { name: "Clinical EMR", href: "/product/clinical-emr", description: "SOAP notes, templates, orders" },
-  { name: "e-Prescription", href: "/product/e-prescription", description: "Drug database, interactions, CDSS" },
-  { name: "Laboratory (LIS)", href: "/product/laboratory-lis", description: "Samples, results, TAT tracking" },
-  { name: "Radiology (RIS/PACS)", href: "/product/radiology-ris-pacs", description: "Worklist, reporting, imaging" },
-  { name: "Pharmacy & inventory", href: "/product/pharmacy-inventory", description: "Stock, dispensing, expiry" },
-  { name: "OT & anaesthesia", href: "/product/ot-anaesthesia", description: "Scheduling, checklists, notes" },
-  { name: "Billing & TPA", href: "/product/billing-tpa-insurance", description: "GST, insurance, claims" },
-  { name: "ABDM / ABHA", href: "/product/abdm-abha", description: "Health ID, PHR, consent" },
-];
-
-const solutionLinks = [
-  { name: "By specialty", href: "/specialties", description: "42 specialty workflow packs" },
-  { name: "By facility type", href: "/facilities", description: "Clinic to super-specialty" },
-  { name: "By role", href: "/roles", description: "Doctor, nurse, admin views" },
-];
-
 export function MarketingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { t } = useTranslation();
+
+  const productLinks = [
+    { name: t("navProduct.opdManagement"), href: "/product/opd-management", description: t("navProduct.opdManagementDesc") },
+    { name: t("navProduct.ipdWards"), href: "/product/ipd-wards", description: t("navProduct.ipdWardsDesc") },
+    { name: t("navProduct.clinicalEmr"), href: "/product/clinical-emr", description: t("navProduct.clinicalEmrDesc") },
+    { name: t("navProduct.ePrescription"), href: "/product/e-prescription", description: t("navProduct.ePrescriptionDesc") },
+    { name: t("navProduct.laboratoryLis"), href: "/product/laboratory-lis", description: t("navProduct.laboratoryLisDesc") },
+    { name: t("navProduct.radiologyRisPacs"), href: "/product/radiology-ris-pacs", description: t("navProduct.radiologyRisPacsDesc") },
+    { name: t("navProduct.pharmacyInventory"), href: "/product/pharmacy-inventory", description: t("navProduct.pharmacyInventoryDesc") },
+    { name: t("navProduct.otAnaesthesia"), href: "/product/ot-anaesthesia", description: t("navProduct.otAnaesthesiaDesc") },
+    { name: t("navProduct.billingTpa"), href: "/product/billing-tpa-insurance", description: t("navProduct.billingTpaDesc") },
+    { name: t("navProduct.abdmAbha"), href: "/product/abdm-abha", description: t("navProduct.abdmAbhaDesc") },
+  ];
+
+  const solutionLinks = [
+    { name: t("navSolution.bySpecialty"), href: "/specialties", description: t("navSolution.bySpecialtyDesc") },
+    { name: t("navSolution.byFacilityType"), href: "/facilities", description: t("navSolution.byFacilityTypeDesc") },
+    { name: t("navSolution.byRole"), href: "/roles", description: t("navSolution.byRoleDesc") },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[var(--border-default)]">
@@ -141,7 +141,7 @@ export function MarketingNav() {
           <button
             className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={t("nav.toggleMenu")}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -183,7 +183,7 @@ export function MarketingNav() {
               
               {/* Other links */}
               <div className="px-3 py-2 mt-4 text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">
-                More
+                {t("nav.more")}
               </div>
               <Link
                 href="/pricing"
@@ -204,7 +204,7 @@ export function MarketingNav() {
               {/* Language switcher in mobile */}
               <div className="px-1">
                 <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide mb-2 px-2">
-                  Language
+                  {t("nav.language")}
                 </div>
                 <LanguageSwitcher />
               </div>

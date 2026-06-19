@@ -15,7 +15,7 @@ type NestedKeyOf<T> = T extends object
     }[keyof T]
   : never;
 
-type TranslationKey = NestedKeyOf<TranslationKeys>;
+export type TranslationKey = NestedKeyOf<TranslationKeys>;
 
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const keys = path.split(".");
@@ -37,7 +37,7 @@ export function useTranslation() {
   const translations = getTranslations(language);
 
   const t = useCallback(
-    (key: TranslationKey, replacements?: Record<string, string | number>) => {
+    (key: string, replacements?: Record<string, string | number>) => {
       let value = getNestedValue(
         translations as unknown as Record<string, unknown>,
         key

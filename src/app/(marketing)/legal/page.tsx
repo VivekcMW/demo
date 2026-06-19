@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Shield,
@@ -9,45 +10,42 @@ import {
   Scale,
 } from "lucide-react";
 import { Container } from "@/components/marketing/ui";
-
-export const metadata: Metadata = {
-  title: "Legal — AarogyaEHR",
-  description:
-    "Privacy policy, terms of service, cookie policy, and refund policy for AarogyaEHR.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const legalPages = [
   {
     slug: "privacy-policy",
-    name: "Privacy Policy",
-    description: "How we collect, use, and protect your data.",
+    nameKey: "legal.privacyName",
+    descKey: "legal.privacyDesc",
     icon: Shield,
-    updated: "January 2025",
+    updatedKey: "legal.privacyUpdated",
   },
   {
     slug: "terms-of-service",
-    name: "Terms of Service",
-    description: "Rules governing your use of AarogyaEHR.",
+    nameKey: "legal.termsName",
+    descKey: "legal.termsDesc",
     icon: FileText,
-    updated: "January 2025",
+    updatedKey: "legal.termsUpdated",
   },
   {
     slug: "cookie-policy",
-    name: "Cookie Policy",
-    description: "How we use cookies and similar technologies.",
+    nameKey: "legal.cookieName",
+    descKey: "legal.cookieDesc",
     icon: Cookie,
-    updated: "January 2025",
+    updatedKey: "legal.cookieUpdated",
   },
   {
     slug: "refund-policy",
-    name: "Refund Policy",
-    description: "Our fair, clear refund and cancellation terms.",
+    nameKey: "legal.refundName",
+    descKey: "legal.refundDesc",
     icon: RefreshCw,
-    updated: "January 2025",
+    updatedKey: "legal.refundUpdated",
   },
 ];
 
 export default function LegalIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -56,13 +54,13 @@ export default function LegalIndexPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <Scale className="w-4 h-4" />
-              Legal
+              {t("legal.heroBadge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              Legal documents
+              {t("legal.heroTitle")}
             </h1>
             <p className="text-xl text-[var(--text-secondary)] leading-relaxed">
-              Plain-language policies. No legalese traps.
+              {t("legal.heroSubtitle")}
             </p>
           </div>
         </Container>
@@ -80,14 +78,14 @@ export default function LegalIndexPage() {
               >
                 <page.icon className="w-10 h-10 text-[var(--action-primary)] mb-4" />
                 <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[var(--action-primary)] transition-colors">
-                  {page.name}
+                  {t(page.nameKey)}
                 </h3>
                 <p className="text-[var(--text-secondary)] mb-4">
-                  {page.description}
+                  {t(page.descKey)}
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[var(--text-secondary)]">
-                    Updated {page.updated}
+                    Updated {t(page.updatedKey)}
                   </span>
                   <ArrowRight className="w-4 h-4 text-[var(--action-primary)] group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -102,15 +100,13 @@ export default function LegalIndexPage() {
         <Container>
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Our exit-rights promise
+              {t("legal.exitTitle")}
             </h2>
             <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-6">
-              You own your data. Always. If you decide to leave AarogyaEHR, we provide
-              a full export in standard formats (HL7 FHIR, CSV) within 30 days at no
-              charge. No exit fees. No data hostage situations.
+              {t("legal.exitDesc")}
             </p>
             <p className="text-sm text-[var(--text-secondary)]">
-              This promise is built into our Terms of Service.
+              {t("legal.exitNote")}
             </p>
           </div>
         </Container>

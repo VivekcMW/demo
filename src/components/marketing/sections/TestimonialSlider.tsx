@@ -4,44 +4,39 @@ import { useState } from "react";
 import { Container } from "../ui/Container";
 import { SectionHeader } from "../ui/SectionHeader";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface Testimonial {
   quote: string;
   author: string;
-  role: string;
   organization: string;
   metric?: string;
 }
 
-const testimonials: Testimonial[] = [
-  {
-    quote:
-      "We moved 11 OPDs and 240 beds off paper in 6 weeks. Discharge time dropped from 5 hours to 90 minutes.",
-    author: "Medical Director",
-    role: "",
-    organization: "240-bed multi-specialty hospital, Pune",
-    metric: "5 hrs → 90 min discharge",
-  },
-  {
-    quote:
-      "The dialysis module finally matches how we actually run our unit. Slot scheduling and package billing just work.",
-    author: "Chief Nephrologist",
-    role: "",
-    organization: "Dialysis chain, 8 centers, Maharashtra",
-    metric: "8 centers standardized",
-  },
-  {
-    quote:
-      "Our nurses stopped keeping shadow paper records. That's when I knew the system actually worked.",
-    author: "Nursing Superintendent",
-    role: "",
-    organization: "150-bed nursing home, Bangalore",
-    metric: "Zero paper backup",
-  },
-];
-
 export function TestimonialSlider() {
   const [current, setCurrent] = useState(0);
+  const { t } = useTranslation();
+
+  const testimonials: Testimonial[] = [
+    {
+      quote: t("testimonials.testimonial1Quote"),
+      author: t("testimonials.testimonial1Author"),
+      organization: t("testimonials.testimonial1Org"),
+      metric: t("testimonials.testimonial1Metric"),
+    },
+    {
+      quote: t("testimonials.testimonial2Quote"),
+      author: t("testimonials.testimonial2Author"),
+      organization: t("testimonials.testimonial2Org"),
+      metric: t("testimonials.testimonial2Metric"),
+    },
+    {
+      quote: t("testimonials.testimonial3Quote"),
+      author: t("testimonials.testimonial3Author"),
+      organization: t("testimonials.testimonial3Org"),
+      metric: t("testimonials.testimonial3Metric"),
+    },
+  ];
 
   const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1));
   const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1));
@@ -52,8 +47,8 @@ export function TestimonialSlider() {
     <section className="marketing-section bg-section-alt">
       <Container>
         <SectionHeader
-          eyebrow="Customer stories"
-          title="Hospitals that made the switch"
+          eyebrow={t("testimonials.eyebrow")}
+          title={t("testimonials.title")}
         />
 
         <div className="mt-8 sm:mt-12 max-w-3xl mx-auto">
@@ -105,14 +100,14 @@ export function TestimonialSlider() {
                 <button
                   onClick={prev}
                   className="p-1.5 sm:p-2 rounded-full border border-[var(--border-default)] hover:bg-[var(--surface-sunken)] transition-colors"
-                  aria-label="Previous testimonial"
+                  aria-label={t("testimonials.previous")}
                 >
                   <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--text-secondary)]" />
                 </button>
                 <button
                   onClick={next}
                   className="p-1.5 sm:p-2 rounded-full border border-[var(--border-default)] hover:bg-[var(--surface-sunken)] transition-colors"
-                  aria-label="Next testimonial"
+                  aria-label={t("testimonials.next")}
                 >
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--text-secondary)]" />
                 </button>

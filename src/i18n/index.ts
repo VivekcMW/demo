@@ -7,7 +7,7 @@ import mr from "./locales/mr.json";
 
 export type TranslationKeys = typeof en;
 
-const translations: Record<LanguageCode, TranslationKeys> = {
+const translations = {
   en,
   hi,
   mr,

@@ -1,14 +1,19 @@
-import { Container } from "../ui/Container";
+"use client";
 
-const stats = [
-  { value: "40", unit: "sec", label: "Avg OPD bill time" },
-  { value: "9", unit: "", label: "Indian languages" },
-  { value: "42", unit: "", label: "Specialty workflows" },
-  { value: "99.9%", unit: "", label: "Uptime SLA" },
-  { value: "<3", unit: "wks", label: "Clinic go-live" },
-];
+import { Container } from "../ui/Container";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function StatsStrip() {
+  const { t } = useTranslation();
+
+  const stats = [
+    { value: "40", unit: "sec", label: t("stats.avgOpdBillTime") },
+    { value: "9", unit: "", label: t("stats.indianLanguages") },
+    { value: "42", unit: "", label: t("stats.specialtyWorkflows") },
+    { value: "99.9%", unit: "", label: t("stats.uptimeSla") },
+    { value: "<3", unit: "wks", label: t("stats.clinicGoLive") },
+  ];
+
   return (
     <section className="py-8 sm:py-12 bg-[var(--action-primary)]">
       <Container>

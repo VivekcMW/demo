@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Building2,
@@ -10,67 +11,70 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
-
-export const metadata: Metadata = {
-  title: "Solutions by Facility Type — AarogyaEHR",
-  description:
-    "HIMS configured for your facility size: clinics, nursing homes, multi-specialty hospitals, super-specialty chains, diagnostic centers.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const facilities = [
   {
     slug: "clinics-polyclinics",
-    name: "Clinics & Polyclinics",
-    description: "OPD-focused practices with 1–10 doctors. Fast registration, prescription, and billing.",
+    nameKey: "facilities.clinicsName",
+    descKey: "facilities.clinicsDesc",
     icon: Home,
-    beds: "OPD only",
+    bedsKey: "facilities.clinicsBeds",
+    featured: false,
   },
   {
     slug: "nursing-homes",
-    name: "Nursing Homes",
-    description: "10–50 bed facilities with basic IPD. Simple wards, pharmacy, and lab.",
+    nameKey: "facilities.nursingHomesName",
+    descKey: "facilities.nursingHomesDesc",
     icon: Building2,
-    beds: "10–50 beds",
+    bedsKey: "facilities.nursingHomesBeds",
+    featured: false,
   },
   {
     slug: "multi-specialty-hospitals",
-    name: "Multi-specialty Hospitals",
-    description: "Full clinical loop: OPD, IPD, diagnostics, OT, TPA desk, NABH reporting.",
+    nameKey: "facilities.multiSpecName",
+    descKey: "facilities.multiSpecDesc",
     icon: Building2,
-    beds: "50–200 beds",
+    bedsKey: "facilities.multiSpecBeds",
     featured: true,
   },
   {
     slug: "super-specialty-chains",
-    name: "Super-specialty & Chains",
-    description: "Multi-center operations with API integrations, custom workflows, and enterprise MIS.",
+    nameKey: "facilities.chainName",
+    descKey: "facilities.chainDesc",
     icon: Network,
-    beds: "200+ beds",
+    bedsKey: "facilities.chainBeds",
+    featured: false,
   },
   {
     slug: "single-specialty-chains",
-    name: "Single-specialty Chains",
-    description: "Specialty-focused chains: eye care, dialysis, dental, fertility, ortho.",
+    nameKey: "facilities.singleChainName",
+    descKey: "facilities.singleChainDesc",
     icon: Users,
-    beds: "Multiple locations",
+    bedsKey: "facilities.singleChainBeds",
+    featured: false,
   },
   {
     slug: "diagnostic-centers-labs",
-    name: "Diagnostic Centers & Labs",
-    description: "LIS and RIS-focused with collection center workflows and B2B billing.",
+    nameKey: "facilities.diagnosticName",
+    descKey: "facilities.diagnosticDesc",
     icon: FlaskConical,
-    beds: "Diagnostics",
+    bedsKey: "facilities.diagnosticBeds",
+    featured: false,
   },
   {
     slug: "dialysis-daycare-centers",
-    name: "Dialysis & Daycare Centers",
-    description: "Session-based workflows for dialysis, chemotherapy, and minor procedures.",
+    nameKey: "facilities.dialysisName",
+    descKey: "facilities.dialysisDesc",
     icon: Activity,
-    beds: "Daycare",
+    bedsKey: "facilities.dialysisBeds",
+    featured: false,
   },
-];
+] as const;
 
 export default function FacilitiesIndexPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Hero */}
@@ -79,16 +83,15 @@ export default function FacilitiesIndexPage() {
           <div className="max-w-3xl mx-auto text-center px-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-xs sm:text-sm font-medium mb-4 sm:mb-6">
               <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>By facility type</span>
+              <span>{t("facilities.heroBadge")}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 leading-tight tracking-tight">
-              Configured for your facility size.
+              {t("facilities.heroTitle")}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed mb-6 sm:mb-8">
-              A 20-bed nursing home and a 500-bed chain need different things.
-              Same platform, different configuration — we meet you where you are.
+              {t("facilities.heroSubtitle")}
             </p>
-            <Button href="/book-demo" className="w-full sm:w-auto">Book a demo for your facility</Button>
+            <Button href="/book-demo" className="w-full sm:w-auto">{t("common.bookDemoForYourFacility")}</Button>
           </div>
         </Container>
       </section>
@@ -109,19 +112,19 @@ export default function FacilitiesIndexPage() {
               >
                 {facility.featured && (
                   <div className="text-xs font-medium text-[var(--action-primary)] mb-3 sm:mb-4">
-                    Most common
+                    {t("facilities.mostCommon")}
                   </div>
                 )}
                 <facility.icon className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--action-primary)] mb-3 sm:mb-4" />
                 <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:text-[var(--action-primary)] transition-colors">
-                  {facility.name}
+                  {t(facility.nameKey)}
                 </h3>
                 <p className="text-sm sm:text-base text-[var(--text-secondary)] mb-3 sm:mb-4 leading-relaxed">
-                  {facility.description}
+                  {t(facility.descKey)}
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs sm:text-sm text-[var(--text-secondary)]">
-                    {facility.beds}
+                    {t(facility.bedsKey)}
                   </span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--action-primary)] group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -136,14 +139,13 @@ export default function FacilitiesIndexPage() {
         <Container>
           <div className="text-center px-2">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-              Not sure which fits you best?
+              {t("facilities.ctaTitle")}
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
-              Talk to us. We'll recommend the right configuration based on your
-              current setup and growth plans.
+              {t("facilities.ctaSubtitle")}
             </p>
             <Button href="/book-demo" variant="inverse" className="w-full sm:w-auto">
-              Book a demo
+              {t("common.bookDemo")}
             </Button>
           </div>
         </Container>
