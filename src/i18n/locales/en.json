@@ -1,0 +1,131 @@
+{
+  "common": {
+    "bookDemo": "Book a demo",
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "login": "Log in",
+    "signUp": "Sign up",
+    "contact": "Contact",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "nav": {
+    "product": "Product",
+    "solutions": "Solutions",
+    "pricing": "Pricing",
+    "resources": "Resources",
+    "bySpecialty": "By specialty",
+    "byFacility": "By facility type",
+    "byRole": "By role"
+  },
+  "hero": {
+    "title": "The EHR built for how India",
+    "titleHighlight": "actually practices",
+    "titleEnd": "medicine.",
+    "subtitle": "60 patients before lunch. Three languages at one front desk. TPA queries at month-end. AarogyaEHR is designed for that reality — specialty-deep clinical workflows, ABDM built in, and an interface that runs on every machine in your hospital.",
+    "seeSpecialty": "See your specialty",
+    "specialties": "42 specialties",
+    "languages": "9 languages",
+    "abdm": "ABDM M3"
+  },
+  "cta": {
+    "title": "See AarogyaEHR on your own patients' journeys.",
+    "subtitle": "A 45-minute demo, configured to your specialty mix. No slideware — the real product.",
+    "talkWhatsapp": "Talk on WhatsApp"
+  },
+  "stickyCta": {
+    "title": "Ready to see it on your patients?",
+    "subtitle": "45-minute live demo, your specialty pre-configured.",
+    "bookDemo": "Book demo",
+    "whatsapp": "WhatsApp"
+  },
+  "pricing": {
+    "title": "Pricing that scales like your hospital does.",
+    "subtitle": "Per-doctor for clinics. Per-bed for hospitals. ABDM, security, and Indian-language support included in every plan — never sold as add-ons.",
+    "starter": "Starter",
+    "starterDesc": "For single-doctor clinics",
+    "professional": "Professional",
+    "professionalDesc": "For nursing homes & polyclinics",
+    "enterprise": "Enterprise",
+    "enterpriseDesc": "For hospitals & chains",
+    "perDoctor": "per doctor/month",
+    "perBed": "per bed/month",
+    "customPricing": "Custom pricing",
+    "contactSales": "Contact sales",
+    "mostPopular": "Most popular",
+    "alwaysIncluded": "What's always included",
+    "alwaysIncludedSubtitle": "Every plan, every customer — no upsells for compliance or safety."
+  },
+  "demo": {
+    "title": "A demo on your workflows, not our slides.",
+    "subtitle": "Tell us your facility type and specialty mix. We'll walk your team through the live product — registration to discharge — in 45 minutes.",
+    "reassurance1": "45 minutes, live product",
+    "reassurance2": "Your specialty pre-configured",
+    "reassurance3": "No obligation, no pressure follow-ups",
+    "requestDemo": "Request demo",
+    "whatHappensNext": "What happens next",
+    "step1Title": "We confirm a slot",
+    "step1Desc": "Within one working day of your request.",
+    "step2Title": "Pre-demo checklist",
+    "step2Desc": "You receive a short form so we can configure your specialties.",
+    "step3Title": "Live product demo",
+    "step3Desc": "45 minutes with a product specialist — bring your CMO and one skeptical doctor.",
+    "talkNow": "Prefer to talk now?"
+  },
+  "form": {
+    "name": "Name",
+    "email": "Work email",
+    "phone": "Phone (+91)",
+    "hospital": "Hospital/clinic name",
+    "city": "City",
+    "detected": "Detected",
+    "facilityType": "Facility type",
+    "selectFacility": "Select facility type",
+    "beds": "Number of beds (if hospital)",
+    "specialties": "Specialties of interest",
+    "selectSpecialties": "Select specialties...",
+    "searchSpecialties": "Search specialties...",
+    "currentSoftware": "Current software (optional)",
+    "preferredLanguage": "Preferred language for demo",
+    "required": "*"
+  },
+  "facilities": {
+    "clinic": "Clinic",
+    "nursingHome": "Nursing home",
+    "multiSpecialty": "Multi-specialty",
+    "superSpecialty": "Super-specialty or chain",
+    "singleSpecialtyChain": "Single-specialty chain",
+    "diagnosticCenter": "Diagnostic center"
+  },
+  "footer": {
+    "tagline": "The EHR built for how India actually practices medicine.",
+    "product": "Product",
+    "solutions": "Solutions",
+    "resources": "Resources",
+    "company": "Company",
+    "legal": "Legal",
+    "copyright": "© {year} TheCgroup Private Limited. All rights reserved.",
+    "privacyPolicy": "Privacy policy",
+    "terms": "Terms of service",
+    "dpdp": "DPDP compliance"
+  },
+  "trust": {
+    "trustedBy": "Trusted by hospitals across India",
+    "andMore": "+200 more hospitals and clinics"
+  },
+  "specialties": {
+    "title": "42 specialties. Your workflow, not a generic template.",
+    "subtitle": "Each specialty pack includes pre-built templates, order sets, and documentation flows designed with practicing clinicians.",
+    "viewAll": "View all specialties",
+    "medicine": "Medicine",
+    "surgery": "Surgery",
+    "womenChildren": "Women & Children",
+    "sensesEnt": "Senses & ENT",
+    "oncologySpecialised": "Oncology & Specialised",
+    "criticalEmergency": "Critical & Emergency",
+    "mentalHealth": "Mental Health & Lifestyle",
+    "rehabilitation": "Rehabilitation & Wellness",
+    "traditional": "Traditional Medicine"
+  }
+}
