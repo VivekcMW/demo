@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Calculator, Users, Stethoscope, ArrowRight, Info, Check, Sparkles, Plus, Minus, ChevronDown, Receipt, UserPlus, Calendar, X, UsersRound } from "lucide-react";
+import { Calculator, Users, Stethoscope, ArrowRight, Info, Check, Sparkles, Plus, Minus, ChevronDown, Receipt, UserPlus, Calendar, X, UsersRound, Building2 } from "lucide-react";
 import Link from "next/link";
 
 // Specialty pricing tiers with multipliers
@@ -256,23 +256,31 @@ export function PriceCalculator({ variant = "full", showCTA = true }: PriceCalcu
           </div>
         </div>
 
-        {/* Inputs in one row */}
+        {/* Hospital Profile - creative 2x2 grid */}
         <div>
-          <p className="text-sm font-medium text-foreground mb-3">Hospital Profile</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">Hospital Profile</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             {/* Doctors */}
-            <div className="p-3 rounded-lg border border-[var(--border-default)]">
-              <label className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] mb-2">
-                <Users className="w-3 h-3" />
+            <div className="relative p-3 rounded-xl bg-gradient-to-br from-violet-50 to-white border border-violet-100 hover:border-violet-200 transition-colors group">
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+              </div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-violet-700 mb-2.5">
+                <Users className="w-3.5 h-3.5" />
                 Doctors
               </label>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setDoctors(Math.max(1, doctors - 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 transition-all flex-shrink-0"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
                 <input
                   type="number"
@@ -280,31 +288,34 @@ export function PriceCalculator({ variant = "full", showCTA = true }: PriceCalcu
                   max="100"
                   value={doctors}
                   onChange={(e) => setDoctors(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full px-2 py-1 text-center text-base font-semibold border border-[var(--border-default)] rounded"
+                  className="w-full px-2 py-1.5 text-center text-base font-bold text-violet-900 bg-white/80 border border-violet-200 rounded-lg focus:ring-2 focus:ring-violet-300 focus:border-violet-400 outline-none transition"
                 />
                 <button
                   type="button"
                   onClick={() => setDoctors(Math.min(100, doctors + 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 transition-all flex-shrink-0"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
             {/* Staff */}
-            <div className="p-3 rounded-lg border border-[var(--border-default)]">
-              <label className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] mb-2">
-                <UsersRound className="w-3 h-3" />
+            <div className="relative p-3 rounded-xl bg-gradient-to-br from-amber-50 to-white border border-amber-100 hover:border-amber-200 transition-colors group">
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              </div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-700 mb-2.5">
+                <UsersRound className="w-3.5 h-3.5" />
                 Staff
               </label>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setStaff(Math.max(1, staff - 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-amber-200 text-amber-600 hover:bg-amber-50 hover:border-amber-300 transition-all flex-shrink-0"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
                 <input
                   type="number"
@@ -312,31 +323,34 @@ export function PriceCalculator({ variant = "full", showCTA = true }: PriceCalcu
                   max="500"
                   value={staff}
                   onChange={(e) => setStaff(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full px-2 py-1 text-center text-base font-semibold border border-[var(--border-default)] rounded"
+                  className="w-full px-2 py-1.5 text-center text-base font-bold text-amber-900 bg-white/80 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-300 focus:border-amber-400 outline-none transition"
                 />
                 <button
                   type="button"
                   onClick={() => setStaff(Math.min(500, staff + 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-amber-200 text-amber-600 hover:bg-amber-50 hover:border-amber-300 transition-all flex-shrink-0"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
             {/* Patients Per Day */}
-            <div className="p-3 rounded-lg border border-[var(--border-default)]">
-              <label className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] mb-2">
-                <UserPlus className="w-3 h-3" />
+            <div className="relative p-3 rounded-xl bg-gradient-to-br from-sky-50 to-white border border-sky-100 hover:border-sky-200 transition-colors group">
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              </div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-sky-700 mb-2.5">
+                <UserPlus className="w-3.5 h-3.5" />
                 Patients / Day
               </label>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setPatientsPerDay(Math.max(10, patientsPerDay - 10))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-sky-200 text-sky-600 hover:bg-sky-50 hover:border-sky-300 transition-all flex-shrink-0"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
                 <input
                   type="number"
@@ -345,31 +359,34 @@ export function PriceCalculator({ variant = "full", showCTA = true }: PriceCalcu
                   step="10"
                   value={patientsPerDay}
                   onChange={(e) => setPatientsPerDay(Math.max(10, parseInt(e.target.value) || 10))}
-                  className="w-full px-2 py-1 text-center text-base font-semibold border border-[var(--border-default)] rounded"
+                  className="w-full px-2 py-1.5 text-center text-base font-bold text-sky-900 bg-white/80 border border-sky-200 rounded-lg focus:ring-2 focus:ring-sky-300 focus:border-sky-400 outline-none transition"
                 />
                 <button
                   type="button"
                   onClick={() => setPatientsPerDay(Math.min(1000, patientsPerDay + 10))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-sky-200 text-sky-600 hover:bg-sky-50 hover:border-sky-300 transition-all flex-shrink-0"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
             {/* Working Days */}
-            <div className="p-3 rounded-lg border border-[var(--border-default)]">
-              <label className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] mb-2">
-                <Calendar className="w-3 h-3" />
+            <div className="relative p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 hover:border-emerald-200 transition-colors group">
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 mb-2.5">
+                <Calendar className="w-3.5 h-3.5" />
                 Days / Month
               </label>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setWorkingDays(Math.max(1, workingDays - 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all flex-shrink-0"
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
                 <input
                   type="number"
@@ -377,20 +394,20 @@ export function PriceCalculator({ variant = "full", showCTA = true }: PriceCalcu
                   max="31"
                   value={workingDays}
                   onChange={(e) => setWorkingDays(Math.max(1, Math.min(31, parseInt(e.target.value) || 1)))}
-                  className="w-full px-2 py-1 text-center text-base font-semibold border border-[var(--border-default)] rounded"
+                  className="w-full px-2 py-1.5 text-center text-base font-bold text-emerald-900 bg-white/80 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 outline-none transition"
                 />
                 <button
                   type="button"
                   onClick={() => setWorkingDays(Math.min(31, workingDays + 1))}
-                  className="p-1 border border-[var(--border-default)] rounded hover:bg-[var(--bg-subtle)] flex-shrink-0"
+                  className="p-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all flex-shrink-0"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           </div>
-          <p className="text-xs text-[var(--text-secondary)] mt-2">
-            Monthly: {calculations.monthlyPatients.toLocaleString("en-IN")} patients ({patientsPerDay} × {workingDays} days)
+          <p className="text-xs text-[var(--text-secondary)] mt-3 text-center">
+            Monthly volume: <span className="font-semibold text-foreground">{calculations.monthlyPatients.toLocaleString("en-IN")}</span> patients ({patientsPerDay} × {workingDays} days)
           </p>
         </div>
 
