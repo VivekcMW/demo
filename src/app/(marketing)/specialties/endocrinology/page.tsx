@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   Activity,
   UserCheck,
@@ -23,14 +24,7 @@ import {
 } from "@/components/marketing/templates";
 import { EndocrinologyDashboard } from "@/components/marketing/specialty/endocrinology";
 import { endocrinologyTemplates } from "@/data/seeded/endocrinology";
-
-export const metadata: Metadata = {
-  title: "Endocrinology & Diabetology Software | Diabetes Registry & Insulin Tracking | AarogyaEHR",
-  description:
-    "Specialized EHR for diabetes management with HbA1c tracking, insulin dose optimization, thyroid monitoring, and complication screening. Built for Indian endocrinologists.",
-  keywords:
-    "diabetes EHR, endocrinology software, HbA1c tracking, insulin management, thyroid monitoring, diabetes registry, CGM integration",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -133,12 +127,13 @@ const faqs = [
 ];
 
 export default function EndocrinologyPage() {
+  const { t } = useTranslation();
   return (
     <main className="flex flex-col">
       {/* Breadcrumb */}
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Endocrinology & Diabetology" },
         ]}
       />
@@ -149,7 +144,7 @@ export default function EndocrinologyPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 text-violet-700 text-sm font-medium mb-6">
               <Activity className="w-4 h-4" />
-              Endocrinology & Diabetology
+              {t("page.endocrinology")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               Diabetes Care,{" "}
@@ -328,7 +323,7 @@ export default function EndocrinologyPage() {
 
       {/* CTA Section */}
       <PageCTA
-        title="Ready to Transform Your Diabetes Practice?"
+        title={t("page.ctaTitle", { name: "Endocrinology" })}
         subtitle="Join endocrinologists across India delivering better chronic care with AarogyaEHR."
         primaryCta={{ label: "Start Free Trial", href: "/demo" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
@@ -336,7 +331,7 @@ export default function EndocrinologyPage() {
 
       {/* Cross Links */}
       <CrossLinks
-        title="Related Specialties"
+        title={t("page.relatedSpecialties")}
         links={[
           { href: "/specialties/cardiology", label: "Cardiology" },
           { href: "/specialties/nephrology", label: "Nephrology" },

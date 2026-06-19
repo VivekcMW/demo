@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   Shield,
@@ -24,28 +23,10 @@ import {
   extractFAQs,
   extractFeatures,
 } from "@/lib/content";
+import { getServerT } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = getAllSlugs("platform");
-  return slugs.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentFile("platform", slug);
-
-  if (!content) {
-    return { title: "Platform Not Found" };
-  }
-
-  return {
-    title: content.meta.meta_title?.replace("{Product}", "AarogyaEHR") || `${formatTitle(slug)} — AarogyaEHR`,
-    description: content.meta.meta_description?.replace("{Product}", "AarogyaEHR"),
-  };
 }
 
 function formatTitle(slug: string): string {
@@ -73,6 +54,7 @@ function getPlatformIcon(slug: string) {
 }
 
 export default async function PlatformPage({ params }: Props) {
+  const t = await getServerT();
   const { slug } = await params;
   const content = getContentFile("platform", slug);
 
@@ -109,7 +91,7 @@ export default async function PlatformPage({ params }: Props) {
     <>
       <PageBreadcrumb
         items={[
-          { label: "Platform", href: "/platform" },
+          { label: t("page.platform"), href: "/platform" },
           { label: title },
         ]}
       />
@@ -120,7 +102,7 @@ export default async function PlatformPage({ params }: Props) {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <PlatformIcon className="w-4 h-4" />
-              Platform
+              {t("page.platformBadge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {pageTitle.replace("{Product}", "AarogyaEHR")}
@@ -130,7 +112,7 @@ export default async function PlatformPage({ params }: Props) {
                 {hero.subhead.replace("{Product}", "AarogyaEHR")}
               </p>
             )}
-            <Button href="/book-demo">Book a demo</Button>
+            <Button href="/book-demo">{t("page.facilityBookDemo")}</Button>
           </div>
         </Container>
       </section>
@@ -185,12 +167,12 @@ export default async function PlatformPage({ params }: Props) {
 
       {/* CTA */}
       <PageCTA
-        title="See how we protect your data."
-        subtitle="A technical deep-dive for IT heads and compliance officers."
+        title={t("page.platformCtaTitle")}
+        subtitle={t("page.platformCtaSubtitle")}
       />
 
       {/* Related */}
-      <CrossLinks title="More about the platform" links={relatedPlatform} />
+      <CrossLinks title={t("page.moreAboutPlatform")} links={relatedPlatform} />
     </>
   );
 }

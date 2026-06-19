@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   HeartPulse,
   UserCheck,
@@ -23,14 +24,7 @@ import {
 } from "@/components/marketing/templates";
 import { CriticalCareDashboard } from "@/components/marketing/specialty/critical-care";
 import { criticalCareTemplates } from "@/data/seeded/critical-care";
-
-export const metadata: Metadata = {
-  title: "Critical Care ICU Software | Ventilators, Hemodynamics & Monitoring | AarogyaEHR",
-  description:
-    "Comprehensive ICU EHR with ventilator management, hemodynamic monitoring, APACHE/SOFA scoring, and infection surveillance. Built for Indian ICUs.",
-  keywords:
-    "ICU software, critical care EHR, ventilator management, hemodynamic monitoring, APACHE score, SOFA score, sepsis bundle, ICU dashboard",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -133,12 +127,13 @@ const faqs = [
 ];
 
 export default function CriticalCareICUPage() {
+  const { t } = useTranslation();
   return (
     <main className="flex flex-col">
       {/* Breadcrumb */}
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Critical Care/ICU" },
         ]}
       />
@@ -149,7 +144,7 @@ export default function CriticalCareICUPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-100 text-cyan-700 text-sm font-medium mb-6">
               <HeartPulse className="w-4 h-4" />
-              Critical Care / ICU
+              {t("page.criticalCare")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               Intensive Care{" "}
@@ -328,7 +323,7 @@ export default function CriticalCareICUPage() {
 
       {/* CTA Section */}
       <PageCTA
-        title="Ready to Transform Your ICU?"
+        title={t("page.ctaTitle", { name: "Critical Care" })}
         subtitle="Join hospitals across India delivering better critical care with AarogyaEHR."
         primaryCta={{ label: "Start Free Trial", href: "/demo" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
@@ -336,7 +331,7 @@ export default function CriticalCareICUPage() {
 
       {/* Cross Links */}
       <CrossLinks
-        title="Related Specialties"
+        title={t("page.relatedSpecialties")}
         links={[
           { href: "/specialties/emergency-medicine", label: "Emergency Medicine" },
           { href: "/specialties/pulmonology", label: "Pulmonology" },

@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   CheckCircle2,
   Play,
@@ -18,12 +19,7 @@ import {
 } from "@/components/marketing/templates";
 import { OphthalmologyDashboard } from "@/components/marketing/specialty/ophthalmology";
 import { ophthalmologyTemplates } from "@/data/seeded/ophthalmology";
-
-export const metadata: Metadata = {
-  title: "Ophthalmology EMR & Workflow Software — AarogyaEHR",
-  description:
-    "Ophthalmology EMR for India — high-volume cataract workflows, optical and IOL inventory, refraction records, and screening camp support.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -110,11 +106,12 @@ const relatedSpecialties = [
 ];
 
 export default function OphthalmologyPage() {
+  const { t } = useTranslation();
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Ophthalmology" },
         ]}
       />
@@ -125,20 +122,20 @@ export default function OphthalmologyPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-(--action-primary)/10 text-(--action-primary) text-sm font-medium mb-6">
               <Eye className="w-4 h-4" />
-              Ophthalmology Workflows
+              {t("page.ophthalmology")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              India's most performed surgery deserves its fastest workflow.
+              India&apos;s most performed surgery deserves its fastest workflow.
             </h1>
             <p className="text-xl text-(--text-secondary) leading-relaxed mb-8">
               Cataract pipelines, refraction records, IOL inventory, and
               camp-to-OT funnels — engineered for eye-care volume.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book an ophthalmology demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: "Ophthalmology" })}</Button>
               <Button href="#dashboard" variant="secondary">
                 <Play className="w-4 h-4 mr-2" />
-                See the live dashboard
+                {t("page.seeLiveDashboard")}
               </Button>
             </div>
           </div>
@@ -149,8 +146,8 @@ export default function OphthalmologyPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="The problems we built around"
-            subtitle="Why generic EMRs fail ophthalmology departments."
+            title={t("page.problemsTitle")}
+            subtitle={t("page.problemsSubtitle", { name: "Ophthalmology" })}
           />
           <div className="grid md:grid-cols-3 gap-6">
             {problems.map((problem) => {
@@ -180,8 +177,8 @@ export default function OphthalmologyPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="How ophthalmology runs on AarogyaEHR"
-            subtitle="Workflows designed with practicing ophthalmologists."
+            title={t("page.workflowsTitle", { name: "Ophthalmology" })}
+            subtitle={t("page.workflowsSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
@@ -211,8 +208,8 @@ export default function OphthalmologyPage() {
       <section id="dashboard" className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Live Dashboard Preview"
-            subtitle="Interactive demo with real ophthalmology workflows and simulated data."
+            title={t("page.dashboardPreview", { name: "Ophthalmology" })}
+            subtitle={t("page.dashboardSubtitle")}
           />
           <OphthalmologyDashboard />
         </Container>
@@ -222,8 +219,8 @@ export default function OphthalmologyPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="Specialty templates included"
-            subtitle="Pre-configured for Indian ophthalmology practice patterns."
+            title={t("page.templatesTitle")}
+            subtitle={t("page.templatesSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {ophthalmologyTemplates.slice(0, 9).map((template) => (
@@ -252,7 +249,7 @@ export default function OphthalmologyPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Integrations & devices"
+            title={t("page.integrationsTitle")}
             subtitle="Connect your existing equipment for seamless data flow."
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
@@ -283,12 +280,12 @@ export default function OphthalmologyPage() {
 
       {/* CTA */}
       <PageCTA
-        title="See ophthalmology handled the way your department actually works."
-        subtitle="Bring your most complex case to a 45-minute live demo."
+        title={t("page.ctaTitle", { name: "Ophthalmology" })}
+        subtitle={t("page.ctaSubtitle")}
       />
 
       {/* Related Specialties */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }

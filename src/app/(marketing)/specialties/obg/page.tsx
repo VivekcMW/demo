@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   CheckCircle2,
   Play,
@@ -19,12 +20,7 @@ import {
   CrossLinks,
 } from "@/components/marketing/templates";
 import { OBGDashboard } from "@/components/marketing/specialty/obg";
-
-export const metadata: Metadata = {
-  title: "Obstetrics & Gynaecology EMR & Workflow Software — AarogyaEHR",
-  description:
-    "OBG EMR for Indian hospitals — digital partograph, ANC tracking, LSCS documentation, PC-PNDT compliance, and maternity package billing.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -123,11 +119,12 @@ const relatedSpecialties = [
 ];
 
 export default function OBGPage() {
+  const { t } = useTranslation();
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Obstetrics & Gynaecology" },
         ]}
       />
@@ -138,7 +135,7 @@ export default function OBGPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-6">
               <Baby className="w-4 h-4" />
-              OBG & Maternity Workflows
+              {t("page.obg")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               From the first ANC visit to the birth register — one record.
@@ -148,10 +145,10 @@ export default function OBGPage() {
               and PC-PNDT compliance, built for India&apos;s busiest maternity units.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book an OBG demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: "OBG" })}</Button>
               <Button href="#dashboard" variant="secondary">
                 <Play className="w-4 h-4 mr-2" />
-                See the live dashboard
+                {t("page.seeLiveDashboard")}
               </Button>
             </div>
           </div>
@@ -162,8 +159,8 @@ export default function OBGPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="The problems we built around"
-            subtitle="Why generic EMRs fail maternity departments."
+            title={t("page.problemsTitle")}
+            subtitle={t("page.problemsSubtitle", { name: "OBG" })}
           />
           <div className="grid md:grid-cols-3 gap-6">
             {problems.map((problem) => {
@@ -193,8 +190,8 @@ export default function OBGPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="How OBG runs on AarogyaEHR"
-            subtitle="Workflows designed with practicing obstetricians and gynecologists."
+            title={t("page.workflowsTitle", { name: "OBG" })}
+            subtitle={t("page.workflowsSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
@@ -224,8 +221,8 @@ export default function OBGPage() {
       <section id="dashboard" className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Live Dashboard Preview"
-            subtitle="Interactive demo with real OBG workflows and simulated data."
+            title={t("page.dashboardPreview", { name: "OBG" })}
+            subtitle={t("page.dashboardSubtitle")}
           />
           <OBGDashboard />
         </Container>
@@ -235,8 +232,8 @@ export default function OBGPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="Specialty templates included"
-            subtitle="Pre-configured for Indian obstetric and gynecologic practice patterns."
+            title={t("page.templatesTitle")}
+            subtitle={t("page.templatesSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {templates.map((template) => (
@@ -265,7 +262,7 @@ export default function OBGPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Integrations & devices"
+            title={t("page.integrationsTitle")}
             subtitle="Connect your existing equipment for seamless data flow."
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
@@ -297,7 +294,7 @@ export default function OBGPage() {
           <div className="max-w-3xl mx-auto text-center">
             <Stethoscope className="w-12 h-12 text-purple-600 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Outcome snapshot
+              {t("page.outcomeTitle")}
             </h2>
             <p className="text-lg text-(--text-secondary) leading-relaxed">
               Maternity units report <strong className="text-purple-700">complete partographs on 100% of monitored labours</strong> — because the chart is the workflow, not an afterthought.
@@ -311,12 +308,12 @@ export default function OBGPage() {
 
       {/* CTA */}
       <PageCTA
-        title="See OBG handled the way your department actually works."
-        subtitle="Bring your most complex case to a 45-minute live demo."
+        title={t("page.ctaTitle", { name: "OBG" })}
+        subtitle={t("page.ctaSubtitle")}
       />
 
       {/* Related Specialties */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }

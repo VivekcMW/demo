@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getServerT } from "@/i18n/server";
 import {
   Shield,
   FileText,
@@ -12,30 +12,10 @@ import {
 } from "@/components/marketing/templates";
 import {
   getContentFile,
-  getAllSlugs,
 } from "@/lib/content";
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = getAllSlugs("legal");
-  return slugs.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentFile("legal", slug);
-
-  if (!content) {
-    return { title: "Page Not Found" };
-  }
-
-  return {
-    title: content.meta.meta_title?.replace("{Product}", "AarogyaEHR") || `${formatTitle(slug)} — AarogyaEHR`,
-    description: content.meta.meta_description?.replace("{Product}", "AarogyaEHR"),
-  };
 }
 
 function formatTitle(slug: string): string {
@@ -59,6 +39,7 @@ function getIcon(slug: string) {
 }
 
 export default async function LegalPage({ params }: Props) {
+  const t = await getServerT();
   const { slug } = await params;
   const content = getContentFile("legal", slug);
 
@@ -69,14 +50,13 @@ export default async function LegalPage({ params }: Props) {
   const title = formatTitle(slug);
   const Icon = getIcon(slug);
 
-  // Render appropriate legal content based on slug
   const LegalContent = getLegalContent(slug);
 
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Legal", href: "/legal" },
+          { label: t("page.legal"), href: "/legal" },
           { label: title },
         ]}
       />
@@ -87,13 +67,13 @@ export default async function LegalPage({ params }: Props) {
           <div className="max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-4">
               <Icon className="w-4 h-4" />
-              Legal
+              {t("page.legalBadge")}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {title}
             </h1>
             <p className="text-[var(--text-secondary)]">
-              Last updated: January 2025
+              {t("page.lastUpdated")}
             </p>
           </div>
         </Container>

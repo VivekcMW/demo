@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   Bone,
   UserCheck,
@@ -21,14 +22,7 @@ import {
 } from "@/components/marketing/templates";
 import { OrthopedicsDashboard } from "@/components/marketing/specialty/orthopedics";
 import { orthopedicsTemplates } from "@/data/seeded/orthopedics";
-
-export const metadata: Metadata = {
-  title: "Orthopedics EHR Software | Joint, Fracture & Spine Care | AarogyaEHR",
-  description:
-    "Comprehensive orthopedic EHR with OT scheduling, fracture census, implant inventory tracking, and integrated physiotherapy management. Built for Indian ortho practices.",
-  keywords:
-    "orthopedics software, orthopedic EHR, fracture management, joint replacement software, implant tracking, physiotherapy integration, spine surgery EMR",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -131,12 +125,13 @@ const faqs = [
 ];
 
 export default function OrthopedicsPage() {
+  const { t } = useTranslation();
   return (
     <main className="flex flex-col">
       {/* Breadcrumb */}
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Orthopedics" },
         ]}
       />
@@ -147,7 +142,7 @@ export default function OrthopedicsPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium mb-6">
               <Bone className="w-4 h-4" />
-              Orthopedics & Trauma Care
+              {t("page.orthopedics")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 leading-tight">
               Complete Orthopedic Practice
@@ -326,7 +321,7 @@ export default function OrthopedicsPage() {
 
       {/* CTA Section */}
       <PageCTA
-        title="Ready to Streamline Your Orthopedic Practice?"
+        title={t("page.ctaTitle", { name: "Orthopedics" })}
         subtitle="Join surgeons across India who have transformed their workflows with AarogyaEHR."
         primaryCta={{ label: "Start Free Trial", href: "/demo" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
@@ -334,7 +329,7 @@ export default function OrthopedicsPage() {
 
       {/* Cross Links */}
       <CrossLinks
-        title="Related Specialties"
+        title={t("page.relatedSpecialties")}
         links={[
           { href: "/specialties/general-surgery", label: "General Surgery" },
           { href: "/specialties/emergency-medicine", label: "Emergency Medicine" },

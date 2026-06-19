@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   CheckCircle2,
   Play,
@@ -17,12 +18,7 @@ import {
   CrossLinks,
 } from "@/components/marketing/templates";
 import { GeneralMedicineDashboard } from "@/components/marketing/specialty/general-medicine";
-
-export const metadata: Metadata = {
-  title: "General Medicine EMR & OPD Software — AarogyaEHR",
-  description:
-    "General Medicine EMR for Indian hospitals — high-volume OPD queue management, chronic disease registry, order sets, SOAP documentation, and follow-up tracking.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -121,11 +117,12 @@ const relatedSpecialties = [
 ];
 
 export default function GeneralMedicinePage() {
+  const { t } = useTranslation();
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "General Medicine" },
         ]}
       />
@@ -136,7 +133,7 @@ export default function GeneralMedicinePage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6">
               <Stethoscope className="w-4 h-4" />
-              General Medicine & Internal Medicine
+              {t("page.generalMedicine")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               High-volume OPD. Chronic registries. Zero chaos.
@@ -146,10 +143,10 @@ export default function GeneralMedicinePage() {
               built for India&apos;s busiest medicine departments.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book a Medicine demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: "General Medicine" })}</Button>
               <Button href="#dashboard" variant="secondary">
                 <Play className="w-4 h-4 mr-2" />
-                See the live dashboard
+                {t("page.seeLiveDashboard")}
               </Button>
             </div>
           </div>
@@ -160,8 +157,8 @@ export default function GeneralMedicinePage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="The problems we built around"
-            subtitle="Why generic EMRs fail high-volume medicine departments."
+            title={t("page.problemsTitle")}
+            subtitle={t("page.problemsSubtitle", { name: "General Medicine" })}
           />
           <div className="grid md:grid-cols-3 gap-6">
             {problems.map((problem) => {
@@ -191,8 +188,8 @@ export default function GeneralMedicinePage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="How General Medicine runs on AarogyaEHR"
-            subtitle="Workflows designed with practicing physicians and internists."
+            title={t("page.workflowsTitle", { name: "General Medicine" })}
+            subtitle={t("page.workflowsSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
@@ -222,8 +219,8 @@ export default function GeneralMedicinePage() {
       <section id="dashboard" className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Live Dashboard Preview"
-            subtitle="Interactive demo with real medicine workflows and simulated data."
+            title={t("page.dashboardPreview", { name: "General Medicine" })}
+            subtitle={t("page.dashboardSubtitle")}
           />
           <GeneralMedicineDashboard />
         </Container>
@@ -233,8 +230,8 @@ export default function GeneralMedicinePage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="Specialty templates included"
-            subtitle="Pre-configured for Indian general medicine practice patterns."
+            title={t("page.templatesTitle")}
+            subtitle={t("page.templatesSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {templates.map((template) => (
@@ -263,7 +260,7 @@ export default function GeneralMedicinePage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Integrations & workflows"
+            title={t("page.integrationsTitle")}
             subtitle="Connected to every department your patients touch."
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
@@ -295,7 +292,7 @@ export default function GeneralMedicinePage() {
           <div className="max-w-3xl mx-auto text-center">
             <TrendingUp className="w-12 h-12 text-blue-600 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Outcome snapshot
+              {t("page.outcomeTitle")}
             </h2>
             <p className="text-lg text-(--text-secondary) leading-relaxed">
               Medicine departments report <strong className="text-blue-700">40% reduction in patient wait times</strong> and <strong className="text-blue-700">95%+ chronic care follow-up compliance</strong> — because the system tracks what matters.
@@ -309,12 +306,12 @@ export default function GeneralMedicinePage() {
 
       {/* CTA */}
       <PageCTA
-        title="See your OPD running the way it should."
-        subtitle="Bring your busiest day's workflow to a 45-minute live demo."
+        title={t("page.ctaTitle", { name: "General Medicine" })}
+        subtitle={t("page.ctaSubtitle")}
       />
 
       {/* Related Specialties */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }

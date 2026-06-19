@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   ArrowRight,
@@ -26,28 +25,10 @@ import {
   extractHero,
   extractFAQs,
 } from "@/lib/content";
+import { getServerT } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = getAllSlugs("roles");
-  return slugs.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentFile("roles", slug);
-
-  if (!content) {
-    return { title: "Role Not Found" };
-  }
-
-  return {
-    title: content.meta.meta_title?.replace("{Product}", "AarogyaEHR") || `For ${formatTitle(slug)} — AarogyaEHR`,
-    description: content.meta.meta_description?.replace("{Product}", "AarogyaEHR"),
-  };
 }
 
 function formatTitle(slug: string): string {
@@ -77,6 +58,7 @@ function getRoleIcon(slug: string) {
 }
 
 export default async function RolePage({ params }: Props) {
+  const t = await getServerT();
   const { slug } = await params;
   const content = getContentFile("roles", slug);
 
@@ -120,7 +102,7 @@ export default async function RolePage({ params }: Props) {
     <>
       <PageBreadcrumb
         items={[
-          { label: "By Role", href: "/roles" },
+          { label: t("page.byRole"), href: "/roles" },
           { label: `For ${title}` },
         ]}
       />
@@ -131,7 +113,7 @@ export default async function RolePage({ params }: Props) {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <RoleIcon className="w-4 h-4" />
-              For {title.toLowerCase()}
+              {t("page.forRole", { name: title.toLowerCase() })}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {pageTitle.replace("{Product}", "AarogyaEHR")}
@@ -142,8 +124,8 @@ export default async function RolePage({ params }: Props) {
               </p>
             )}
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">See your screen</Button>
-              <Button href="/specialties" variant="secondary">Browse specialties</Button>
+              <Button href="/book-demo">{t("page.seeYourScreen")}</Button>
+              <Button href="/specialties" variant="secondary">{t("page.browseSpecialties")}</Button>
             </div>
           </div>
         </Container>
@@ -154,8 +136,8 @@ export default async function RolePage({ params }: Props) {
         <section className="py-16 md:py-24">
           <Container>
             <SectionHeader
-              title="What changes for you"
-              subtitle="How your workday improves."
+              title={t("page.whatChangesForYou")}
+              subtitle={t("page.workdayImproves")}
             />
             <div className="grid md:grid-cols-2 gap-8">
               {changes.map((change, idx) => (
@@ -183,7 +165,7 @@ export default async function RolePage({ params }: Props) {
       {dayContent && (
         <section className="py-16 md:py-24 bg-[var(--bg-subtle)]">
           <Container narrow>
-            <SectionHeader title={`A day with AarogyaEHR, as a ${title.toLowerCase()}`} />
+            <SectionHeader title={t("page.dayWithEhr", { name: title.toLowerCase() })} />
             <div className="prose prose-slate max-w-none">
               {dayContent.split("\n\n").map((para, idx) => (
                 <p key={idx} className="text-[var(--text-secondary)] leading-relaxed mb-4">
@@ -198,7 +180,7 @@ export default async function RolePage({ params }: Props) {
       {/* FAQ */}
       {faqs.length > 0 && (
         <FAQSection
-          title={`What ${title.toLowerCase()} ask us`}
+          title={t("page.whatNameAsk", { name: title.toLowerCase() })}
           faqs={faqs.map((f) => ({
             question: f.question,
             answer: f.answer.replace(/\{Product\}/g, "AarogyaEHR"),
@@ -208,12 +190,12 @@ export default async function RolePage({ params }: Props) {
 
       {/* CTA */}
       <PageCTA
-        title="See your screen, not a sales deck."
-        subtitle={`Demos for ${title.toLowerCase()} are run on your workflows — bring a typical case.`}
+        title={t("page.roleCtaTitle")}
+        subtitle={t("page.roleCtaSubtitle", { name: title.toLowerCase() })}
       />
 
       {/* Related */}
-      <CrossLinks title="Other roles" links={relatedRoles} />
+      <CrossLinks title={t("page.otherRoles")} links={relatedRoles} />
     </>
   );
 }

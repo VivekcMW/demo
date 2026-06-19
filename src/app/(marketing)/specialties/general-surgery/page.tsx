@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   Scissors,
   UserCheck,
@@ -22,14 +23,7 @@ import {
 } from "@/components/marketing/templates";
 import { GeneralSurgeryDashboard } from "@/components/marketing/specialty/general-surgery";
 import { generalSurgeryTemplates } from "@/data/seeded/general-surgery";
-
-export const metadata: Metadata = {
-  title: "General Surgery EHR Software | OT, Ward & Emergency Management | AarogyaEHR",
-  description:
-    "Complete general surgery EHR with OT scheduling, ward management, emergency tracking, and post-op care. Streamline your surgical practice in India.",
-  keywords:
-    "general surgery software, surgical EHR, OT scheduling, ward management, post-op care, emergency surgery, laparoscopic surgery EMR",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -132,12 +126,13 @@ const faqs = [
 ];
 
 export default function GeneralSurgeryPage() {
+  const { t } = useTranslation();
   return (
     <main className="flex flex-col">
       {/* Breadcrumb */}
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "General Surgery" },
         ]}
       />
@@ -148,7 +143,7 @@ export default function GeneralSurgeryPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium mb-6">
               <Scissors className="w-4 h-4" />
-              General Surgery
+              {t("page.generalSurgery")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               Complete Surgical Practice{" "}
@@ -327,7 +322,7 @@ export default function GeneralSurgeryPage() {
 
       {/* CTA Section */}
       <PageCTA
-        title="Ready to Transform Your Surgical Practice?"
+        title={t("page.ctaTitle", { name: "General Surgery" })}
         subtitle="Join surgeons across India who have streamlined their workflows with AarogyaEHR."
         primaryCta={{ label: "Start Free Trial", href: "/demo" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
@@ -335,7 +330,7 @@ export default function GeneralSurgeryPage() {
 
       {/* Cross Links */}
       <CrossLinks
-        title="Related Specialties"
+        title={t("page.relatedSpecialties")}
         links={[
           { href: "/specialties/orthopedics", label: "Orthopedics" },
           { href: "/specialties/emergency-medicine", label: "Emergency Medicine" },

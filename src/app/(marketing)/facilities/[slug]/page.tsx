@@ -24,6 +24,7 @@ import {
   extractFeatures,
   extractFAQs,
 } from "@/lib/content";
+import { getServerT } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -37,14 +38,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const content = getContentFile("facilities", slug);
-
   if (!content) {
     return { title: "Facility Not Found" };
   }
-
   return {
-    title: content.meta.meta_title?.replace("{Product}", "AarogyaEHR") || `${formatTitle(slug)} — AarogyaEHR`,
-    description: content.meta.meta_description?.replace("{Product}", "AarogyaEHR"),
+    title: content.meta.meta_title || `${formatTitle(slug)} EMR — AarogyaEHR`,
+    description: content.meta.meta_description,
   };
 }
 
@@ -64,11 +63,9 @@ function formatTitle(slug: string): string {
 export default async function FacilityPage({ params }: Props) {
   const { slug } = await params;
   const content = getContentFile("facilities", slug);
+  if (!content) notFound();
 
-  if (!content) {
-    notFound();
-  }
-
+  const t = await getServerT();
   const hero = extractHero(content.content);
   const features = extractFeatures(content.content);
   const faqs = extractFAQs(content.content);
@@ -101,18 +98,17 @@ export default async function FacilityPage({ params }: Props) {
     <>
       <PageBreadcrumb
         items={[
-          { label: "Facilities", href: "/facilities" },
+          { label: t("page.facilities"), href: "/facilities" },
           { label: title },
         ]}
       />
 
-      {/* Hero */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-[var(--bg-subtle)] to-white">
         <Container>
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <Building2 className="w-4 h-4" />
-              By facility type
+              {t("page.byFacilityType")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {pageTitle.replace("{Product}", "AarogyaEHR")}
@@ -123,18 +119,17 @@ export default async function FacilityPage({ params }: Props) {
               </p>
             )}
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book a demo</Button>
-              <Button href="/pricing" variant="secondary">See pricing</Button>
+              <Button href="/book-demo">{t("page.facilityBookDemo")}</Button>
+              <Button href="/pricing" variant="secondary">{t("page.facilitySeePricing")}</Button>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Who this is for */}
       {whoContent && (
         <section className="py-16 md:py-24">
           <Container narrow>
-            <SectionHeader title="Who this is for" />
+            <SectionHeader title={t("page.whoThisIsFor")} />
             <div className="prose prose-slate max-w-none">
               <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
                 {whoContent.replace(/\{Product\}/g, "AarogyaEHR")}
@@ -144,13 +139,12 @@ export default async function FacilityPage({ params }: Props) {
         </section>
       )}
 
-      {/* Problems we solve */}
       {problems.length > 0 && (
         <section className="py-16 md:py-24 bg-[var(--bg-subtle)]">
           <Container>
             <SectionHeader
-              title="The problems we solve at this scale"
-              subtitle="Why generic HIMS fails at your facility type."
+              title={t("page.problemsScaleTitle")}
+              subtitle={t("page.problemsScaleSubtitle")}
             />
             <div className="grid md:grid-cols-2 gap-8">
               {problems.map((problem, idx) => (
@@ -171,7 +165,6 @@ export default async function FacilityPage({ params }: Props) {
         </section>
       )}
 
-      {/* FAQ */}
       {faqs.length > 0 && (
         <FAQSection
           faqs={faqs.map((f) => ({
@@ -181,14 +174,12 @@ export default async function FacilityPage({ params }: Props) {
         />
       )}
 
-      {/* CTA */}
       <PageCTA
-        title="See it configured for a facility like yours."
-        subtitle="The demo is not generic. Tell us your bed count, specialties, and current process."
+        title={t("page.facilityCtaTitle")}
+        subtitle={t("page.facilityCtaSubtitle")}
       />
 
-      {/* Related */}
-      <CrossLinks title="Other facility types" links={relatedFacilities} />
+      <CrossLinks title={t("page.otherFacilityTypes")} links={relatedFacilities} />
     </>
   );
 }

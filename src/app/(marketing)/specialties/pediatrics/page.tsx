@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   CheckCircle2,
   Play,
@@ -19,12 +20,7 @@ import {
   CrossLinks,
 } from "@/components/marketing/templates";
 import { PediatricsDashboard } from "@/components/marketing/specialty/pediatrics";
-
-export const metadata: Metadata = {
-  title: "Pediatrics & Neonatology EMR Software — AarogyaEHR",
-  description:
-    "Pediatrics EMR for Indian hospitals — vaccination tracking, NICU management, growth charts, developmental screening, and child-friendly workflows.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -123,11 +119,12 @@ const relatedSpecialties = [
 ];
 
 export default function PediatricsPage() {
+  const { t } = useTranslation();
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Pediatrics & Neonatology" },
         ]}
       />
@@ -138,7 +135,7 @@ export default function PediatricsPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 text-teal-700 text-sm font-medium mb-6">
               <Baby className="w-4 h-4" />
-              Pediatrics & Neonatology
+              {t("page.pediatrics")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               From NICU to school physicals — every child, every milestone.
@@ -148,10 +145,10 @@ export default function PediatricsPage() {
               built for India&apos;s pediatric practices.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book a Pediatrics demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: "Pediatrics" })}</Button>
               <Button href="#dashboard" variant="secondary">
                 <Play className="w-4 h-4 mr-2" />
-                See the live dashboard
+                {t("page.seeLiveDashboard")}
               </Button>
             </div>
           </div>
@@ -162,8 +159,8 @@ export default function PediatricsPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="The problems we built around"
-            subtitle="Why generic EMRs fail pediatric departments."
+            title={t("page.problemsTitle")}
+            subtitle={t("page.problemsSubtitle", { name: "Pediatrics" })}
           />
           <div className="grid md:grid-cols-3 gap-6">
             {problems.map((problem) => {
@@ -193,8 +190,8 @@ export default function PediatricsPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="How Pediatrics runs on AarogyaEHR"
-            subtitle="Workflows designed with practicing pediatricians and neonatologists."
+            title={t("page.workflowsTitle", { name: "Pediatrics" })}
+            subtitle={t("page.workflowsSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
@@ -224,8 +221,8 @@ export default function PediatricsPage() {
       <section id="dashboard" className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Live Dashboard Preview"
-            subtitle="Interactive demo with real pediatric workflows and simulated data."
+            title={t("page.dashboardPreview", { name: "Pediatrics" })}
+            subtitle={t("page.dashboardSubtitle")}
           />
           <PediatricsDashboard />
         </Container>
@@ -235,8 +232,8 @@ export default function PediatricsPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="Specialty templates included"
-            subtitle="Pre-configured for Indian pediatric practice patterns."
+            title={t("page.templatesTitle")}
+            subtitle={t("page.templatesSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {templates.map((template) => (
@@ -265,7 +262,7 @@ export default function PediatricsPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Integrations & workflows"
+            title={t("page.integrationsTitle")}
             subtitle="Connected to every department your little patients touch."
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
@@ -297,7 +294,7 @@ export default function PediatricsPage() {
           <div className="max-w-3xl mx-auto text-center">
             <TrendingUp className="w-12 h-12 text-teal-600 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Outcome snapshot
+              {t("page.outcomeTitle")}
             </h2>
             <p className="text-lg text-(--text-secondary) leading-relaxed">
               Pediatric units report <strong className="text-teal-700">100% vaccination schedule adherence</strong> and <strong className="text-teal-700">early malnutrition detection in 3x more cases</strong> — because every weight is plotted, every vaccine is tracked.
@@ -311,12 +308,12 @@ export default function PediatricsPage() {
 
       {/* CTA */}
       <PageCTA
-        title="See pediatrics handled the way your department actually works."
-        subtitle="Bring your most complex NICU case to a 45-minute live demo."
+        title={t("page.ctaTitle", { name: "Pediatrics" })}
+        subtitle={t("page.ctaSubtitle")}
       />
 
       {/* Related Specialties */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }

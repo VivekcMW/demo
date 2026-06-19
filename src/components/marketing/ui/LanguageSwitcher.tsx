@@ -32,6 +32,7 @@ export function LanguageSwitcher({ variant = "nav" }: LanguageSwitcherProps) {
 
   const handleLanguageChange = (code: LanguageCode) => {
     setLanguage(code);
+    document.cookie = `aarogya-language=${code};path=/;max-age=31536000;SameSite=Lax`;
     setIsOpen(false);
   };
 
@@ -69,7 +70,7 @@ export function LanguageSwitcher({ variant = "nav" }: LanguageSwitcherProps) {
           <div className="max-h-[300px] overflow-y-auto">
             {languages.map((lang) => {
               const isActive = language === lang.code;
-              const isAvailable = ["en", "hi", "mr"].includes(lang.code);
+              const isAvailable = ["en", "hi", "kn"].includes(lang.code);
 
               return (
                 <button

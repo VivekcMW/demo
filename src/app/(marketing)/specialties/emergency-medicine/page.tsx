@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   Siren,
   UserCheck,
@@ -24,14 +25,7 @@ import {
 } from "@/components/marketing/templates";
 import { EmergencyMedicineDashboard } from "@/components/marketing/specialty/emergency-medicine";
 import { emergencyMedicineTemplates } from "@/data/seeded/emergency-medicine";
-
-export const metadata: Metadata = {
-  title: "Emergency Medicine EHR Software | Triage, Trauma & Resuscitation | AarogyaEHR",
-  description:
-    "Real-time emergency department EHR with triage tracking, resuscitation bay management, code protocols, and ambulance integration. Built for Indian EDs.",
-  keywords:
-    "emergency medicine software, ED EHR, triage system, trauma management, STEMI protocol, stroke code, resuscitation, ambulance tracking",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -134,12 +128,13 @@ const faqs = [
 ];
 
 export default function EmergencyMedicinePage() {
+  const { t } = useTranslation();
   return (
     <main className="flex flex-col">
       {/* Breadcrumb */}
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Emergency Medicine" },
         ]}
       />
@@ -150,7 +145,7 @@ export default function EmergencyMedicinePage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 text-red-700 text-sm font-medium mb-6">
               <Siren className="w-4 h-4" />
-              Emergency Medicine
+              {t("page.emergencyMedicine")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               Every Second Counts{" "}
@@ -329,7 +324,7 @@ export default function EmergencyMedicinePage() {
 
       {/* CTA Section */}
       <PageCTA
-        title="Ready to Transform Your Emergency Department?"
+        title={t("page.ctaTitle", { name: "Emergency Medicine" })}
         subtitle="Join hospitals across India saving more lives with faster, smarter emergency care."
         primaryCta={{ label: "Start Free Trial", href: "/demo" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
@@ -337,7 +332,7 @@ export default function EmergencyMedicinePage() {
 
       {/* Cross Links */}
       <CrossLinks
-        title="Related Specialties"
+        title={t("page.relatedSpecialties")}
         links={[
           { href: "/specialties/critical-care-icu", label: "Critical Care/ICU" },
           { href: "/specialties/general-surgery", label: "General Surgery" },

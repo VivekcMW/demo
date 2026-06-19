@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getServerT } from "@/i18n/server";
 import {
   BookOpen,
   FileText,
@@ -18,30 +18,10 @@ import {
 } from "@/components/marketing/templates";
 import {
   getContentFile,
-  getAllSlugs,
 } from "@/lib/content";
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = getAllSlugs("resources");
-  return slugs.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentFile("resources", slug);
-
-  if (!content) {
-    return { title: "Resource Not Found" };
-  }
-
-  return {
-    title: content.meta.meta_title?.replace("{Product}", "AarogyaEHR") || `${formatTitle(slug)} — AarogyaEHR`,
-    description: content.meta.meta_description?.replace("{Product}", "AarogyaEHR"),
-  };
 }
 
 function formatTitle(slug: string): string {
@@ -71,6 +51,7 @@ function getResourceIcon(slug: string) {
 }
 
 export default async function ResourcePage({ params }: Props) {
+  const t = await getServerT();
   const { slug } = await params;
   const content = getContentFile("resources", slug);
 
@@ -81,7 +62,6 @@ export default async function ResourcePage({ params }: Props) {
   const title = formatTitle(slug);
   const ResourceIcon = getResourceIcon(slug);
 
-  // Placeholder content for resource pages
   const placeholderItems = [
     { title: "Getting started guide", description: "Everything you need to know to begin." },
     { title: "Best practices", description: "Tips from successful implementations." },
@@ -93,7 +73,7 @@ export default async function ResourcePage({ params }: Props) {
     <>
       <PageBreadcrumb
         items={[
-          { label: "Resources", href: "/resources" },
+          { label: t("page.resources"), href: "/resources" },
           { label: title },
         ]}
       />
@@ -104,14 +84,14 @@ export default async function ResourcePage({ params }: Props) {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--action-primary)]/10 text-[var(--action-primary)] text-sm font-medium mb-6">
               <ResourceIcon className="w-4 h-4" />
-              Resources
+              {t("page.resourcesBadge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {title}
             </h1>
             <p className="text-xl text-[var(--text-secondary)] leading-relaxed mb-8">
               {content.meta.meta_description?.replace("{Product}", "AarogyaEHR") ||
-                `Browse our ${title.toLowerCase()} to get the most from AarogyaEHR.`}
+                t("page.browseResource", { name: title.toLowerCase() })}
             </p>
 
             {/* Search (placeholder) */}
@@ -120,7 +100,7 @@ export default async function ResourcePage({ params }: Props) {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-secondary)]" />
                 <input
                   type="text"
-                  placeholder={`Search ${title.toLowerCase()}...`}
+                  placeholder={t("page.searchResource", { name: title.toLowerCase() })}
                   className="w-full pl-12 pr-4 py-4 rounded-xl border border-[var(--border-default)] bg-white focus:ring-2 focus:ring-[var(--action-primary)] focus:border-transparent outline-none transition"
                 />
               </div>
@@ -134,7 +114,7 @@ export default async function ResourcePage({ params }: Props) {
         <Container>
           <div className="text-center mb-12">
             <p className="text-[var(--text-secondary)]">
-              Content coming soon. Check back for updates.
+              {t("page.contentComingSoon")}
             </p>
           </div>
 
@@ -158,10 +138,10 @@ export default async function ResourcePage({ params }: Props) {
 
       {/* CTA */}
       <PageCTA
-        title="Need personalized help?"
-        subtitle="Our support team is ready to assist."
-        primaryCta={{ label: "Contact support", href: "/company/contact" }}
-        secondaryCta={{ label: "Book a demo", href: "/book-demo" }}
+        title={t("page.needHelp")}
+        subtitle={t("page.supportReady")}
+        primaryCta={{ label: t("page.contactSupport"), href: "/company/contact" }}
+        secondaryCta={{ label: t("page.facilityBookDemo"), href: "/book-demo" }}
       />
     </>
   );

@@ -18,6 +18,7 @@ import {
   extractFeatures,
   extractFAQs,
 } from "@/lib/content";
+import { getServerT } from "@/i18n/server";
 
 // Dashboard component imports
 import { AnaesthesiologyDashboard } from "@/components/marketing/specialty/anaesthesiology";
@@ -121,11 +122,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const content = getContentFile("specialties", slug);
-
   if (!content) {
     return { title: "Specialty Not Found" };
   }
-
   return {
     title: content.meta.meta_title || `${formatTitle(slug)} EMR — AarogyaEHR`,
     description: content.meta.meta_description,
@@ -151,52 +150,32 @@ function formatTitle(slug: string): string {
     ent: "ENT",
     ayush: "AYUSH",
   };
-
   if (specialCases[slug]) return specialCases[slug];
-
-  return slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
 export default async function SpecialtyPage({ params }: Readonly<Props>) {
   const { slug } = await params;
   const content = getContentFile("specialties", slug);
+  if (!content) notFound();
 
-  if (!content) {
-    notFound();
-  }
-
+  const t = await getServerT();
   const hero = extractHero(content.content);
   const faqs = extractFAQs(content.content);
   const title = formatTitle(slug);
 
   // Extract problems section
-  const problemsMatch = content.content.match(
-    /## The problems we built around\n([\s\S]*?)(?=\n## |$)/
-  );
-  const problems = problemsMatch
-    ? extractFeatures(problemsMatch[1])
-    : [];
+  const problemsMatch = content.content.match(/## The problems we built around\n([\s\S]*?)(?=\n## |$)/);
+  const problems = problemsMatch ? extractFeatures(problemsMatch[1]) : [];
 
-  // Extract workflows/how it runs section
-  const workflowMatch = content.content.match(
-    /## How .+ runs on AarogyaEHR\n([\s\S]*?)(?=\n## |$)/
-  );
-  const workflows = workflowMatch
-    ? extractFeatures(workflowMatch[1])
-    : [];
+  // Extract workflows section
+  const workflowMatch = content.content.match(/## How .+ runs on AarogyaEHR\n([\s\S]*?)(?=\n## |$)/);
+  const workflows = workflowMatch ? extractFeatures(workflowMatch[1]) : [];
 
   // Extract templates section
-  const templatesMatch = content.content.match(
-    /## Specialty templates.+\n([\s\S]*?)(?=\n## |$)/
-  );
+  const templatesMatch = content.content.match(/## Specialty templates.+\n([\s\S]*?)(?=\n## |$)/);
   const templates = templatesMatch
-    ? templatesMatch[1]
-        .split("\n")
-        .filter((l) => l.startsWith("- "))
-        .map((l) => l.slice(2).trim())
+    ? templatesMatch[1].split("\n").filter((l) => l.startsWith("- ")).map((l) => l.slice(2).trim())
     : [];
 
   // Related specialties
@@ -204,30 +183,25 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
   const relatedSpecialties = allSlugs
     .filter((s) => s !== slug)
     .slice(0, 5)
-    .map((s) => ({
-      label: formatTitle(s),
-      href: `/specialties/${s}`,
-    }));
+    .map((s) => ({ label: formatTitle(s), href: `/specialties/${s}` }));
 
-  // Get dashboard component for this specialty
   const DashboardComponent = dashboardComponents[slug];
 
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: title },
         ]}
       />
 
-      {/* Hero */}
       <section className="py-20 md:py-28 bg-linear-to-b from-(--bg-subtle) to-white">
         <Container>
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-(--action-primary)/10 text-(--action-primary) text-sm font-medium mb-6">
               <Stethoscope className="w-4 h-4" />
-              Specialty workflow
+              {t("page.specialtyWorkflow")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               {hero.h1 || title}
@@ -236,45 +210,36 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
               {hero.subhead || content.meta.meta_description || ""}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book a {title.toLowerCase()} demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: title.toLowerCase() })}</Button>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Dashboard Preview */}
       {DashboardComponent && (
         <section className="py-16 md:py-24">
           <Container>
             <SectionHeader
-              title={`${title} dashboard preview`}
-              subtitle="See exactly what your team will use daily."
+              title={t("page.dashboardPreview", { name: title })}
+              subtitle={t("page.dashboardSubtitle")}
             />
             <DashboardComponent />
           </Container>
         </section>
       )}
 
-      {/* Problems we solve */}
       {problems.length > 0 && (
         <section className="py-16 md:py-24">
           <Container>
             <SectionHeader
-              title="The problems we built around"
-              subtitle={`Why generic EMRs fail ${title.toLowerCase()} departments.`}
+              title={t("page.problemsTitle")}
+              subtitle={t("page.problemsSubtitle", { name: title.toLowerCase() })}
             />
             <div className="grid md:grid-cols-3 gap-8">
               {problems.map((problem) => (
-                <div
-                  key={problem.title}
-                  className="p-6 rounded-xl bg-red-50 border border-red-100"
-                >
-                  <h3 className="font-semibold text-foreground mb-2">
-                    {problem.title}
-                  </h3>
-                  <p className="text-(--text-secondary) text-sm leading-relaxed">
-                    {problem.description}
-                  </p>
+                <div key={problem.title} className="p-6 rounded-xl bg-red-50 border border-red-100">
+                  <h3 className="font-semibold text-foreground mb-2">{problem.title}</h3>
+                  <p className="text-(--text-secondary) text-sm leading-relaxed">{problem.description}</p>
                 </div>
               ))}
             </div>
@@ -282,26 +247,18 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
         </section>
       )}
 
-      {/* How it runs */}
       {workflows.length > 0 && (
         <section id="workflows" className="py-16 md:py-24 bg-(--bg-subtle)">
           <Container>
             <SectionHeader
-              title={`How ${title.toLowerCase()} runs on AarogyaEHR`}
-              subtitle="Workflows designed with practicing specialists."
+              title={t("page.workflowsTitle", { name: title.toLowerCase() })}
+              subtitle={t("page.workflowsSubtitle")}
             />
             <div className="grid md:grid-cols-2 gap-8">
               {workflows.map((workflow) => (
-                <div
-                  key={workflow.title}
-                  className="p-6 rounded-xl bg-white border border-(--border-default)"
-                >
-                  <h3 className="font-semibold text-foreground mb-2">
-                    {workflow.title}
-                  </h3>
-                  <p className="text-(--text-secondary) leading-relaxed">
-                    {workflow.description}
-                  </p>
+                <div key={workflow.title} className="p-6 rounded-xl bg-white border border-(--border-default)">
+                  <h3 className="font-semibold text-foreground mb-2">{workflow.title}</h3>
+                  <p className="text-(--text-secondary) leading-relaxed">{workflow.description}</p>
                 </div>
               ))}
             </div>
@@ -309,20 +266,16 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
         </section>
       )}
 
-      {/* Templates included */}
       {templates.length > 0 && (
         <section className="py-16 md:py-24">
           <Container>
             <SectionHeader
-              title="Specialty templates & order sets included"
-              subtitle="Pre-configured for Indian practice patterns."
+              title={t("page.templatesTitle")}
+              subtitle={t("page.templatesSubtitle")}
             />
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {templates.map((template) => (
-                <div
-                  key={template}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-(--bg-subtle)"
-                >
+                <div key={template} className="flex items-center gap-3 p-4 rounded-lg bg-(--bg-subtle)">
                   <CheckCircle2 className="w-5 h-5 text-(--action-primary) shrink-0" />
                   <span className="text-sm text-foreground">{template}</span>
                 </div>
@@ -332,17 +285,14 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
         </section>
       )}
 
-      {/* FAQ */}
       {faqs.length > 0 && <FAQSection faqs={faqs} />}
 
-      {/* CTA */}
       <PageCTA
-        title={`See ${title.toLowerCase()} handled the way your department actually works.`}
-        subtitle="Bring your most complex case to a 45-minute live demo."
+        title={t("page.ctaTitle", { name: title.toLowerCase() })}
+        subtitle={t("page.ctaSubtitle")}
       />
 
-      {/* Related */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }

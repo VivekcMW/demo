@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -5,6 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface HeroProps {
   title: string;
@@ -110,11 +113,13 @@ interface FAQSectionProps {
   faqs: Array<{ question: string; answer: string }>;
 }
 
-export function FAQSection({ title = "Frequently asked questions", faqs }: FAQSectionProps) {
+export function FAQSection({ title, faqs }: FAQSectionProps) {
+  const { t } = useTranslation();
+  const displayTitle = title || t("page.frequentlyAskedQuestions");
   return (
     <section className="py-12 sm:py-16 md:py-24 bg-[var(--bg-subtle)]">
       <Container narrow>
-        <SectionHeader title={title} className="mb-8 sm:mb-12" />
+        <SectionHeader title={displayTitle} className="mb-8 sm:mb-12" />
         <div className="space-y-4 sm:space-y-6">
           {faqs.map((faq, idx) => (
             <div
@@ -145,9 +150,12 @@ interface PageCTAProps {
 export function PageCTA({
   title,
   subtitle,
-  primaryCta = { label: "Book a demo", href: "/book-demo" },
+  primaryCta,
   secondaryCta,
 }: PageCTAProps) {
+  const { t } = useTranslation();
+  const ctaLabel = primaryCta?.label || t("page.facilityBookDemo");
+  const ctaHref = primaryCta?.href || "/book-demo";
   return (
     <section className="py-12 sm:py-16 md:py-24 bg-[var(--action-primary)]">
       <Container>
@@ -161,8 +169,8 @@ export function PageCTA({
             </p>
           )}
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
-            <Button href={primaryCta.href} variant="inverse" className="w-full sm:w-auto">
-              {primaryCta.label}
+            <Button href={ctaHref} variant="inverse" className="w-full sm:w-auto">
+              {ctaLabel}
             </Button>
             {secondaryCta && (
               <Button href={secondaryCta.href} variant="ghost" className="text-white border-white/30 hover:bg-white/10 w-full sm:w-auto">
@@ -207,13 +215,15 @@ interface CrossLinksProps {
   links: Array<{ label: string; href: string }>;
 }
 
-export function CrossLinks({ title = "Related", links }: CrossLinksProps) {
+export function CrossLinks({ title, links }: CrossLinksProps) {
+  const { t } = useTranslation();
+  const displayTitle = title || t("page.related");
   return (
     <section className="py-12 border-t border-[var(--border-default)]">
       <Container>
         <div className="flex flex-wrap items-center gap-4">
           <span className="text-sm font-medium text-[var(--text-secondary)]">
-            {title}:
+            {displayTitle}:
           </span>
           {links.map((link) => (
             <Link
@@ -240,13 +250,14 @@ interface PageBreadcrumbProps {
 }
 
 export function PageBreadcrumb({ items }: PageBreadcrumbProps) {
+  const { t } = useTranslation();
   return (
     <nav className="py-4 border-b border-[var(--border-default)]">
       <Container>
         <ol className="flex items-center gap-2 text-sm">
           <li>
             <Link href="/" className="text-[var(--text-secondary)] hover:text-foreground">
-              Home
+              {t("page.home")}
             </Link>
           </li>
           {items.map((item, idx) => (

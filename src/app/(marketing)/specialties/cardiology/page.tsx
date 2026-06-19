@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+"use client";
+
 import {
   CheckCircle2,
   Play,
@@ -18,12 +19,7 @@ import {
   CrossLinks,
 } from "@/components/marketing/templates";
 import { CardiologyDashboard } from "@/components/marketing/specialty/cardiology";
-
-export const metadata: Metadata = {
-  title: "Cardiology EMR & Cath Lab Software — AarogyaEHR",
-  description:
-    "Cardiology EMR for Indian hospitals — Echo reporting, TMT documentation, Cath Lab workflows, CCU monitoring, and cardiac rehabilitation tracking.",
-};
+import { useTranslation } from "@/hooks/useTranslation";
 
 const problems = [
   {
@@ -122,11 +118,12 @@ const relatedSpecialties = [
 ];
 
 export default function CardiologyPage() {
+  const { t } = useTranslation();
   return (
     <>
       <PageBreadcrumb
         items={[
-          { label: "Specialties", href: "/specialties" },
+          { label: t("page.specialties"), href: "/specialties" },
           { label: "Cardiology" },
         ]}
       />
@@ -137,20 +134,19 @@ export default function CardiologyPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-sm font-medium mb-6">
               <Heart className="w-4 h-4" />
-              Cardiology & Interventional Cardiology
+              {t("cardiology.badge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              From the first Echo to the last stent — one cardiac record.
+              {t("cardiology.heroTitle")}
             </h1>
             <p className="text-xl text-(--text-secondary) leading-relaxed mb-8">
-              Echo reporting, TMT documentation, Cath Lab workflows, and CCU monitoring —
-              built for India&apos;s busiest cardiology departments.
+              {t("cardiology.heroSubtitle")}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href="/book-demo">Book a Cardiology demo</Button>
+              <Button href="/book-demo">{t("page.bookDemo", { name: "Cardiology" })}</Button>
               <Button href="#dashboard" variant="secondary">
                 <Play className="w-4 h-4 mr-2" />
-                See the live dashboard
+                {t("page.seeLiveDashboard")}
               </Button>
             </div>
           </div>
@@ -161,8 +157,8 @@ export default function CardiologyPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="The problems we built around"
-            subtitle="Why generic EMRs fail cardiology departments."
+            title={t("page.problemsTitle")}
+            subtitle={t("page.problemsSubtitle", { name: "Cardiology" })}
           />
           <div className="grid md:grid-cols-3 gap-6">
             {problems.map((problem) => {
@@ -192,8 +188,8 @@ export default function CardiologyPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="How Cardiology runs on AarogyaEHR"
-            subtitle="Workflows designed with practicing cardiologists and interventionalists."
+            title={t("page.workflowsTitle", { name: "Cardiology" })}
+            subtitle={t("page.workflowsSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
@@ -223,8 +219,8 @@ export default function CardiologyPage() {
       <section id="dashboard" className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Live Dashboard Preview"
-            subtitle="Interactive demo with real cardiology workflows and simulated data."
+            title={t("page.dashboardPreview", { name: "Cardiology" })}
+            subtitle={t("page.dashboardSubtitle")}
           />
           <CardiologyDashboard />
         </Container>
@@ -234,8 +230,8 @@ export default function CardiologyPage() {
       <section className="py-16 md:py-20 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            title="Specialty templates included"
-            subtitle="Pre-configured for Indian cardiology practice patterns."
+            title={t("page.templatesTitle")}
+            subtitle={t("page.templatesSubtitle")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {templates.map((template) => (
@@ -264,19 +260,19 @@ export default function CardiologyPage() {
       <section className="py-16 md:py-20">
         <Container>
           <SectionHeader
-            title="Integrations & devices"
+            title={t("page.integrationsTitle")}
             subtitle="Connected to your existing cardiac equipment."
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
             {[
-              "Echo machine integration",
-              "TMT system connectivity",
-              "Holter monitor import",
-              "PACS for Cath images",
-              "Bedside monitors (CCU)",
-              "Stent registry (CDSCO)",
-              "Cardiac rehab protocols",
-              "Pacemaker programmers",
+              t("cardiology.integr1"),
+              t("cardiology.integr2"),
+              t("cardiology.integr3"),
+              t("cardiology.integr4"),
+              t("cardiology.integr5"),
+              t("cardiology.integr6"),
+              t("cardiology.integr7"),
+              t("cardiology.integr8"),
             ].map((item) => (
               <div
                 key={item}
@@ -296,11 +292,12 @@ export default function CardiologyPage() {
           <div className="max-w-3xl mx-auto text-center">
             <TrendingUp className="w-12 h-12 text-rose-600 mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Outcome snapshot
+              {t("page.outcomeTitle")}
             </h2>
-            <p className="text-lg text-(--text-secondary) leading-relaxed">
-              Cardiology departments report <strong className="text-rose-700">100% structured Echo data</strong> and <strong className="text-rose-700">door-to-balloon times documented automatically</strong> — because every procedure is captured as it happens.
-            </p>
+            <p
+              className="text-lg text-(--text-secondary) leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: t("cardiology.outcomeLine") }}
+            />
           </div>
         </Container>
       </section>
@@ -310,12 +307,12 @@ export default function CardiologyPage() {
 
       {/* CTA */}
       <PageCTA
-        title="See your cardiology department running at peak efficiency."
-        subtitle="Bring your most complex case to a 45-minute live demo."
+        title={t("cardiology.ctaTitle")}
+        subtitle={t("cardiology.ctaSubtitle")}
       />
 
       {/* Related Specialties */}
-      <CrossLinks title="Related specialties" links={relatedSpecialties} />
+      <CrossLinks title={t("page.relatedSpecialties")} links={relatedSpecialties} />
     </>
   );
 }
