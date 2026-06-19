@@ -14,14 +14,14 @@ import { useExaminationStore } from "@/store/useExaminationStore";
 import { useIPDStore } from "@/store/useIPDStore";
 import { useBillingStore } from "@/store/useBillingStore";
 import { usePharmacyStore } from "@/store/usePharmacyStore";
-import type { OrderStatus, OrderType } from "@/data/seedOrders";
+import type { OrderStatus, OrderType, Order } from "@/data/seedOrders";
 import {
   ArrowLeft, ShieldAlert, HeartPulse, FlaskConical, Pill,
   FolderOpen, FileText, AlertTriangle, CheckCircle2, Clock,
   ChevronDown, ChevronUp, Building2, Calendar, Activity,
   Phone, User, Thermometer, Wind, Weight, Ruler,
   ClipboardList, ScanLine, UserCheck, Stethoscope, UtensilsCrossed, Plus, ChevronRight,
-  ShieldCheck, PenLine, BedDouble, Receipt, Syringe,
+  ShieldCheck, PenLine, BedDouble, Receipt, Syringe, Eye, Lock,
 } from "lucide-react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -362,6 +362,34 @@ function LabsTab({ labs }: { labs: LabResult[] }) {
   );
 }
 
+function MedList({ meds, label }: { meds: Medication[]; label: string }) {
+  if (meds.length === 0) return null;
+  return (
+    <div>
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</p>
+      <div className="space-y-2">
+        {meds.map((m) => (
+          <div key={m.id} className={`flex items-start gap-3 rounded-xl border border-[var(--border-default)] p-4 bg-[var(--surface-raised)] ${!m.active ? "opacity-60" : ""}`}>
+            <div className={`mt-0.5 rounded-lg p-1.5 ${m.active ? "bg-[var(--action-subtle)] text-[var(--action-primary)]" : "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"}`}>
+              <Pill size={14} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-[var(--text-primary)]">{m.drug}</p>
+              <p className="text-sm text-[var(--text-secondary)]">{m.dose} &middot; {m.frequency} &middot; {m.route}</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                Started {fmtDate(m.startDate)}{m.endDate ? ` \u00b7 Ended ${fmtDate(m.endDate)}` : ""} &middot; {m.prescribedBy}
+              </p>
+            </div>
+            {m.active && (
+              <span className="shrink-0 rounded-full bg-[var(--normal-bg)] px-2 py-0.5 text-xs font-semibold text-[var(--normal-fg)]">Active</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function MedsTab({ medications }: { medications: Medication[] }) {
   const active = medications.filter((m) => m.active);
   const past   = medications.filter((m) => !m.active);
@@ -371,34 +399,6 @@ function MedsTab({ medications }: { medications: Medication[] }) {
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Pill size={36} className="mb-3 text-[var(--text-secondary)] opacity-30" />
         <p className="font-medium text-[var(--text-primary)]">No medications on record</p>
-      </div>
-    );
-  }
-
-  function MedList({ meds, label }: { meds: Medication[]; label: string }) {
-    if (meds.length === 0) return null;
-    return (
-      <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</p>
-        <div className="space-y-2">
-          {meds.map((m) => (
-            <div key={m.id} className={`flex items-start gap-3 rounded-xl border border-[var(--border-default)] p-4 bg-[var(--surface-raised)] ${!m.active ? "opacity-60" : ""}`}>
-              <div className={`mt-0.5 rounded-lg p-1.5 ${m.active ? "bg-[var(--action-subtle)] text-[var(--action-primary)]" : "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"}`}>
-                <Pill size={14} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[var(--text-primary)]">{m.drug}</p>
-                <p className="text-sm text-[var(--text-secondary)]">{m.dose} &middot; {m.frequency} &middot; {m.route}</p>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  Started {fmtDate(m.startDate)}{m.endDate ? ` \u00b7 Ended ${fmtDate(m.endDate)}` : ""} &middot; {m.prescribedBy}
-                </p>
-              </div>
-              {m.active && (
-                <span className="shrink-0 rounded-full bg-[var(--normal-bg)] px-2 py-0.5 text-xs font-semibold text-[var(--normal-fg)]">Active</span>
-              )}
-            </div>
-          ))}
-        </div>
       </div>
     );
   }
@@ -476,17 +476,19 @@ function FinanceTab({ admissions, bills }: { admissions: Admission[]; bills: Bil
 
 // ── Tab: Examinations ────────────────────────────────────────────────────────
 
-const EXAM_STATUS_CLS = {
-  "In Progress": "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
-  "Completed":   "bg-[var(--info-bg)] text-[var(--info-fg)]",
-  "Signed Off":  "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
-} as const;
+const EXAM_STATUS_CLS: Record<string, string> = {
+  "Draft":    "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+  "In Review":"bg-[var(--info-bg)] text-[var(--info-fg)]",
+  "Signed":   "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+  "Locked":   "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+};
 
-const EXAM_STATUS_ICON = {
-  "In Progress": <PenLine size={11} />,
-  "Completed":   <CheckCircle2 size={11} />,
-  "Signed Off":  <ShieldCheck size={11} />,
-} as const;
+const EXAM_STATUS_ICON: Record<string, React.ReactNode> = {
+  "Draft":    <PenLine size={11} />,
+  "In Review":<Eye size={11} />,
+  "Signed":   <ShieldCheck size={11} />,
+  "Locked":   <Lock size={11} />,
+};
 
 function ExaminationsTab({ patientId, patientName }: { patientId: string; patientName: string }) {
   const getByPatient     = useExaminationStore((s) => s.getByPatient);
@@ -614,6 +616,48 @@ function fmtDateTime(dt: string) {
   });
 }
 
+function OrderGroup({ label, items }: { label: string; items: Order[] }) {
+  if (items.length === 0) return null;
+  return (
+    <div>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</p>
+      <div className="space-y-2">
+        {items.map((o) => {
+          const meta = ORDER_TYPE_META[o.type];
+          return (
+            <Link
+              key={o.id}
+              href={`/orders/${o.id}`}
+              className="group flex items-center gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors"
+            >
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${meta.cls}`}>
+                {meta.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-[var(--text-primary)] truncate">{o.title}</span>
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${ORDER_STATUS_CLS[o.status]}`}>{o.status}</span>
+                  {o.priority === "STAT" && (
+                    <span className="inline-flex rounded-full bg-[var(--critical-bg)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--critical-fg)]">STAT</span>
+                  )}
+                  {o.priority === "Urgent" && (
+                    <span className="inline-flex rounded-full bg-[var(--warning-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--warning-fg)]">Urgent</span>
+                  )}
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">{o.orderedBy} &middot; {fmtDateTime(o.orderedAt)}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="font-mono text-[10px] text-[var(--text-secondary)]">{o.id}</span>
+                <ChevronRight size={13} className="text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function OrdersTab({ patientId, patientName }: { patientId: string; patientName: string }) {
   const getByPatient = useOrderStore((s) => s.getByPatient);
   const [newOrderOpen, setNewOrderOpen] = useState(false);
@@ -622,48 +666,6 @@ function OrdersTab({ patientId, patientName }: { patientId: string; patientName:
   const pending   = orders.filter((o) => o.status !== "Completed" && o.status !== "Cancelled");
   const completed = orders.filter((o) => o.status === "Completed");
   const cancelled = orders.filter((o) => o.status === "Cancelled");
-
-  function OrderGroup({ label, items }: { label: string; items: typeof orders }) {
-    if (items.length === 0) return null;
-    return (
-      <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</p>
-        <div className="space-y-2">
-          {items.map((o) => {
-            const meta = ORDER_TYPE_META[o.type];
-            return (
-              <Link
-                key={o.id}
-                href={`/orders/${o.id}`}
-                className="group flex items-center gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 hover:bg-[var(--surface-sunken)] transition-colors"
-              >
-                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${meta.cls}`}>
-                  {meta.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-semibold text-[var(--text-primary)] truncate">{o.title}</span>
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${ORDER_STATUS_CLS[o.status]}`}>{o.status}</span>
-                    {o.priority === "STAT" && (
-                      <span className="inline-flex rounded-full bg-[var(--critical-bg)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--critical-fg)]">STAT</span>
-                    )}
-                    {o.priority === "Urgent" && (
-                      <span className="inline-flex rounded-full bg-[var(--warning-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--warning-fg)]">Urgent</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">{o.orderedBy} &middot; {fmtDateTime(o.orderedAt)}</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="font-mono text-[10px] text-[var(--text-secondary)]">{o.id}</span>
-                  <ChevronRight size={13} className="text-[var(--text-secondary)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5">
@@ -877,13 +879,22 @@ function DemographicsTab({ patient }: { patient: Patient }) {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
-type Tab = "demographics" | "visits" | "labs" | "meds" | "docs";
-
 export default function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const patient = usePatientStore((s) => s.getById(id));
   const router  = useRouter();
   const [activeTab, setActiveTab] = useState<"demographics" | "clinical" | "labs" | "meds" | "finance" | "docs">("clinical");
+
+  const patientId = patient?.id ?? "";
+  const patientOrderCount = useOrderStore((s) => s.getByPatient(patientId).length);
+  const patientPendingOrders = useOrderStore((s) => s.getByPatient(patientId).filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length);
+  const examCount = useExaminationStore((s) => s.getByPatient(patientId).length);
+  const examInProgress = useExaminationStore((s) => s.getByPatient(patientId).filter((e) => e.status === "Draft").length);
+  const ipdAdmissions = useIPDStore((s) => s.getByPatient(patientId));
+  const activeAdmission = ipdAdmissions.find((a) => a.status === "Active");
+  const bills = useBillingStore((s) => s.getByPatient(patientId));
+  const pendingBillTotal = bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0);
+  const rxHistory = usePharmacyStore((s) => s.getByPatient(patientId));
 
   if (!patient) {
     return (
@@ -904,16 +915,6 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const criticalLabCount = patient.labs.filter((l) => l.flag === "HH" || l.flag === "LL").length;
   const activeMedCount   = patient.medications.filter((m) => m.active).length;
   const sex = patient.sex === "M" ? "Male" : patient.sex === "F" ? "Female" : "Other";
-
-  const patientOrderCount = useOrderStore((s) => s.getByPatient(patient.id).length);
-  const patientPendingOrders = useOrderStore((s) => s.getByPatient(patient.id).filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length);
-  const examCount = useExaminationStore((s) => s.getByPatient(patient.id).length);
-  const examInProgress = useExaminationStore((s) => s.getByPatient(patient.id).filter((e) => e.status === "In Progress").length);
-  const ipdAdmissions = useIPDStore((s) => s.getByPatient(patient.id));
-  const activeAdmission = ipdAdmissions.find((a) => a.status === "Active");
-  const bills = useBillingStore((s) => s.getByPatient(patient.id));
-  const pendingBillTotal = bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0);
-  const rxHistory = usePharmacyStore((s) => s.getByPatient(patient.id));
   const activeRx = rxHistory.filter((r) => r.status === "Pending" || r.status === "Verified" || r.status === "Dispensing").length;
 
   type Tab = "demographics" | "clinical" | "labs" | "meds" | "finance" | "docs";

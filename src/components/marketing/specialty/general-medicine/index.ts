@@ -1,0 +1,1 @@
+export { GeneralMedicineDashboard } from "./GeneralMedicineDashboard";

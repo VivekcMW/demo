@@ -4,10 +4,12 @@ import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useBillingStore, type Bill, type BillStatus, type BillCategory, type PaymentMethod } from "@/store/useBillingStore";
+import { useClaimStore } from "@/store/useClaimStore";
 import {
-  ArrowLeft, ChevronRight, IndianRupee, CheckCircle2,
-  AlertTriangle, Clock, X, Loader2, ShieldAlert, User,
-  BedDouble, Printer, Receipt,
+  ArrowLeft, ChevronRight, IndianRupee,
+  AlertTriangle, Clock, X, Loader2, User,
+  BedDouble, Printer, Receipt, BadgePercent, RotateCcw,
+  Package, FileText,
 } from "lucide-react";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
@@ -195,6 +197,196 @@ function WaiveDialog({ bill, onClose }: { bill: Bill; onClose: () => void }) {
   );
 }
 
+// ── Discount Request Dialog ────────────────────────────────────────────────────
+
+function DiscountDialog({ bill, onClose }: { bill: Bill; onClose: () => void }) {
+  const requestDiscount = useBillingStore((s) => s.requestDiscount);
+  const [amount, setAmount] = useState("");
+  const [reason, setReason] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  function handleSubmit() {
+    const amt = parseFloat(amount);
+    if (!amt || amt <= 0 || amt > bill.amountDue) return;
+    setSaving(true);
+    setTimeout(() => {
+      requestDiscount({ billId: bill.id, amount: amt, reason: reason.trim(), requestedBy: "Billing Officer" });
+      setSaving(false);
+      onClose();
+    }, 400);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-[var(--text-primary)]">Request Discount</h3>
+          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"><X size={15} /></button>
+        </div>
+        <div className="mb-4 rounded-xl border border-[var(--info-bg)] px-4 py-3 text-sm text-[var(--info-fg)]">
+          Current due: <strong>₹{bill.amountDue.toLocaleString("en-IN")}</strong>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Discount Amount (₹) *</label>
+            <input type="number" min={1} max={bill.amountDue} value={amount} onChange={(e) => setAmount(e.target.value)}
+              className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--action-primary)]" />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Reason *</label>
+            <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)}
+              className="w-full resize-none rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--action-primary)]"
+              placeholder="e.g. Corporate discount, loyalty discount…" />
+          </div>
+        </div>
+        <div className="mt-5 flex gap-3">
+          <button onClick={onClose} className="flex-1 rounded-xl border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving || !amount || !reason}
+            className="flex-1 rounded-xl bg-[var(--action-primary)] py-2.5 text-sm font-semibold text-white hover:bg-[var(--action-primary-hover)] disabled:opacity-60">
+            {saving ? "Requesting…" : "Request Discount"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Refund Dialog ──────────────────────────────────────────────────────────────
+
+function RefundDialog({ bill, onClose }: { bill: Bill; onClose: () => void }) {
+  const processRefund = useBillingStore((s) => s.processRefund);
+  const [amount, setAmount] = useState(String(bill.amountPaid));
+  const [method, setMethod] = useState<PaymentMethod>("Cash");
+  const [reason, setReason] = useState("");
+  const [ref, setRef] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  function handleSubmit() {
+    const amt = parseFloat(amount);
+    if (!amt || amt <= 0 || amt > bill.amountPaid) return;
+    setSaving(true);
+    setTimeout(() => {
+      processRefund({
+        billId: bill.id, amount: amt, reason: reason.trim(),
+        method, ref: ref.trim() || undefined,
+        originalPaymentIds: bill.payments.map((p) => p.id),
+        processedBy: "Billing Officer",
+      });
+      setSaving(false);
+      onClose();
+    }, 400);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-[var(--text-primary)]">Process Refund</h3>
+          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"><X size={15} /></button>
+        </div>
+        <div className="mb-4 rounded-xl border border-[var(--warning-fg)]/20 bg-[var(--warning-bg)] px-4 py-3 text-sm text-[var(--warning-fg)]">
+          Max refund: <strong>₹{bill.amountPaid.toLocaleString("en-IN")}</strong> (total paid)
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Refund Amount (₹) *</label>
+            <input type="number" min={1} max={bill.amountPaid} value={amount} onChange={(e) => setAmount(e.target.value)}
+              className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--action-primary)]" />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Refund Method *</label>
+            <div className="flex flex-wrap gap-2">
+              {["Cash", "UPI", "NEFT", "Cheque"].map((m) => (
+                <button key={m} onClick={() => setMethod(m as PaymentMethod)}
+                  className={`rounded-lg border px-3 py-2 text-xs font-medium ${method === m ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] text-[var(--text-secondary)]"}`}>{m}</button>
+              ))}
+            </div>
+          </div>
+          {method !== "Cash" && (
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Reference</label>
+              <input value={ref} onChange={(e) => setRef(e.target.value)}
+                className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--action-primary)]" />
+            </div>
+          )}
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Reason *</label>
+            <textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)}
+              className="w-full resize-none rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--action-primary)]"
+              placeholder="e.g. Duplicate payment / Service not rendered…" />
+          </div>
+        </div>
+        <div className="mt-5 flex gap-3">
+          <button onClick={onClose} className="flex-1 rounded-xl border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)]">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving || !amount || !reason}
+            className="flex-1 rounded-xl bg-[var(--critical-fg)] py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+            {saving ? "Processing…" : "Process Refund"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Package Dialog ─────────────────────────────────────────────────────────────
+
+function PackageDialog({ bill, onClose }: { bill: Bill; onClose: () => void }) {
+  const applyPackage = useBillingStore((s) => s.applyPackage);
+  const [selected, setSelected] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const packages = [
+    { id: "PKG-MAT-NVD", name: "Maternity — Normal Delivery", price: 35000 },
+    { id: "PKG-SURG-APPY", name: "Surgery — Lap Appendicectomy", price: 45000 },
+    { id: "PKG-SURG-CHOLE", name: "Surgery — Lap Cholecystectomy", price: 55000 },
+    { id: "PKG-DIALYSIS", name: "Dialysis Session", price: 3500 },
+    { id: "PKG-CHECKUP", name: "Health Check Package", price: 5000 },
+  ];
+
+  function handleSubmit() {
+    if (!selected) return;
+    setSaving(true);
+    setTimeout(() => {
+      applyPackage({ billId: bill.id, packageId: selected, price: packages.find((p) => p.id === selected)?.price ?? 0, appliedBy: "Billing Officer" });
+      setSaving(false);
+      onClose();
+    }, 400);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-[var(--text-primary)]">Apply Package</h3>
+          <button onClick={onClose} className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"><X size={15} /></button>
+        </div>
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {packages.map((pkg) => (
+            <button key={pkg.id} onClick={() => setSelected(pkg.id)}
+              className={`flex w-full items-center justify-between rounded-xl border p-3 text-left transition-colors ${selected === pkg.id ? "border-[var(--action-primary)] bg-[var(--action-subtle)]" : "border-[var(--border-default)] hover:bg-[var(--surface-sunken)]"}`}>
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{pkg.name}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{pkg.id}</p>
+              </div>
+              <p className="text-sm font-bold tabular-nums text-[var(--action-primary)]">₹{pkg.price.toLocaleString("en-IN")}</p>
+            </button>
+          ))}
+        </div>
+        <div className="mt-5 flex gap-3">
+          <button onClick={onClose} className="flex-1 rounded-xl border border-[var(--border-default)] py-2.5 text-sm font-medium text-[var(--text-secondary)]">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving || !selected}
+            className="flex-1 rounded-xl bg-[var(--action-primary)] py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+            {saving ? "Applying…" : "Apply Package"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function BillDetailPage({ params }: { params: Promise<{ billId: string }> }) {
@@ -204,9 +396,16 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
 
   // Re-read live so payment recording reflects immediately
   const bill = useBillingStore((s) => s.bills.find((b) => b.id === billId));
+  const pendingDiscounts = useBillingStore((s) => s.discountApprovals.filter((d) => d.billId === billId && d.status === "Pending"));
+  const billRefunds = useBillingStore((s) => s.refunds.filter((r) => r.billId === billId));
+  const billCharges = useBillingStore((s) => s.chargeEvents.filter((e) => e.billId === billId));
+  const billClaims = useClaimStore((s) => s.claims.filter((c) => c.billId === billId));
 
-  const [payDialogOpen,  setPayDialogOpen]  = useState(false);
-  const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
+  const [payDialogOpen,     setPayDialogOpen]      = useState(false);
+  const [waiveDialogOpen,   setWaiveDialogOpen]     = useState(false);
+  const [discountDialogOpen, setDiscountDialogOpen]  = useState(false);
+  const [refundDialogOpen,  setRefundDialogOpen]     = useState(false);
+  const [packageDialogOpen, setPackageDialogOpen]    = useState(false);
 
   if (!bill) {
     return (
@@ -226,9 +425,29 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
   const canCancel  = bill.status === "Draft" || bill.status === "Pending";
 
   return (
-    <div className="space-y-5 pb-8">
-      {payDialogOpen  && <RecordPaymentDialog bill={bill} onClose={() => setPayDialogOpen(false)} />}
-      {waiveDialogOpen && <WaiveDialog bill={bill} onClose={() => setWaiveDialogOpen(false)} />}
+    <div className="space-y-5 pb-8 print-root">
+      {payDialogOpen     && <RecordPaymentDialog bill={bill} onClose={() => setPayDialogOpen(false)} />}
+      {waiveDialogOpen   && <WaiveDialog bill={bill} onClose={() => setWaiveDialogOpen(false)} />}
+      {discountDialogOpen && <DiscountDialog bill={bill} onClose={() => setDiscountDialogOpen(false)} />}
+      {refundDialogOpen  && <RefundDialog bill={bill} onClose={() => setRefundDialogOpen(false)} />}
+      {packageDialogOpen && <PackageDialog bill={bill} onClose={() => setPackageDialogOpen(false)} />}
+
+      {/* Print-only header */}
+      <div className="print-header">
+        <h1>Aarogya Hospital</h1>
+        <p className="print-sub">Multi-Specialty Hospital &amp; Research Centre</p>
+        <p className="print-contact">123 Healthcare Avenue, Medical District · Tel: +91-80-2345-6789 · info@aarogya.in</p>
+      </div>
+      <div className="print-title">Tax Invoice</div>
+      <div className="print-info-grid">
+        <div><div className="label">Patient Name</div><div className="value">{bill.patientName}</div></div>
+        <div><div className="label">Patient ID</div><div className="value">{bill.patientId}</div></div>
+        <div><div className="label">Invoice No.</div><div className="value">{bill.id}</div></div>
+        <div><div className="label">Date</div><div className="value">{fmtDate(bill.createdAt)}</div></div>
+        <div><div className="label">Category</div><div className="value">{bill.category}</div></div>
+        <div><div className="label">Status</div><div className="value">{bill.status}</div></div>
+        {bill.admissionId && <div><div className="label">Admission</div><div className="value">{bill.admissionId}</div></div>}
+      </div>
 
       {/* Sticky header */}
       <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 bg-[var(--surface-page)] px-4 sm:px-6 pb-4 border-b border-[var(--border-default)]">
@@ -257,9 +476,24 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
 
           {/* Actions */}
           <div className="flex flex-wrap gap-2 ml-auto">
-            <button className="flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
+            <button onClick={() => window.print()} className="flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
               <Printer size={13} /> Print
             </button>
+            {canPay && (
+              <button onClick={() => setPackageDialogOpen(true)} className="rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
+                <Package size={13} className="inline mr-1" />Package
+              </button>
+            )}
+            {bill.amountDue > 0 && bill.status !== "Cancelled" && bill.status !== "Waived" && (
+              <button onClick={() => setDiscountDialogOpen(true)} className="rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
+                <BadgePercent size={13} className="inline mr-1" />Discount
+              </button>
+            )}
+            {bill.amountPaid > 0 && bill.status !== "Cancelled" && (
+              <button onClick={() => setRefundDialogOpen(true)} className="rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
+                <RotateCcw size={13} className="inline mr-1" />Refund
+              </button>
+            )}
             {canWaive && (
               <button onClick={() => setWaiveDialogOpen(true)} className="rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
                 Waive
@@ -372,6 +606,55 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
             <div className="rounded-xl border border-[var(--info-fg)]/20 bg-[var(--info-bg)] px-4 py-3">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--info-fg)]">Insurance Claim</p>
               <p className="mt-1 font-mono text-xs font-semibold text-[var(--info-fg)]">{bill.insuranceClaim}</p>
+              {billClaims.length > 0 && (
+                <Link href={`/billing/claims`} className="mt-2 flex items-center gap-1 text-xs text-[var(--info-fg)] hover:underline">
+                  <FileText size={11} /> View claim{billClaims.length > 1 ? "s" : ""}
+                </Link>
+              )}
+            </div>
+          )}
+
+          {/* Discount approvals */}
+          {pendingDiscounts.length > 0 && (
+            <div className="rounded-xl border border-[var(--warning-fg)]/20 bg-[var(--warning-bg)] px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--warning-fg)]">Pending Discount{pendingDiscounts.length > 1 ? "s" : ""}</p>
+              {pendingDiscounts.map((d) => (
+                <div key={d.id} className="mt-2 flex items-center justify-between text-xs">
+                  <span className="text-[var(--text-secondary)]">₹{d.amount.toLocaleString("en-IN")} — {d.reason}</span>
+                  <span className="text-[var(--warning-fg)]">{d.requestedBy}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Refunds */}
+          {billRefunds.length > 0 && (
+            <div className="rounded-xl border border-[var(--critical-fg)]/20 bg-[var(--critical-bg)] px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--critical-fg)]">Refund{billRefunds.length > 1 ? "s" : ""} Processed</p>
+              {billRefunds.map((r) => (
+                <div key={r.id} className="mt-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-[var(--critical-fg)]">− ₹{r.amount.toLocaleString("en-IN")}</span>
+                    <span className="text-[var(--text-secondary)]">{r.method}</span>
+                  </div>
+                  <p className="text-[var(--text-secondary)] mt-0.5">{r.reason}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Charge events */}
+          {billCharges.length > 0 && (
+            <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">Source Charges</p>
+              <div className="mt-2 space-y-1">
+                {billCharges.map((ce) => (
+                  <div key={ce.id} className="flex items-center justify-between text-xs">
+                    <span className="text-[var(--action-primary)] font-medium">{ce.sourceModule}</span>
+                    <span className="text-[var(--text-secondary)]">{ce.item.description}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -387,7 +670,78 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
         {/* Right panel */}
         <div className="flex-1 min-w-0 space-y-5">
 
-          {/* Line items */}
+          {/* Print-only items table */}
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th className="right">Unit Price</th>
+                <th className="center">Qty</th>
+                <th className="right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bill.items.map((item) => (
+                <tr key={item.id}>
+                  <td>
+                    {item.description}
+                    {item.discount && item.discount > 0 ? <span className="print-muted"> (Discount: −₹{fmt(item.discount)})</span> : null}
+                  </td>
+                  <td><span className="print-muted">{item.category}</span></td>
+                  <td className="right">₹{fmt(item.unitPrice)}</td>
+                  <td className="center">{item.qty}</td>
+                  <td className="right">₹{fmt(item.total)}</td>
+                </tr>
+              ))}
+              {bill.discountTotal > 0 && (
+                <tr>
+                  <td colSpan={4} className="right print-bold">Discount</td>
+                  <td className="right">−₹{fmt(bill.discountTotal)}</td>
+                </tr>
+              )}
+              {bill.tax > 0 && (
+                <tr>
+                  <td colSpan={4} className="right">GST (5%)</td>
+                  <td className="right">₹{fmt(bill.tax)}</td>
+                </tr>
+              )}
+              <tr className="total-row">
+                <td colSpan={4} className="right print-bold">Grand Total</td>
+                <td className="right print-bold">₹{fmt(bill.grandTotal)}</td>
+              </tr>
+              <tr>
+                <td colSpan={4} className="right">Amount Paid</td>
+                <td className="right">₹{fmt(bill.amountPaid)}</td>
+              </tr>
+              <tr>
+                <td colSpan={4} className="right print-bold">Amount Due</td>
+                <td className="right print-bold" style={bill.amountDue > 0 ? { color: "#b91c1c" } : {}}>₹{fmt(bill.amountDue)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* Print-only signature block */}
+          <div className="print-signature">
+            <div className="sig-block">
+              <div className="sig-line" />
+              <div className="sig-label">Authorised Signatory</div>
+              <div className="sig-name">{bill.createdBy}</div>
+            </div>
+            <div className="sig-block">
+              <div className="sig-line" />
+              <div className="sig-label">Patient / Guardian</div>
+            </div>
+          </div>
+
+          {/* Print-only footer */}
+          <div className="print-footer">
+            <span>This is a computer-generated invoice</span>
+            <span>Bill ID: {bill.id}</span>
+            <span>Generated: {fmtDateTime(bill.createdAt)}</span>
+          </div>
+
+          {/* Line items (screen) */}
           <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">
             <div className="border-b border-[var(--border-default)] bg-[var(--surface-sunken)] px-5 py-2.5">
               <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Invoice Items</p>

@@ -1,0 +1,1 @@
+export { InfectiousDiseasesDashboard } from "./InfectiousDiseasesDashboard";

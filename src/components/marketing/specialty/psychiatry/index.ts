@@ -1,0 +1,1 @@
+export { PsychiatryDashboard } from "./PsychiatryDashboard";

@@ -1,17 +1,36 @@
 @import "tailwindcss";
+@import "../styles/print.css";
 
 :root {
+  /* Surface colors */
   --surface-page: #f8fafc;
   --surface-raised: #ffffff;
   --surface-sunken: #f1f5f9;
+  
+  /* Alias for compatibility */
+  --bg-subtle: var(--surface-sunken);
+  --bg-white: #ffffff;
+  
+  /* Text colors */
   --text-primary: #0f172a;
   --text-secondary: #475569;
+  --text-muted: #64748b;
   --text-link: #0f766e;
+  
+  /* Brand / Action colors */
   --action-primary: #0d9488;
   --action-primary-hover: #0f766e;
   --action-subtle: #f0fdfa;
+  --action-secondary: #475569;
+  
+  /* Border */
   --border-default: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  
+  /* Focus */
   --focus-ring: #14b8a6;
+  
+  /* Status colors */
   --critical-bg: #fef2f2;
   --critical-fg: #b91c1c;
   --warning-bg: #fffbeb;
@@ -20,6 +39,10 @@
   --normal-fg: #15803d;
   --info-bg: #f0f9ff;
   --info-fg: #0369a1;
+  
+  /* Spacing scale (for reference) */
+  --space-section-y: 5rem;
+  --space-section-y-lg: 6rem;
 }
 
 @theme inline {
@@ -30,17 +53,35 @@
 }
 
 html[data-theme="dark"] {
+  /* Surface colors */
   --surface-page: #0b1220;
   --surface-raised: #1e293b;
   --surface-sunken: #0f172a;
+  
+  /* Alias for compatibility */
+  --bg-subtle: var(--surface-sunken);
+  --bg-white: #1e293b;
+  
+  /* Text colors */
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
+  --text-muted: #64748b;
   --text-link: #5eead4;
+  
+  /* Brand / Action colors */
   --action-primary: #2dd4bf;
   --action-primary-hover: #5eead4;
   --action-subtle: #134e4a;
+  --action-secondary: #94a3b8;
+  
+  /* Border */
   --border-default: #334155;
+  --border-subtle: #1e293b;
+  
+  /* Focus */
   --focus-ring: #5eead4;
+  
+  /* Status colors */
   --critical-bg: #3a1d1d;
   --critical-fg: #fecaca;
   --warning-bg: #3a2e14;
@@ -213,6 +254,24 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 20%, transparent);
 }
 
+/* Safe area inset for mobile bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile-friendly table wrapper — horizontal scroll + sticky header */
+.mobile-table-wrap {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* Minimum touch target size for interactive elements */
+.min-touch {
+  min-height: 44px;
+  min-width: 44px;
+}
+
 /* Card hover lift */
 .card-hover {
   transition: box-shadow 200ms ease, transform 200ms ease, background-color 140ms ease;
@@ -220,4 +279,266 @@ input:focus, textarea:focus, select:focus {
 .card-hover:hover {
   box-shadow: 0 4px 16px -4px rgba(0,0,0,0.10);
   transform: translateY(-1px);
+}
+
+/* ── Marketing site styles ────────────────────────────────────────── */
+
+/* Marketing section spacing */
+.marketing-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+@media (min-width: 768px) {
+  .marketing-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* Hero extra padding */
+.marketing-hero {
+  padding-top: 4rem;
+  padding-bottom: 5rem;
+}
+@media (min-width: 768px) {
+  .marketing-hero {
+    padding-top: 6rem;
+    padding-bottom: 7rem;
+  }
+}
+
+/* Marketing typography scale */
+.text-hero {
+  font-size: 2.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 640px) {
+  .text-hero {
+    font-size: 3rem;
+  }
+}
+@media (min-width: 768px) {
+  .text-hero {
+    font-size: 3.5rem;
+  }
+}
+
+/* Gradient text for accents */
+.text-gradient {
+  background: linear-gradient(135deg, var(--action-primary) 0%, #14b8a6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle section backgrounds */
+.bg-section-alt {
+  background-color: var(--surface-sunken);
+}
+
+/* Marketing card with enhanced hover */
+.marketing-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  transition: all 200ms ease;
+}
+.marketing-card:hover {
+  border-color: var(--action-primary);
+  box-shadow: 0 8px 24px -8px rgba(13, 148, 136, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Scroll-triggered fade-in */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-on-scroll {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* ── Enhanced Animations & Transitions ────────────────────────────── */
+
+/* Scroll reveal animations - elements start hidden */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reveal variants */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delays for reveal groups */
+.reveal-delay-1 { transition-delay: 100ms; }
+.reveal-delay-2 { transition-delay: 200ms; }
+.reveal-delay-3 { transition-delay: 300ms; }
+.reveal-delay-4 { transition-delay: 400ms; }
+.reveal-delay-5 { transition-delay: 500ms; }
+.reveal-delay-6 { transition-delay: 600ms; }
+
+/* Floating animation for visual elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Gentle pulse for important elements */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* Shine effect for cards and buttons */
+@keyframes shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: none;
+}
+.btn-shine:hover::after {
+  animation: shine 0.6s ease forwards;
+}
+
+/* Smooth gradient shift on hover */
+.gradient-shift {
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  transition: background-position 0.5s ease;
+}
+.gradient-shift:hover {
+  background-position: 100% 50%;
+}
+
+/* Enhanced card interactions */
+.interactive-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+}
+.interactive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon hover effects */
+.icon-bounce {
+  transition: transform 0.2s ease;
+}
+.icon-bounce:hover {
+  transform: scale(1.1);
+}
+
+.icon-rotate {
+  transition: transform 0.3s ease;
+}
+.icon-rotate:hover {
+  transform: rotate(15deg);
+}
+
+/* Text link underline animation */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--action-primary);
+  transition: width 0.3s ease;
+}
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1;
+    transform: none;
+  }
 }

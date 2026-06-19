@@ -31,7 +31,7 @@ function generateUHID(): string {
 
 // ── Step indicator ────────────────────────────────────────────────────────────
 
-function StepIndicator({ current, total }: { current: number; total: number }) {
+function StepIndicator({ current }: { current: number }) {
   const steps = [
     { icon: User,  label: "Identity" },
     { icon: Phone, label: "Contact" },
@@ -284,10 +284,37 @@ export default function RegisterPage() {
 
   if (submitted) {
     return (
-      <div className="mx-auto max-w-lg">
+      <div className="mx-auto max-w-lg print-root">
+        <div className="print-header">
+          <h1>Aarogya Hospital</h1>
+          <p className="print-sub">Multi-Specialty Hospital &amp; Research Centre</p>
+          <p className="print-contact">123 Healthcare Avenue, Medical District · Tel: +91-80-2345-6789 · info@aarogya.in</p>
+        </div>
+        <div className="print-title">Patient Registration Card</div>
         <PageHeader title="Register Patient" subtitle="New patient registration" />
         <div className="mt-6 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-8">
           <SuccessScreen uhid={newUHID} patientName={s1.name} onNew={handleNew} />
+        </div>
+
+        <div className="print-section">
+          <h3>Patient Information</h3>
+          <div className="print-info-grid">
+            <div><div className="label">Patient Name</div><div className="value">{s1.name}</div></div>
+            <div><div className="label">UHID</div><div className="value">{newUHID}</div></div>
+            <div><div className="label">Age / Sex</div><div className="value">{s1.age} yrs / {s1.sex === "M" ? "Male" : s1.sex === "F" ? "Female" : "Other"}</div></div>
+            {s1.dob && <div><div className="label">DOB</div><div className="value">{s1.dob}</div></div>}
+            <div><div className="label">Mobile</div><div className="value">{s2.mobile}</div></div>
+            {s2.email && <div><div className="label">Email</div><div className="value">{s2.email}</div></div>}
+            {s1.abhaId && <div><div className="label">ABHA ID</div><div className="value">{s1.abhaId}</div></div>}
+            {s2.addressLine && <div><div className="label">Address</div><div className="value">{[s2.addressLine, s2.city].filter(Boolean).join(", ")}</div></div>}
+            {s3.bloodGroup && <div><div className="label">Blood Group</div><div className="value">{s3.bloodGroup}</div></div>}
+            {s3.allergies && <div><div className="label">Allergies</div><div className="value">{s3.allergies}</div></div>}
+          </div>
+        </div>
+
+        <div className="print-footer">
+          <span>Patient Registration Card — Aarogya Hospital</span>
+          <span>Registered: {new Date().toLocaleString("en-IN")}</span>
         </div>
       </div>
     );
@@ -301,7 +328,7 @@ export default function RegisterPage() {
       />
 
       <div className="mt-6 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-6 sm:p-8">
-        <StepIndicator current={step} total={3} />
+        <StepIndicator current={step} />
 
         {/* UHID preview */}
         <div className="mb-6 flex items-center justify-between rounded-lg bg-[var(--action-subtle)] px-4 py-2.5">

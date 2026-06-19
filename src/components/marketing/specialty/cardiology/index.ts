@@ -1,0 +1,1 @@
+export { CardiologyDashboard } from "./CardiologyDashboard";

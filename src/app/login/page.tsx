@@ -15,18 +15,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    const result = login(email.trim(), password);
-
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-
     setError("");
+    const result = await login(email.trim(), password);
+    if (!result.ok) { setError(result.message); return; }
     const user = useAuthStore.getState().currentUser;
-    const dest = (user as { role?: string } | null)?.role === "receptionist" ? "/reception" : "/dashboard";
+    const role = (user as { role?: string } | null)?.role;
+    const dest = role === "receptionist" ? "/reception" : role === "billing" ? "/billing" : "/dashboard";
     router.push(dest);
   };
 
@@ -49,16 +45,21 @@ export default function LoginPage() {
             <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] p-4 text-sm text-[var(--text-secondary)]">
               <p className="font-medium text-[var(--text-primary)]">Seed login</p>
               <div className="mt-3 space-y-3">
-                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3">
+                <button type="button" onClick={() => { setEmail("doctor@aarogya.app"); setPassword("Doctor@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
                   <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Doctor</p>
                   <p className="mt-1">Email: doctor@aarogya.app</p>
                   <p>Password: Doctor@123</p>
-                </div>
-                <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3">
+                </button>
+                <button type="button" onClick={() => { setEmail("nalini.das@aarogya.app"); setPassword("Recept@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
                   <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Receptionist</p>
                   <p className="mt-1">Email: nalini.das@aarogya.app</p>
                   <p>Password: Recept@123</p>
-                </div>
+                </button>
+                <button type="button" onClick={() => { setEmail("billing@aarogya.app"); setPassword("Billing@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Billing Staff</p>
+                  <p className="mt-1">Email: billing@aarogya.app</p>
+                  <p>Password: Billing@123</p>
+                </button>
               </div>
             </div>
           </div>
@@ -127,6 +128,33 @@ export default function LoginPage() {
                   Create one
                 </Link>
               </p>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                <Link className="font-medium text-[var(--action-primary)] hover:underline" href="/portal/login">
+                  Patient Portal →
+                </Link>
+                {" "}— Access your health records
+              </p>
+
+              <div className="mt-8 rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4 text-sm text-[var(--text-secondary)] md:hidden">
+                <p className="font-medium text-[var(--text-primary)]">Seed login</p>
+                <div className="mt-3 space-y-3">
+                  <button type="button" onClick={() => { setEmail("doctor@aarogya.app"); setPassword("Doctor@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Doctor</p>
+                    <p className="mt-1">Email: doctor@aarogya.app</p>
+                    <p>Password: Doctor@123</p>
+                  </button>
+                  <button type="button" onClick={() => { setEmail("nalini.das@aarogya.app"); setPassword("Recept@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Receptionist</p>
+                    <p className="mt-1">Email: nalini.das@aarogya.app</p>
+                    <p>Password: Recept@123</p>
+                  </button>
+                  <button type="button" onClick={() => { setEmail("billing@aarogya.app"); setPassword("Billing@123"); }} className="w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] p-3 text-left hover:border-[var(--action-primary)] transition-colors">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--action-primary)]">Billing Staff</p>
+                    <p className="mt-1">Email: billing@aarogya.app</p>
+                    <p>Password: Billing@123</p>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

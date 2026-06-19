@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
  * Returns the current display value. The animation only runs once on mount.
  */
 export function useCountUp(target: number, duration = 600): number {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(target === 0 ? 0 : 0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (target === 0) { setValue(0); return; }
+    if (target === 0) { return; }
 
     const animate = (ts: number) => {
       if (!startRef.current) startRef.current = ts;

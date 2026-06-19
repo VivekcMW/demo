@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { BedDouble, Check, PrinterCheck, UserCheck, Search } from "lucide-react";
 import { useIPDStore } from "@/store/useIPDStore";
-import type { Admission } from "@/data/seedAdmissions";
 import { useToast } from "@/components/ui/ToastProvider";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { KpiCard } from "@/components/ui/KpiCard";
@@ -44,7 +43,12 @@ export default function IPDPage() {
   };
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="space-y-5 pb-8 print-root">
+      <div className="print-header">
+        <h1>Aarogya Hospital</h1>
+        <p className="print-sub">Multi-Specialty Hospital &amp; Research Centre</p>
+        <p className="print-contact">123 Healthcare Avenue, Medical District · Tel: +91-80-2345-6789 · info@aarogya.in</p>
+      </div>
       <PageHeader
         title="IPD Requests"
         subtitle="In-patient admission management"
@@ -121,6 +125,12 @@ export default function IPDPage() {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="print-title">IPD Admission Slip</div>
+      <div className="print-footer">
+        <span>IPD Admission Record — Aarogya Hospital</span>
+        <span>Generated: {new Date().toLocaleString("en-IN")}</span>
       </div>
     </div>
   );

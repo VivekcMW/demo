@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Menu, Sun, Moon, ChevronDown, LogOut, User, ConciergeBell } from "lucide-react";
+import { Menu, Sun, Moon, ChevronDown, LogOut, ConciergeBell } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useUIStore } from "@/store/useUIStore";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -8,14 +8,11 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { useRouter } from "next/navigation";
 
 function LiveClock() {
-  const [now, setNow] = useState<Date | null>(null);
+  const [now, setNow] = useState(new Date());
   useEffect(() => {
-    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
-
-  if (!now) return <div className="hidden sm:flex flex-col items-end leading-tight mr-1 w-28" />;
 
   const time = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
   const date = now.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });

@@ -1,9 +1,17 @@
 import type { Vitals } from "./seedPatients";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+// PRD 1.3 §3.1 — Full note lifecycle
+export type NoteStatus =
+  | "Draft"         // Being authored, not complete
+  | "In Review"     // Submitted for co-sign/review
+  | "Signed"        // Finalized with e-signature
+  | "Locked";       // Post-discharge/legal freeze
 
-export type ExamType    = "OPD" | "IPD Review" | "Emergency" | "Tele" | "Follow-up";
-export type ExamStatus  = "In Progress" | "Completed" | "Signed Off";
+export type AddendumStatus = "None" | "Has Addenda";
+
+export type ExamType    = "OPD" | "IPD Review" | "Emergency" | "Tele" | "Follow-up" | "IPD Admission" | "Procedure" | "Discharge Summary";
+export type NoteType    = ExamType; // alias for clarity in documentation context
 export type RxRoute     = "Oral" | "IV" | "IM" | "Topical" | "Inhaler" | "SL" | "SC";
 export type DiagType    = "Primary" | "Secondary" | "Differential";
 export type DiagStatus  = "Active" | "Resolved" | "Chronic";
@@ -57,24 +65,75 @@ export interface Plan {
   patientInstructions?: string;
 }
 
+// ── PRD 1.3 §4.1 — Versioning ─────────────────────────────────────────────────
+export interface NoteVersion {
+  versionNumber:  number;
+  content:        NoteContent;
+  savedAt:        string;
+  savedBy:        string;
+  changeSummary?: string;
+}
+
+// ── PRD 1.3 §4.1 — Addendum ───────────────────────────────────────────────────
+export interface NoteAddendum {
+  id:        string;
+  content:   string;
+  reason:    string;
+  author:    string;
+  createdAt: string;
+}
+
+// Structued snapshot of all note fields for versioning
+export interface NoteContent {
+  subjective:  Subjective;
+  objective:   Objective;
+  assessment:  Assessment;
+  plan:        Plan;
+  notes?:      string;
+  // PRD §FR-CDE-011 — Template-driven form values
+  templateId?:   string;
+  templateData?: Record<string, unknown>;
+}
+
+// ── PRD 1.3 §4.1 — Full Examination with lifecycle ────────────────────────────
 export interface Examination {
   id:              string;
   patientId:       string;
   patientName:     string;
   appointmentId?:  string;
   type:            ExamType;
-  status:          ExamStatus;
+  status:          NoteStatus;
   startedAt:       string;
   completedAt?:    string;
   doctor:          string;
   dept:            string;
+
+  // Latest content
   subjective:      Subjective;
   objective:       Objective;
   assessment:      Assessment;
   plan:            Plan;
   notes?:          string;
-  signedBy?:       string;
-  signedAt?:       string;
+
+  // PRD §FR-CDE-011 — Template engine
+  templateId?:     string;
+  templateData?:   Record<string, unknown>;
+
+  // PRD 1.3 §FR-CDE-003 — Versioning
+  versions:             NoteVersion[];
+  currentVersionNumber: number;
+
+  // PRD 1.3 §FR-CDE-004 — Co-sign
+  reviewerId?:   string;
+  cosignerId?:   string;
+
+  // Signing
+  signedBy?:     string;
+  signedAt?:     string;
+  signedHash?:   string;
+
+  // PRD 1.3 §FR-CDE-072 — Addendum
+  addenda:       NoteAddendum[];
 }
 
 // ── Defaults ──────────────────────────────────────────────────────────────────
@@ -83,6 +142,46 @@ export const DEFAULT_SYSTEMS: SystemName[] = ["CVS", "Respiratory", "Abdomen", "
 
 export function defaultSystemicFindings(): SystemicFinding[] {
   return DEFAULT_SYSTEMS.map((s) => ({ system: s, finding: "Normal", normal: true }));
+}
+
+export function emptyNoteContent(): NoteContent {
+  return {
+    subjective:  { chiefComplaint: "", historyOfIllness: "" },
+    objective:   { systemicFindings: defaultSystemicFindings() },
+    assessment:  { diagnoses: [] },
+    plan:        { orders: [], prescriptions: [] },
+  };
+}
+
+export function makeContent(e: {
+  subjective: Subjective; objective: Objective;
+  assessment: Assessment; plan: Plan; notes?: string;
+  templateId?: string; templateData?: Record<string, unknown>;
+}): NoteContent {
+  return {
+    subjective: e.subjective, objective: e.objective,
+    assessment: e.assessment, plan: e.plan, notes: e.notes,
+    templateId: e.templateId, templateData: e.templateData,
+  };
+}
+
+/** Ensure seed data has the new lifecycle fields (versions, addenda) */
+export function migrateExam(e: Examination): Examination {
+  if (e.versions && e.versions.length > 0) return e;
+  const content = makeContent(e);
+  const version: NoteVersion = {
+    versionNumber: 1,
+    content,
+    savedAt: e.completedAt ?? e.startedAt,
+    savedBy: e.doctor,
+    changeSummary: e.status === "Signed" ? "Initial note — signed" : "Initial note",
+  };
+  return {
+    ...e,
+    versions: [version],
+    currentVersionNumber: 1,
+    addenda: [],
+  };
 }
 
 // ── ICD-10 suggestion map (keyword → diagnosis labels) ────────────────────────
@@ -99,12 +198,19 @@ export const ICD_SUGGESTIONS: Record<string, { code: string; label: string }[]> 
 
 // ── Seed data ─────────────────────────────────────────────────────────────────
 
-export const seedExaminations: Examination[] = [
+// Seed data doesn't include versions/addenda — migration adds them
+type SeedExam = Omit<Examination, "versions" | "currentVersionNumber" | "addenda">;
+
+function migrateAll(exams: SeedExam[]): Examination[] {
+  return exams.map((e) => migrateExam(e as Examination));
+}
+
+export const seedExaminations: Examination[] = migrateAll([
   // ── 1. Signed Off — DM follow-up ──
   {
     id: "EXM-0001",
     patientId: "PT-0001", patientName: "Anil Kumar Sharma",
-    type: "Follow-up", status: "Signed Off",
+    type: "Follow-up", status: "Signed",
     startedAt: "2026-06-08T09:30:00", completedAt: "2026-06-08T10:00:00",
     doctor: "Dr. Priya Mehta", dept: "Endocrinology",
     subjective: {
@@ -151,7 +257,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0002",
     patientId: "PT-0003", patientName: "Rajesh Narayan Pillai",
-    type: "Emergency", status: "Signed Off",
+    type: "Emergency", status: "Signed",
     startedAt: "2026-06-09T14:45:00", completedAt: "2026-06-09T15:30:00",
     doctor: "Dr. Suresh Nair", dept: "Cardiology",
     subjective: {
@@ -196,7 +302,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0003",
     patientId: "PT-0005", patientName: "Meera Lakshmi Iyer",
-    type: "Emergency", status: "Signed Off",
+    type: "Emergency", status: "Signed",
     startedAt: "2026-06-07T11:10:00", completedAt: "2026-06-07T11:55:00",
     doctor: "Dr. Ananya Krishnan", dept: "Pulmonology",
     subjective: {
@@ -241,7 +347,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0004",
     patientId: "PT-0010", patientName: "Kavya Subramaniam",
-    type: "OPD", status: "Signed Off",
+    type: "OPD", status: "Signed",
     startedAt: "2026-06-10T17:00:00", completedAt: "2026-06-10T17:40:00",
     doctor: "Dr. Priya Mehta", dept: "General Medicine",
     subjective: {
@@ -284,7 +390,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0005",
     patientId: "PT-0012", patientName: "Mohan Das Verma",
-    type: "IPD Review", status: "Signed Off",
+    type: "IPD Review", status: "Signed",
     startedAt: "2026-06-09T09:30:00", completedAt: "2026-06-09T10:00:00",
     doctor: "Dr. Suresh Nair", dept: "Pulmonology",
     subjective: {
@@ -327,7 +433,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0006",
     patientId: "PT-0004", patientName: "Karthik Balaji Sundaram",
-    type: "Emergency", status: "Signed Off",
+    type: "Emergency", status: "Signed",
     startedAt: "2026-06-10T03:30:00", completedAt: "2026-06-10T04:15:00",
     doctor: "Dr. Suresh Nair", dept: "Cardiology",
     subjective: {
@@ -377,7 +483,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0007",
     patientId: "PT-0015", patientName: "Deepa Venkataraman",
-    type: "OPD", status: "Signed Off",
+    type: "OPD", status: "Signed",
     startedAt: "2026-06-10T22:15:00", completedAt: "2026-06-10T22:50:00",
     doctor: "Dr. Priya Mehta", dept: "Obstetrics & Gynaecology",
     subjective: {
@@ -419,7 +525,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0008",
     patientId: "PT-0028", patientName: "Venkatesh Iyer",
-    type: "Emergency", status: "Signed Off",
+    type: "Emergency", status: "Signed",
     startedAt: "2026-06-11T09:10:00", completedAt: "2026-06-11T09:55:00",
     doctor: "Dr. Ananya Krishnan", dept: "Pulmonology",
     subjective: {
@@ -464,7 +570,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0009",
     patientId: "PT-0016", patientName: "Arjun Vikram Nair",
-    type: "OPD", status: "Completed",
+    type: "OPD", status: "In Review",
     startedAt: "2026-06-10T08:45:00", completedAt: "2026-06-10T09:15:00",
     doctor: "Dr. Ramesh Gupta", dept: "General Medicine",
     subjective: {
@@ -507,7 +613,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0010",
     patientId: "PT-0013", patientName: "Bharathi Murugesan",
-    type: "Emergency", status: "Completed",
+    type: "Emergency", status: "In Review",
     startedAt: "2026-06-11T07:50:00", completedAt: "2026-06-11T08:30:00",
     doctor: "Dr. Ananya Krishnan", dept: "Endocrinology",
     subjective: {
@@ -551,7 +657,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0011",
     patientId: "PT-0017", patientName: "Padma Raghunathan",
-    type: "Emergency", status: "Completed",
+    type: "Emergency", status: "In Review",
     startedAt: "2026-06-11T01:35:00", completedAt: "2026-06-11T02:15:00",
     doctor: "Dr. Ananya Krishnan", dept: "Intensive Care",
     subjective: {
@@ -596,7 +702,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0012",
     patientId: "PT-0006", patientName: "Ramesh Chandra Patel",
-    type: "IPD Review", status: "Completed",
+    type: "IPD Review", status: "In Review",
     startedAt: "2026-06-09T08:00:00", completedAt: "2026-06-09T08:40:00",
     doctor: "Dr. Suresh Nair", dept: "Cardiology",
     subjective: {
@@ -640,7 +746,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0013",
     patientId: "PT-0009", patientName: "Suresh Ramamoorthy",
-    type: "OPD", status: "In Progress",
+    type: "OPD", status: "Draft",
     startedAt: "2026-06-11T10:00:00",
     doctor: "Dr. Ramesh Gupta", dept: "General Medicine",
     subjective: {
@@ -674,7 +780,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0014",
     patientId: "PT-0020", patientName: "Vijay Shankar Reddy",
-    type: "Follow-up", status: "In Progress",
+    type: "Follow-up", status: "Draft",
     startedAt: "2026-06-11T10:30:00",
     doctor: "Dr. Ramesh Gupta", dept: "Surgery",
     subjective: {
@@ -706,7 +812,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0015",
     patientId: "PT-0024", patientName: "Naresh Tiwari",
-    type: "OPD", status: "In Progress",
+    type: "OPD", status: "Draft",
     startedAt: "2026-06-11T11:00:00",
     doctor: "Dr. Ananya Krishnan", dept: "Surgery",
     subjective: {
@@ -739,7 +845,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0016",
     patientId: "PT-0002", patientName: "Priya Venkateshwari",
-    type: "Tele", status: "In Progress",
+    type: "Tele", status: "Draft",
     startedAt: "2026-06-11T11:30:00",
     doctor: "Dr. Priya Mehta", dept: "General Medicine",
     subjective: {
@@ -771,7 +877,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0017",
     patientId: "PT-0018", patientName: "Geetha Krishnamurthy",
-    type: "Follow-up", status: "Signed Off",
+    type: "Follow-up", status: "Signed",
     startedAt: "2026-06-09T10:30:00", completedAt: "2026-06-09T11:00:00",
     doctor: "Dr. Priya Mehta", dept: "Endocrinology",
     subjective: {
@@ -814,7 +920,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0018",
     patientId: "PT-0025", patientName: "Sudha Narayanan",
-    type: "OPD", status: "Signed Off",
+    type: "OPD", status: "Signed",
     startedAt: "2026-06-06T12:30:00", completedAt: "2026-06-06T13:00:00",
     doctor: "Dr. Priya Mehta", dept: "Haematology",
     subjective: {
@@ -858,7 +964,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0019",
     patientId: "PT-0030", patientName: "Madhuri Kulkarni",
-    type: "Emergency", status: "Signed Off",
+    type: "Emergency", status: "Signed",
     startedAt: "2026-06-11T11:40:00", completedAt: "2026-06-11T12:10:00",
     doctor: "Dr. Suresh Nair", dept: "Gastroenterology",
     subjective: {
@@ -902,7 +1008,7 @@ export const seedExaminations: Examination[] = [
   {
     id: "EXM-0020",
     patientId: "PT-0019", patientName: "Anitha Rajan",
-    type: "IPD Review", status: "Signed Off",
+    type: "IPD Review", status: "Signed",
     startedAt: "2026-06-09T07:30:00", completedAt: "2026-06-09T08:00:00",
     doctor: "Dr. Ananya Krishnan", dept: "Obstetrics & Gynaecology",
     subjective: {
@@ -942,4 +1048,4 @@ export const seedExaminations: Examination[] = [
     },
     signedBy: "Dr. Ananya Krishnan", signedAt: "2026-06-09T08:05:00",
   },
-];
+]);

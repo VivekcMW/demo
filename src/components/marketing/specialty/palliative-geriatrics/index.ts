@@ -1,0 +1,1 @@
+export { PalliativeGeriatricsDashboard } from "./PalliativeGeriatricsDashboard";

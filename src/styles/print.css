@@ -1,0 +1,346 @@
+/* ── Print Styles ───────────────────────────────────────────────────────────
+   Used across billing, lab, radiology, examination, and reception pages.
+   Hidden in normal view; activated on window.print().
+   ──────────────────────────────────────────────────────────────────────── */
+
+@media print {
+  /* ── Nuke all UI chrome ──────────────────────────────────────────────── */
+  body > *:not(.print-root),
+  nav, header, footer, aside,
+  .sidebar, .navbar, .app-shell,
+  .sticky, [class*="sticky"],
+  button, [role="button"],
+  input, textarea, select,
+  a[href]:not(.print-header-link),
+  .no-print {
+    display: none !important;
+  }
+
+  /* ── Page setup ──────────────────────────────────────────────────────── */
+  @page {
+    margin: 15mm 20mm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: white !important;
+    color: #1e293b !important;
+    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-root {
+    display: block !important;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: white;
+  }
+
+  /* ── Hospital Letterhead ─────────────────────────────────────────────── */
+  .print-header {
+    text-align: center;
+    padding-bottom: 12pt;
+    margin-bottom: 16pt;
+    border-bottom: 2px solid #0d9488;
+  }
+
+  .print-header h1 {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #0d9488;
+    margin: 0 0 2pt;
+    letter-spacing: 0.5pt;
+  }
+
+  .print-header .print-sub {
+    font-size: 8pt;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .print-header .print-contact {
+    font-size: 7.5pt;
+    color: #94a3b8;
+    margin: 2pt 0 0;
+  }
+
+  /* ── Document Title ──────────────────────────────────────────────────── */
+  .print-title {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 14pt;
+    padding-bottom: 6pt;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* ── Patient & Document Info Grid ─────────────────────────────────────── */
+  .print-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2pt 20pt;
+    margin-bottom: 14pt;
+    padding: 8pt 10pt;
+    border: 1px solid #e2e8f0;
+    border-radius: 3pt;
+    background: #f8fafc;
+  }
+
+  .print-info-grid .label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+    color: #64748b;
+  }
+
+  .print-info-grid .value {
+    font-size: 10pt;
+    font-weight: 500;
+    color: #0f172a;
+    margin-top: 0;
+  }
+
+  /* ── Section Headers ──────────────────────────────────────────────────── */
+  .print-section {
+    margin-bottom: 10pt;
+    page-break-inside: avoid;
+  }
+
+  .print-section h3 {
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: #0d9488;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+    margin: 0 0 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .print-section .content {
+    font-size: 9.5pt;
+    line-height: 1.6;
+    color: #1e293b;
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+  /* ── Tables ───────────────────────────────────────────────────────────── */
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10pt;
+    font-size: 8.5pt;
+  }
+
+  .print-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 7pt;
+    letter-spacing: 0.3pt;
+    color: #64748b;
+    padding: 5pt 6pt;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .print-table td {
+    padding: 4pt 6pt;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+  }
+
+  .print-table tr:nth-child(even) td {
+    background: #fafbfc;
+  }
+
+  .print-table .right {
+    text-align: right;
+  }
+
+  .print-table .center {
+    text-align: center;
+  }
+
+  .print-table .total-row td {
+    font-weight: 700;
+    border-top: 1px solid #0d9488;
+    border-bottom: 2px solid #0d9488;
+    background: #f0fdfa;
+  }
+
+  .print-table .critical-row td {
+    background: #fef2f2;
+    font-weight: 600;
+    color: #b91c1c;
+  }
+
+  /* ── Lab specific ─────────────────────────────────────────────────────── */
+  .print-flag-normal {
+    color: #15803d;
+    font-weight: 600;
+  }
+  .print-flag-abnormal {
+    color: #92400e;
+    font-weight: 600;
+  }
+  .print-flag-critical {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
+  /* ── Rx / Prescription ────────────────────────────────────────────────── */
+  .print-rx-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 4pt 8pt;
+    margin-top: 4pt;
+  }
+
+  .print-rx-grid .rx-header {
+    font-size: 7pt;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.2pt;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 2pt;
+  }
+
+  .print-rx-grid .rx-cell {
+    font-size: 8.5pt;
+    padding: 2pt 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  /* ── Vital Signs ──────────────────────────────────────────────────────── */
+  .print-vitals {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6pt;
+    margin-bottom: 10pt;
+  }
+
+  .print-vitals .vital-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 2pt;
+    padding: 4pt 6pt;
+    text-align: center;
+  }
+
+  .print-vitals .vital-item .vital-label {
+    font-size: 6.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.2pt;
+    color: #64748b;
+  }
+
+  .print-vitals .vital-item .vital-value {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  /* ── Signature block ──────────────────────────────────────────────────── */
+  .print-signature {
+    margin-top: 20pt;
+    padding-top: 10pt;
+    border-top: 1px solid #e2e8f0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10pt;
+  }
+
+  .print-signature .sig-block {
+    text-align: center;
+  }
+
+  .print-signature .sig-line {
+    margin-top: 24pt;
+    border-top: 1px solid #0f172a;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .print-signature .sig-label {
+    font-size: 7pt;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.2pt;
+  }
+
+  .print-signature .sig-name {
+    font-size: 9pt;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 6.5pt;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4pt;
+  }
+
+  .print-footer span {
+    margin: 0 6pt;
+  }
+
+  /* ── Utility ──────────────────────────────────────────────────────────── */
+  .print-break-before {
+    page-break-before: always;
+  }
+
+  .print-break-after {
+    page-break-after: always;
+  }
+
+  .print-no-break {
+    page-break-inside: avoid;
+  }
+
+  .print-muted {
+    color: #64748b;
+  }
+
+  .print-bold {
+    font-weight: 700;
+  }
+
+  .print-critical-badge {
+    display: inline-block;
+    background: #b91c1c;
+    color: white;
+    font-size: 7pt;
+    font-weight: 700;
+    padding: 1pt 5pt;
+    border-radius: 2pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+  }
+
+  .print-status-badge {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 600;
+    padding: 1pt 5pt;
+    border-radius: 2pt;
+    text-transform: uppercase;
+  }
+}

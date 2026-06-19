@@ -1,0 +1,1 @@
+export { GastroenterologyDashboard } from "./GastroenterologyDashboard";

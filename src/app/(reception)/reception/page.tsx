@@ -4,12 +4,11 @@ import Link from "next/link";
 import { useMemo } from "react";
 import {
   UserPlus, CalendarCheck2, QrCode, BedDouble, Receipt,
-  Users, Clock, CheckCircle2, XCircle, AlertTriangle,
-  ArrowRight, ConciergeBell, TrendingUp,
+  Users, Clock, CheckCircle2, XCircle,
+  ArrowRight, TrendingUp,
 } from "lucide-react";
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { useQueueStore } from "@/store/useQueueStore";
-import { usePatientStore } from "@/store/usePatientStore";
 import { useIPDStore } from "@/store/useIPDStore";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -32,7 +31,6 @@ const TYPE_CLS: Record<string, string> = {
 
 export default function ReceptionDashboard() {
   const appointments = useAppointmentStore((s) => s.appointments);
-  const patients     = usePatientStore((s) => s.patients);
   const admissions   = useIPDStore((s) => s.admissions);
   const tokens       = useQueueStore((s) => s.tokens);
 
@@ -117,7 +115,7 @@ export default function ReceptionDashboard() {
           <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-3">
             <div className="flex items-center gap-2">
               <CalendarCheck2 size={16} className="text-[var(--action-primary)]" />
-              <p className="font-semibold text-sm text-[var(--text-primary)]">Today's Appointments</p>
+              <p className="font-semibold text-sm text-[var(--text-primary)]">Today&apos;s Appointments</p>
             </div>
             <Link href="/reception/appointments" className="flex items-center gap-1 text-xs text-[var(--action-primary)] hover:underline">
               View all <ArrowRight size={12} />

@@ -1,0 +1,1 @@
+export { SpecialtyCard } from "./SpecialtyCard";

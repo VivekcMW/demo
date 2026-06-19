@@ -1,0 +1,1 @@
+export { SportsMedicineDashboard } from "./SportsMedicineDashboard";

@@ -1,0 +1,1 @@
+export { EmergencyMedicineDashboard } from "./EmergencyMedicineDashboard";

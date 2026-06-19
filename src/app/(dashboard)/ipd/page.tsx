@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useIPDStore, type Admission, type BedInfo } from "@/store/useIPDStore";
+import { useIPDStore, type BedInfo } from "@/store/useIPDStore";
 import { usePatientStore } from "@/store/usePatientStore";
 import { WARDS, type AdmissionPriority } from "@/data/seedAdmissions";
 import {
   BedDouble, Search, X,
-  LayoutGrid, List, CheckCircle2, AlertTriangle, Clock,
+  LayoutGrid, List, CheckCircle2,
   ShieldAlert, ChevronRight, User, Plus, Loader2,
 } from "lucide-react";
 import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
@@ -42,8 +42,16 @@ function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-function fmtDateTime(d: string) {
-  return new Date(d).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: true });
+// ── Form field helper ──────────────────────────────────────────────────────────
+
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">{label}</label>
+      {children}
+      {error && <p className="mt-1 text-xs text-[var(--critical-fg)]">{error}</p>}
+    </div>
+  );
 }
 
 // ── Admit Patient Drawer ──────────────────────────────────────────────────────
@@ -119,16 +127,6 @@ function AdmitPatientDrawer({ open, onClose }: AdmitDrawerProps) {
   }
 
   if (!open) return null;
-
-  function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-    return (
-      <div>
-        <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">{label}</label>
-        {children}
-        {error && <p className="mt-1 text-xs text-[var(--critical-fg)]">{error}</p>}
-      </div>
-    );
-  }
 
   const inputCls = (err?: string) =>
     `w-full rounded-lg border bg-[var(--surface-raised)] px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--action-primary)] ${err ? "border-[var(--critical-fg)]" : "border-[var(--border-default)]"}`;

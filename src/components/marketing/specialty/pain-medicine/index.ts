@@ -1,0 +1,1 @@
+export { PainMedicineDashboard } from "./PainMedicineDashboard";

@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CalendarCheck2, User, Check, ChevronLeft } from "lucide-react";
+import { CalendarCheck2, Check, ChevronLeft } from "lucide-react";
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { usePatientStore } from "@/store/usePatientStore";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -64,8 +64,6 @@ function NewAppointmentForm() {
       p.uhid?.toLowerCase().includes(q)
     ).slice(0, 6);
   }, [patientSearch, patients, selectedPatient]);
-
-  const selectedDoc = DOCTORS.find((d) => d.name === doctor) ?? DOCTORS[0];
 
   // Already booked slots for this doctor + date
   const appointments = useAppointmentStore((s) => s.appointments);
@@ -133,7 +131,7 @@ function NewAppointmentForm() {
           {!selectedPatient && patientSearch && (
             <button type="button" onClick={() => setSelectedPatient(patientSearch)}
               className="mt-1.5 text-xs text-[var(--action-primary)] hover:underline">
-              + Use "{patientSearch}" as new patient name
+              + Use &quot;{patientSearch}&quot; as new patient name
             </button>
           )}
           {selectedPatient && (

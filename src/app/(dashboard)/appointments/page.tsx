@@ -160,7 +160,7 @@ export default function AppointmentsPage() {
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
           <div className="xl:col-span-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)]">
             <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-3">
-              <p className="text-sm font-semibold text-[var(--text-primary)]">Today's Schedule</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">Today&apos;s Schedule</p>
               <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]"><Clock size={13}/><span>08:00–18:00</span></div>
             </div>
             <div className="divide-y divide-[var(--border-default)]">

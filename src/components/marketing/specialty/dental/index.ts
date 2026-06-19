@@ -1,0 +1,1 @@
+export { DentalDashboard } from "./DentalDashboard";

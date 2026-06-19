@@ -102,23 +102,15 @@ export function NewAppointmentDrawer({ open, onClose, onSuccess, preselectedDate
   const appointments   = useAppointmentStore((s) => s.appointments);
   const addPatient     = usePatientStore((s) => s.addPatient);
 
-  const [form, setForm] = useState<FormState>({
+  const drawerResetKey = open ? `open-${preselectedDate ?? "default"}` : "closed";
+  const [form, setForm] = useState<FormState>(() => ({
     ...DEFAULT_FORM,
     date: preselectedDate ?? "2026-06-10",
-  });
+  }));
   const [errors, setErrors]         = useState<Partial<Record<keyof FormState, string>>>({});
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [submitted, setSubmitted]   = useState(false);
   const patientRef = useRef<HTMLDivElement>(null);
-
-  // Reset form when drawer opens
-  useEffect(() => {
-    if (open) {
-      setForm({ ...DEFAULT_FORM, date: preselectedDate ?? "2026-06-10" });
-      setErrors({});
-      setSubmitted(false);
-    }
-  }, [open, preselectedDate]);
 
   // Close suggestions on outside click
   useEffect(() => {
@@ -222,7 +214,7 @@ export function NewAppointmentDrawer({ open, onClose, onSuccess, preselectedDate
   if (!open) return null;
 
   return (
-    <Drawer open={open} onClose={onClose} aria-label="New Appointment">
+    <Drawer key={drawerResetKey} open={open} onClose={onClose} aria-label="New Appointment">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">

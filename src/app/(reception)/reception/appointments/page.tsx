@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { CalendarCheck2, Plus, Clock, User, Stethoscope, X } from "lucide-react";
+import { CalendarCheck2, Plus, Clock, User } from "lucide-react";
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchBar } from "@/components/ui/SearchBar";

@@ -12,7 +12,6 @@ import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/
 import { KpiCard } from "@/components/ui/KpiCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
@@ -73,7 +72,6 @@ export default function PharmacyPage() {
   const depts = useMemo(() => [...new Set(prescriptions.map((r) => r.dept))].sort(), [prescriptions]);
 
   // KPIs
-  const activeRx        = prescriptions.filter((r) => ["Pending","Verified","Dispensing","Partially Dispensed"].includes(r.status));
   const pendingCount    = prescriptions.filter((r) => r.status === "Pending").length;
   const dispensingCount = prescriptions.filter((r) => r.status === "Dispensing" || r.status === "Verified").length;
   const onHoldCount     = prescriptions.filter((r) => r.status === "On Hold").length;

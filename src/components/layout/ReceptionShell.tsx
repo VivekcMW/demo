@@ -2,6 +2,7 @@
 
 import { ReceptionSidebar } from "./ReceptionSidebar";
 import { ReceptionNavbar } from "./ReceptionNavbar";
+import { BottomNav } from "./BottomNav";
 import { useUIStore } from "@/store/useUIStore";
 
 export function ReceptionShell({ children }: { children: React.ReactNode }) {
@@ -19,11 +20,12 @@ export function ReceptionShell({ children }: { children: React.ReactNode }) {
         ].join(" ")}
       >
         <ReceptionNavbar />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fade-in">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 pb-20 sm:p-6 sm:pb-6 animate-fade-in">{children}</main>
         <footer className="shrink-0 border-t border-[var(--border-default)] bg-[var(--surface-raised)] px-6 py-3 text-center text-xs text-[var(--text-secondary)]">
           Aarogya EHR — Reception Module · TheCgroup Pvt. Ltd.
         </footer>
       </div>
+      <BottomNav />
     </div>
   );
 }

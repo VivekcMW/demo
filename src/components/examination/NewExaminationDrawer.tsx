@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { useExaminationStore, type ExamType } from "@/store/useExaminationStore";
 import { Drawer } from "@/components/ui/Drawer";
 import { usePatientStore } from "@/store/usePatientStore";
+import { TemplatePicker } from "./TemplatePicker";
+import { getTemplate } from "@/data/templateRegistry";
+import type { TemplateDefinition } from "@/data/templateSchema";
 import {
-  FileText, X, Search, User, Loader2,
+  FileText, X, Search, User, Loader2, ChevronRight,
 } from "lucide-react";
 
 const EXAM_TYPES: ExamType[] = ["OPD", "IPD Review", "Emergency", "Follow-up", "Tele"];
@@ -42,6 +45,8 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
   const [apptRef, setApptRef] = useState(prefillAppointmentId ?? "");
   const [saving,  setSaving]  = useState(false);
   const [errors,  setErrors]  = useState<Record<string, string>>({});
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateDefinition>(getTemplate("soap-default")!);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   const ptResults = useMemo(
     () => ptQuery.length > 1 ? searchPts(ptQuery).slice(0, 6) : [],
@@ -60,6 +65,7 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
     if (!prefillPatientId) setSelectedPt(null);
     setPtQuery(""); setType("OPD"); setDept("General Medicine");
     setDoctor("Dr. Priya Mehta"); setApptRef(""); setErrors({});
+    setSelectedTemplate(getTemplate("soap-default")!);
   }
 
   function handleStart() {
@@ -73,6 +79,7 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
         type,
         doctor:         doctor.trim(),
         dept,
+        templateId:     selectedTemplate.id,
       });
       setSaving(false);
       reset();
@@ -197,7 +204,38 @@ export function NewExaminationDrawer({ open, onClose, prefillPatientId, prefillP
               placeholder="APT-XXXX"
             />
           </div>
+
+          {/* Template */}
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--text-secondary)]">Template</label>
+            <button
+              type="button"
+              onClick={() => setShowTemplatePicker(true)}
+              className="flex w-full items-center gap-3 rounded-lg border border-[var(--border-default)] bg-[var(--surface-raised)] px-3 py-2.5 text-left hover:border-[var(--action-primary)] transition-colors"
+            >
+              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                selectedTemplate.type === "SOAP"
+                  ? "bg-[var(--action-subtle)] text-[var(--action-primary)]"
+                  : "bg-[var(--info-bg)] text-[var(--info-fg)]"
+              }`}>
+                {selectedTemplate.type === "SOAP" ? "S" : selectedTemplate.type.charAt(0)}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">{selectedTemplate.name}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{selectedTemplate.metadata.description}</p>
+              </div>
+              <ChevronRight size={14} className="shrink-0 text-[var(--text-secondary)]" />
+            </button>
+          </div>
         </div>
+
+      <TemplatePicker
+        open={showTemplatePicker}
+        onClose={() => setShowTemplatePicker(false)}
+        onSelect={setSelectedTemplate}
+        selectedId={selectedTemplate?.id}
+        specialtyFilter={dept}
+      />
 
         {/* Footer */}
         <div className="flex gap-3 border-t border-[var(--border-default)] px-5 py-4">

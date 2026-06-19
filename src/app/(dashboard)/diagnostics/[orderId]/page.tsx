@@ -377,9 +377,10 @@ function ResultEntryForm({ orderId, orderType, onSubmit }: EntryFormProps) {
 
 export default function DiagnosticsDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
-  const order  = useOrderStore((s) => s.getById(orderId));
-  const router = useRouter();
+  const order        = useOrderStore((s) => s.getById(orderId));
+  const router       = useRouter();
   const [submitted, setSubmitted] = useState(false);
+  const latestOrder  = useOrderStore((s) => s.getById(orderId))!;
 
   if (!order || (order.type !== "Lab" && order.type !== "Imaging")) {
     return (
@@ -410,9 +411,6 @@ export default function DiagnosticsDetailPage({ params }: { params: Promise<{ or
     setSubmitted(true);
     // re-read will show ResultView after store update
   }
-
-  // After submission, re-read latest order from store
-  const latestOrder = useOrderStore((s) => s.getById(orderId))!;
 
   return (
     <div className="space-y-5 pb-8">

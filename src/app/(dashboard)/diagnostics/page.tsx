@@ -87,6 +87,23 @@ function OrderRow({ order }: { order: Order }) {
   );
 }
 
+// ── Group ────────────────────────────────────────────────────────────────────
+
+function Group({ label, items, accent }: { label: string; items: Order[]; accent?: string }) {
+  if (items.length === 0) return null;
+  return (
+    <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">
+      <div className={`flex items-center gap-2 border-b border-[var(--border-default)] px-5 py-2.5 ${accent ?? "bg-[var(--surface-sunken)]"}`}>
+        <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</span>
+        <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--action-primary)] px-1 text-[10px] font-bold text-white">{items.length}</span>
+      </div>
+      <div className="divide-y divide-[var(--border-default)]">
+        {items.map((o) => <OrderRow key={o.id} order={o} />)}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function DiagnosticsPage() {
@@ -153,21 +170,6 @@ export default function DiagnosticsPage() {
     { label: "STAT Active",   value: statPending,icon: <AlertTriangle size={16} />,  cls: "text-[var(--critical-fg)]" },
     { label: "Done Today",    value: doneToday,  icon: <CheckCircle2 size={16} />,   cls: "text-[var(--normal-fg)]" },
   ];
-
-  function Group({ label, items, accent }: { label: string; items: Order[]; accent?: string }) {
-    if (items.length === 0) return null;
-    return (
-      <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-raised)] overflow-hidden">
-        <div className={`flex items-center gap-2 border-b border-[var(--border-default)] px-5 py-2.5 ${accent ?? "bg-[var(--surface-sunken)]"}`}>
-          <span className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{label}</span>
-          <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--action-primary)] px-1 text-[10px] font-bold text-white">{items.length}</span>
-        </div>
-        <div className="divide-y divide-[var(--border-default)]">
-          {items.map((o) => <OrderRow key={o.id} order={o} />)}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5 pb-8">

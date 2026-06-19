@@ -1,0 +1,1 @@
+export { AYUSHDashboard } from "./AYUSHDashboard";

@@ -2,12 +2,11 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { usePharmacyStore, type RxStatus, type RxItem } from "@/store/usePharmacyStore";
 import { useToast } from "@/components/ui/ToastProvider";
 import {
   ChevronLeft, Pill, ShieldAlert, ShieldCheck, CheckCircle2,
-  AlertCircle, PackageCheck, Package, X, Loader2, User,
+  AlertCircle, PackageCheck, Package, X, Loader2,
   Clock, ClipboardList, FileText, AlertTriangle,
 } from "lucide-react";
 
@@ -151,7 +150,6 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
   const { rxId }      = use(params);
   const store         = usePharmacyStore();
   const rx            = store.getById(rxId);
-  const router        = useRouter();
 
   const [holdOpen,    setHoldOpen]   = useState(false);
   const [cancelOpen,  setCancelOpen] = useState(false);
@@ -424,7 +422,7 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
                 <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Prescribed Drugs ({rx.items.length})</p>
               </div>
               {canDispense && !allDispensed && !dispensing && (
-                <p className="text-xs text-[var(--text-secondary)]">Dispense individually below or use "Dispense All"</p>
+                <p className="text-xs text-[var(--text-secondary)]">Dispense individually below or use &quot;Dispense All&quot;</p>
               )}
             </div>
             <div className="p-5 space-y-3">

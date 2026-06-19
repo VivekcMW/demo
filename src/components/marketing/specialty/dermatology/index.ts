@@ -1,0 +1,1 @@
+export { DermatologyDashboard } from "./DermatologyDashboard";

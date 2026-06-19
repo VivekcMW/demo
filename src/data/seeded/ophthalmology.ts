@@ -1,0 +1,350 @@
+// Ophthalmology Specialty - Seeded Dashboard Data
+// This data simulates a real ophthalmology department for demo purposes
+
+export const ophthalmologyDashboardData = {
+  todayStats: {
+    opdPatients: 87,
+    newPatients: 23,
+    followUps: 64,
+    surgeriesScheduled: 12,
+    campReferrals: 8,
+    revenue: 420000, // ₹4.2L
+  },
+
+  cataractPipeline: {
+    stages: [
+      { id: "diagnosed", label: "Diagnosed", count: 156, color: "#0D9488" },
+      { id: "counseled", label: "Counseled", count: 142, conversion: 91, color: "#14B8A6" },
+      { id: "biometry", label: "Biometry Done", count: 128, conversion: 90, color: "#2DD4BF" },
+      { id: "scheduled", label: "Surgery Scheduled", count: 118, conversion: 92, color: "#5EEAD4" },
+      { id: "completed", label: "Surgery Completed", count: 98, conversion: 83, color: "#99F6E4" },
+    ],
+    followUps: {
+      dayOne: { completed: 96, total: 98, compliance: 98 },
+      weekOne: { completed: 89, total: 96, compliance: 93 },
+      monthOne: { completed: 82, total: 89, compliance: 92 },
+    },
+  },
+
+  iolInventory: [
+    { 
+      id: "alcon-sn60wf",
+      brand: "Alcon AcrySof", 
+      model: "SN60WF", 
+      type: "Monofocal",
+      powers: "+18.0 to +24.0 D", 
+      inStock: 45, 
+      reorderLevel: 20,
+      lowStock: false,
+      price: 8500,
+    },
+    { 
+      id: "jnj-zcb00",
+      brand: "J&J Tecnis", 
+      model: "ZCB00", 
+      type: "Monofocal",
+      powers: "+15.0 to +22.0 D", 
+      inStock: 8, 
+      reorderLevel: 15,
+      lowStock: true,
+      price: 9200,
+    },
+    { 
+      id: "zeiss-ct409",
+      brand: "Zeiss CT Asphina", 
+      model: "409MP", 
+      type: "Aspheric",
+      powers: "+10.0 to +26.0 D", 
+      inStock: 32, 
+      reorderLevel: 15,
+      lowStock: false,
+      price: 12000,
+    },
+    { 
+      id: "hoya-xy1a",
+      brand: "Hoya Vivinex", 
+      model: "XY1A", 
+      type: "Hydrophobic",
+      powers: "+18.0 to +25.0 D", 
+      inStock: 3, 
+      reorderLevel: 10,
+      lowStock: true,
+      price: 15000,
+    },
+    { 
+      id: "alcon-panoptix",
+      brand: "Alcon PanOptix", 
+      model: "TFNT00", 
+      type: "Trifocal",
+      powers: "+15.0 to +25.0 D", 
+      inStock: 12, 
+      reorderLevel: 8,
+      lowStock: false,
+      price: 45000,
+    },
+  ],
+
+  counselorPerformance: [
+    { id: 1, name: "Dr. Meera Sharma", role: "Senior Consultant", consultations: 45, conversions: 41, rate: 91, trend: "up" },
+    { id: 2, name: "Sister Mary Joseph", role: "Counselor", consultations: 28, conversions: 25, rate: 89, trend: "up" },
+    { id: 3, name: "Dr. Rajesh Kumar", role: "Consultant", consultations: 38, conversions: 32, rate: 84, trend: "down" },
+    { id: 4, name: "Ms. Priya Reddy", role: "Counselor", consultations: 22, conversions: 18, rate: 82, trend: "stable" },
+  ],
+
+  campStats: {
+    activeCamps: 3,
+    screenedThisMonth: 890,
+    referredForSurgery: 156,
+    surgeryCompleted: 98,
+    pendingFollowup: 58,
+    conversionRate: 63,
+    locations: [
+      { 
+        id: 1,
+        name: "Kolar Rural Camp", 
+        date: "2026-06-14",
+        screened: 312, 
+        referred: 52,
+        operated: 34,
+        pending: 18,
+        status: "active",
+      },
+      { 
+        id: 2,
+        name: "Tumkur PHC Camp", 
+        date: "2026-06-10",
+        screened: 245, 
+        referred: 41,
+        operated: 28,
+        pending: 13,
+        status: "completed",
+      },
+      { 
+        id: 3,
+        name: "Mandya Taluk Camp", 
+        date: "2026-06-08",
+        screened: 333, 
+        referred: 63,
+        operated: 36,
+        pending: 27,
+        status: "completed",
+      },
+    ],
+  },
+
+  weeklyTrend: [
+    { day: "Mon", opd: 78, surgery: 8, date: "2026-06-09" },
+    { day: "Tue", opd: 92, surgery: 12, date: "2026-06-10" },
+    { day: "Wed", opd: 85, surgery: 10, date: "2026-06-11" },
+    { day: "Thu", opd: 90, surgery: 14, date: "2026-06-12" },
+    { day: "Fri", opd: 87, surgery: 11, date: "2026-06-13" },
+    { day: "Sat", opd: 65, surgery: 6, date: "2026-06-14" },
+  ],
+
+  deviceIntegrations: [
+    { 
+      id: "biometer",
+      name: "Biometer", 
+      device: "Zeiss IOLMaster 700", 
+      connected: true, 
+      lastSync: "2 min ago",
+      todayReadings: 34,
+    },
+    { 
+      id: "autorefractor",
+      name: "Auto-Refractor", 
+      device: "Nidek ARK-1", 
+      connected: true, 
+      lastSync: "5 min ago",
+      todayReadings: 67,
+    },
+    { 
+      id: "funduscamera",
+      name: "Fundus Camera", 
+      device: "Canon CR-2", 
+      connected: true, 
+      lastSync: "12 min ago",
+      todayReadings: 28,
+    },
+    { 
+      id: "oct",
+      name: "OCT", 
+      device: "Heidelberg Spectralis", 
+      connected: false, 
+      lastSync: "Offline",
+      todayReadings: 0,
+    },
+  ],
+
+  recentPatients: [
+    { id: "PT-2341", name: "Ramesh K.", age: 62, condition: "Mature Cataract", eye: "OD", status: "Surgery Scheduled", date: "2026-06-18" },
+    { id: "PT-2340", name: "Lakshmi S.", age: 58, condition: "PCIOL", eye: "OS", status: "Post-Op Day 1", date: "2026-06-16" },
+    { id: "PT-2339", name: "Mohammed A.", age: 71, condition: "Glaucoma", eye: "OU", status: "IOP Review", date: "2026-06-17" },
+    { id: "PT-2338", name: "Savitri D.", age: 65, condition: "Diabetic Retinopathy", eye: "OU", status: "Anti-VEGF Due", date: "2026-06-19" },
+    { id: "PT-2337", name: "Venkatesh R.", age: 55, condition: "Refractive Error", eye: "OU", status: "Glass Prescription", date: "2026-06-17" },
+  ],
+};
+
+// Workflow steps for cataract surgery
+export const cataractWorkflow = {
+  title: "Cataract Pipeline",
+  description: "From diagnosis to post-operative care",
+  steps: [
+    {
+      id: 1,
+      title: "Diagnosis",
+      icon: "Eye",
+      description: "Comprehensive eye examination with visual acuity and slit-lamp assessment",
+      dataPoints: ["Visual Acuity (OD/OS)", "Lens status grading", "Pupil dilation findings"],
+      avgTime: "15 min",
+    },
+    {
+      id: 2,
+      title: "Counseling",
+      icon: "MessageSquare",
+      description: "IOL options discussion with pricing, risks, and expected outcomes",
+      dataPoints: ["IOL type selection", "Cost estimation", "Consent documentation"],
+      avgTime: "20 min",
+    },
+    {
+      id: 3,
+      title: "Biometry",
+      icon: "Ruler",
+      description: "Precise IOL power calculation using optical biometry",
+      dataPoints: ["Axial length", "Keratometry", "IOL power (SRK/T, Barrett)"],
+      avgTime: "10 min",
+    },
+    {
+      id: 4,
+      title: "Surgery",
+      icon: "Scissors",
+      description: "Phacoemulsification with IOL implantation",
+      dataPoints: ["Incision size", "Phaco time", "IOL model implanted"],
+      avgTime: "15 min",
+    },
+    {
+      id: 5,
+      title: "Day 1 Follow-up",
+      icon: "CalendarCheck",
+      description: "Post-operative assessment and medication review",
+      dataPoints: ["Uncorrected VA", "IOP check", "Wound status"],
+      avgTime: "10 min",
+    },
+    {
+      id: 6,
+      title: "Week 1 / Month 1",
+      icon: "TrendingUp",
+      description: "Visual outcome assessment and final refraction",
+      dataPoints: ["BCVA achieved", "Refraction stable", "Patient satisfaction"],
+      avgTime: "15 min",
+    },
+  ],
+};
+
+export const refractionWorkflow = {
+  title: "Refraction & Vision Records",
+  description: "Complete vision assessment with optical linkage",
+  steps: [
+    {
+      id: 1,
+      title: "VA Testing",
+      icon: "Eye",
+      description: "Distance and near visual acuity for both eyes",
+      dataPoints: ["UCVA (OD/OS)", "BCVA with correction", "Near vision"],
+      avgTime: "5 min",
+    },
+    {
+      id: 2,
+      title: "Refraction",
+      icon: "Focus",
+      description: "Objective and subjective refraction",
+      dataPoints: ["Sphere", "Cylinder", "Axis", "Add power"],
+      avgTime: "10 min",
+    },
+    {
+      id: 3,
+      title: "Prior Comparison",
+      icon: "GitCompare",
+      description: "Compare with previous visits to track progression",
+      dataPoints: ["Change in power", "Progression rate", "Risk factors"],
+      avgTime: "2 min",
+    },
+    {
+      id: 4,
+      title: "Glass Prescription",
+      icon: "FileText",
+      description: "Generate prescription with print options",
+      dataPoints: ["Frame type", "Lens material", "Coatings"],
+      avgTime: "5 min",
+    },
+    {
+      id: 5,
+      title: "Optical Order",
+      icon: "ShoppingBag",
+      description: "Send order to optical shop with tracking",
+      dataPoints: ["Order ID", "Delivery date", "Payment status"],
+      avgTime: "3 min",
+    },
+  ],
+};
+
+export const campWorkflow = {
+  title: "Camp Module",
+  description: "Outreach screening to surgery pipeline",
+  steps: [
+    {
+      id: 1,
+      title: "Camp Setup",
+      icon: "MapPin",
+      description: "Configure camp location with offline data sync",
+      dataPoints: ["Location", "Date", "Team assigned", "Target patients"],
+      avgTime: "Setup",
+    },
+    {
+      id: 2,
+      title: "Screening",
+      icon: "Search",
+      description: "Basic vision and cataract screening in the field",
+      dataPoints: ["VA quick test", "Torch examination", "Referral criteria"],
+      avgTime: "5 min/patient",
+    },
+    {
+      id: 3,
+      title: "Offline Entry",
+      icon: "WifiOff",
+      description: "Data captured works without network connectivity",
+      dataPoints: ["Patient demographics", "Screening findings", "Photo capture"],
+      avgTime: "Instant",
+    },
+    {
+      id: 4,
+      title: "Sync & Transfer",
+      icon: "RefreshCw",
+      description: "Auto-sync when network available, pre-register patients",
+      dataPoints: ["Records synced", "UHID generated", "Appointment created"],
+      avgTime: "Auto",
+    },
+    {
+      id: 5,
+      title: "Surgery Funnel",
+      icon: "Activity",
+      description: "Track referred patients through surgical pathway",
+      dataPoints: ["Conversion rate", "Surgery date", "Outcome"],
+      avgTime: "Tracked",
+    },
+  ],
+};
+
+// Templates and order sets
+export const ophthalmologyTemplates = [
+  { id: 1, name: "Comprehensive Eye Exam", category: "OPD", usageCount: 1240 },
+  { id: 2, name: "Cataract Counseling Form", category: "Counseling", usageCount: 890 },
+  { id: 3, name: "Pre-operative Assessment", category: "Pre-Op", usageCount: 756 },
+  { id: 4, name: "Cataract Operative Note", category: "Surgery", usageCount: 634 },
+  { id: 5, name: "Post-Op Day 1 Assessment", category: "Post-Op", usageCount: 612 },
+  { id: 6, name: "Glaucoma Review", category: "OPD", usageCount: 445 },
+  { id: 7, name: "Diabetic Retinopathy Screening", category: "Screening", usageCount: 389 },
+  { id: 8, name: "Anti-VEGF Injection Record", category: "Procedure", usageCount: 234 },
+  { id: 9, name: "Refraction Record", category: "OPD", usageCount: 1890 },
+  { id: 10, name: "Glass Prescription", category: "Prescription", usageCount: 1567 },
+];

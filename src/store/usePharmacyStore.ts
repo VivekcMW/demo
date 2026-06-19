@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { api } from "@/services/apiClient";
 import {
   seedPrescriptions,
   DRUG_CATALOGUE,
@@ -42,6 +43,12 @@ function deriveStatus(items: RxItem[]): RxStatus {
 interface PharmacyState {
   prescriptions: PrescriptionRx[];
   catalogue:     typeof DRUG_CATALOGUE;
+  loading:       boolean;
+  initialized:   boolean;
+  error:         string | null;
+
+  // Lifecycle
+  refresh: () => Promise<void>;
 
   // Worklist actions
   createPrescription:  (payload: CreateRxPayload) => PrescriptionRx;
@@ -63,6 +70,31 @@ const now = () => new Date().toISOString().slice(0, 19);
 export const usePharmacyStore = create<PharmacyState>((set, get) => ({
   prescriptions: seedPrescriptions,
   catalogue:     DRUG_CATALOGUE,
+  loading:       false,
+  initialized:   false,
+  error:         null,
+
+  async refresh() {
+    set({ loading: true, error: null });
+    try {
+      const data: any[] = await api.get("/orders");
+      const prescriptions: PrescriptionRx[] = data.map((item) => ({
+        ...item,
+        items: item.rx_items ?? [],
+        totalAmount: parseFloat(
+          ((item.rx_items ?? []).reduce((s: number, i: any) => s + i.qty * i.unitPrice, 0) as number).toFixed(2),
+        ),
+      }));
+      set({ prescriptions, loading: false, initialized: true });
+    } catch (e) {
+      set({
+        prescriptions: seedPrescriptions,
+        loading: false,
+        initialized: true,
+        error: e instanceof Error ? e.message : "Failed to load orders",
+      });
+    }
+  },
 
   createPrescription(payload) {
     const rx: PrescriptionRx = {

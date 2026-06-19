@@ -1,0 +1,11 @@
+export { Hero } from "./Hero";
+export { TrustBar } from "./TrustBar";
+export { ProblemSection } from "./ProblemSection";
+export { SpecialtyGrid } from "./SpecialtyGrid";
+export { FeatureSection } from "./FeatureSection";
+export { StatsStrip } from "./StatsStrip";
+export { CTASection } from "./CTASection";
+export { TestimonialSlider } from "./TestimonialSlider";
+export { IndiaNativeSection } from "./IndiaNativeSection";
+export { WorksEverywhereSection } from "./WorksEverywhereSection";
+export { ClinicalSafetySection } from "./ClinicalSafetySection";

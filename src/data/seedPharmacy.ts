@@ -91,12 +91,6 @@ export const DRUG_CATALOGUE: DrugCatalogue[] = [
   { id: "DRG-020", name: "Glimepiride 2 mg",     genericName: "Glimepiride",       form: "Tablet",   strength: "2 mg",   unitPrice: 6.00,  stockQty: 210, reorderAt: 60  },
 ];
 
-function stockStatus(qty: number, reorder: number): StockStatus {
-  if (qty === 0) return "Out of Stock";
-  if (qty <= reorder) return "Low Stock";
-  return "Available";
-}
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function totalAmt(items: RxItem[]): number {

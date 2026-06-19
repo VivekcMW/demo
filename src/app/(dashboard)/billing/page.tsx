@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useBillingStore, type Bill, type BillStatus, type BillCategory } from "@/store/useBillingStore";
 import { Receipt, IndianRupee, AlertTriangle, Clock, ChevronRight, TrendingUp } from "lucide-react";
@@ -62,26 +62,23 @@ export default function BillingPage() {
   const pendingCount   = bills.filter((b) => b.status === "Pending" || b.status === "Partially Paid" || b.status === "Draft").length;
 
   // Filtered
-  const filtered = useMemo(() => {
-    const q = query.toLowerCase().trim();
-    return bills
-      .filter((b) => {
-        if (q && !(
-          b.id.toLowerCase().includes(q) ||
-          b.patientName.toLowerCase().includes(q) ||
-          b.patientId.toLowerCase().includes(q)
-        )) return false;
-        if (statusFilter   && b.status   !== statusFilter)   return false;
-        if (categoryFilter && b.category !== categoryFilter) return false;
-        return true;
-      })
-      .sort((a, b) => {
-        // Overdue first, then by createdAt desc
-        if (a.status === "Overdue" && b.status !== "Overdue") return -1;
-        if (b.status === "Overdue" && a.status !== "Overdue") return 1;
-        return b.createdAt.localeCompare(a.createdAt);
-      });
-  }, [bills, query, statusFilter, categoryFilter]);
+  const q = query.toLowerCase().trim();
+  const filtered = bills
+    .filter((b) => {
+      if (q && !(
+        b.id.toLowerCase().includes(q) ||
+        b.patientName.toLowerCase().includes(q) ||
+        b.patientId.toLowerCase().includes(q)
+      )) return false;
+      if (statusFilter   && b.status   !== statusFilter)   return false;
+      if (categoryFilter && b.category !== categoryFilter) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (a.status === "Overdue" && b.status !== "Overdue") return -1;
+      if (b.status === "Overdue" && a.status !== "Overdue") return 1;
+      return b.createdAt.localeCompare(a.createdAt);
+    });
 
   const hasFilters  = !!(statusFilter || categoryFilter);
   const activeCount = [statusFilter, categoryFilter].filter(Boolean).length;

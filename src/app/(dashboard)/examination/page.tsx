@@ -2,46 +2,61 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useExaminationStore, type ExamStatus, type ExamType } from "@/store/useExaminationStore";
+import { useExaminationStore, type NoteStatus, type ExamType } from "@/store/useExaminationStore";
 import {
   FileText, Search, SlidersHorizontal, X, RotateCcw, Plus,
-  CheckCircle2, Clock, PenLine, ShieldCheck, ChevronRight,
+  Clock, PenLine, ShieldCheck, ChevronRight, Eye, Lock,
 } from "lucide-react";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
-const STATUS_CLS: Record<ExamStatus, string> = {
-  "In Progress": "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
-  "Completed":   "bg-[var(--info-bg)] text-[var(--info-fg)]",
-  "Signed Off":  "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+const STATUS_CLS: Record<NoteStatus, string> = {
+  "Draft":    "bg-[var(--warning-bg)] text-[var(--warning-fg)]",
+  "In Review":"bg-[var(--info-bg)] text-[var(--info-fg)]",
+  "Signed":   "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+  "Locked":   "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
 };
 
-const STATUS_ICON: Record<ExamStatus, React.ReactNode> = {
-  "In Progress": <PenLine size={12} />,
-  "Completed":   <CheckCircle2 size={12} />,
-  "Signed Off":  <ShieldCheck size={12} />,
+const STATUS_ICON: Record<NoteStatus, React.ReactNode> = {
+  "Draft":    <PenLine size={12} />,
+  "In Review":<Eye size={12} />,
+  "Signed":   <ShieldCheck size={12} />,
+  "Locked":   <Lock size={12} />,
 };
 
 const TYPE_CLS: Record<ExamType, string> = {
-  "OPD":        "bg-[var(--action-subtle)] text-[var(--action-primary)]",
-  "IPD Review": "bg-[var(--info-bg)] text-[var(--info-fg)]",
-  "Emergency":  "bg-[var(--critical-bg)] text-[var(--critical-fg)]",
-  "Tele":       "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
-  "Follow-up":  "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+  "OPD":              "bg-[var(--action-subtle)] text-[var(--action-primary)]",
+  "IPD Review":       "bg-[var(--info-bg)] text-[var(--info-fg)]",
+  "IPD Admission":    "bg-[var(--info-bg)] text-[var(--info-fg)]",
+  "Procedure":        "bg-[var(--critical-bg)] text-[var(--critical-fg)]",
+  "Discharge Summary":"bg-[var(--normal-bg)] text-[var(--normal-fg)]",
+  "Emergency":        "bg-[var(--critical-bg)] text-[var(--critical-fg)]",
+  "Tele":             "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  "Follow-up":        "bg-[var(--normal-bg)] text-[var(--normal-fg)]",
 };
 
-const ALL_STATUSES: ExamStatus[] = ["In Progress", "Completed", "Signed Off"];
-const ALL_TYPES: ExamType[] = ["OPD", "IPD Review", "Emergency", "Tele", "Follow-up"];
+const ALL_STATUSES: NoteStatus[] = ["Draft", "In Review", "Signed", "Locked"];
+const ALL_TYPES: ExamType[] = ["OPD", "IPD Review", "IPD Admission", "Emergency", "Tele", "Follow-up", "Procedure", "Discharge Summary"];
 
 function fmtDateTime(d: string) {
   return new Date(d).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: true });
+}
+
+// ── Shared UI bits ─────────────────────────────────────────────────────────────
+
+function Btn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick} className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${active ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"}`}>
+      {children}
+    </button>
+  );
 }
 
 // ── Filter Drawer ─────────────────────────────────────────────────────────────
 
 interface FilterProps {
   open: boolean; onClose: () => void;
-  statusFilter: ExamStatus | ""; setStatusFilter: (v: ExamStatus | "") => void;
+   statusFilter: NoteStatus | ""; setStatusFilter: (v: NoteStatus | "") => void;
   typeFilter: ExamType | ""; setTypeFilter: (v: ExamType | "") => void;
   deptFilter: string; setDeptFilter: (v: string) => void;
   depts: string[];
@@ -49,13 +64,6 @@ interface FilterProps {
 }
 function FilterDrawer({ open, onClose, statusFilter, setStatusFilter, typeFilter, setTypeFilter, deptFilter, setDeptFilter, depts, hasFilters, onClear, resultCount }: FilterProps) {
   if (!open) return null;
-  function Btn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-    return (
-      <button onClick={onClick} className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${active ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--action-primary)]"}`}>
-        {children}
-      </button>
-    );
-  }
   const activeCount = [statusFilter, typeFilter, deptFilter].filter(Boolean).length;
   return (
     <>
@@ -111,7 +119,7 @@ export default function ExaminationPage() {
   const examinations = useExaminationStore((s) => s.examinations);
 
   const [query, setQuery]             = useState("");
-  const [statusFilter, setStatus]     = useState<ExamStatus | "">("");
+  const [statusFilter, setStatus]     = useState<NoteStatus | "">("");
   const [typeFilter, setType]         = useState<ExamType | "">("");
   const [deptFilter, setDept]         = useState("");
   const [drawerOpen, setDrawerOpen]   = useState(false);
@@ -120,10 +128,9 @@ export default function ExaminationPage() {
   const depts = useMemo(() => [...new Set(examinations.map((e) => e.dept))].sort(), [examinations]);
 
   // KPIs
-  const today = new Date().toISOString().slice(0, 10);
-  const inProgress     = examinations.filter((e) => e.status === "In Progress").length;
-  const completedToday = examinations.filter((e) => e.status !== "In Progress" && e.startedAt.startsWith(today)).length;
-  const signedOff      = examinations.filter((e) => e.status === "Signed Off").length;
+  const inDraft     = examinations.filter((e) => e.status === "Draft").length;
+  const inReview    = examinations.filter((e) => e.status === "In Review").length;
+  const signed      = examinations.filter((e) => e.status === "Signed").length;
   const thisWeek       = examinations.filter((e) => {
     const d = new Date(e.startedAt);
     const now = new Date();
@@ -142,7 +149,7 @@ export default function ExaminationPage() {
         return true;
       })
       .sort((a, b) => {
-        const srank: Record<ExamStatus, number> = { "In Progress": 0, "Completed": 1, "Signed Off": 2 };
+        const srank: Record<NoteStatus, number> = { "Draft": 0, "In Review": 1, "Signed": 2, "Locked": 3 };
         const sd = srank[a.status] - srank[b.status];
         if (sd !== 0) return sd;
         return b.startedAt.localeCompare(a.startedAt);
@@ -154,19 +161,19 @@ export default function ExaminationPage() {
   function clearFilters() { setStatus(""); setType(""); setDept(""); }
 
   const kpis = [
-    { label: "In Progress",      value: inProgress,     icon: <PenLine size={16} />,     cls: "text-[var(--warning-fg)]" },
-    { label: "Completed Today",  value: completedToday, icon: <CheckCircle2 size={16} />,cls: "text-[var(--info-fg)]" },
-    { label: "Signed Off",       value: signedOff,      icon: <ShieldCheck size={16} />, cls: "text-[var(--normal-fg)]" },
-    { label: "This Week",        value: thisWeek,       icon: <Clock size={16} />,       cls: "text-[var(--action-primary)]" },
+    { label: "Drafts",     value: inDraft,  icon: <PenLine size={16} />,      cls: "text-[var(--warning-fg)]" },
+    { label: "In Review",  value: inReview, icon: <Eye size={16} />,          cls: "text-[var(--info-fg)]" },
+    { label: "Signed",     value: signed,   icon: <ShieldCheck size={16} />,  cls: "text-[var(--normal-fg)]" },
+    { label: "This Week",  value: thisWeek, icon: <Clock size={16} />,        cls: "text-[var(--action-primary)]" },
   ];
 
   return (
     <div className="space-y-5 pb-8">
       <FilterDrawer
         open={drawerOpen} onClose={() => setDrawerOpen(false)}
-        statusFilter={statusFilter} setStatusFilter={setStatus}
-        typeFilter={typeFilter}     setTypeFilter={setType}
-        deptFilter={deptFilter}     setDeptFilter={setDept}
+      statusFilter={statusFilter} setStatusFilter={(v: string) => setStatus(v as NoteStatus | "")}
+      typeFilter={typeFilter}     setTypeFilter={(v: string) => setType(v as ExamType | "")}
+      deptFilter={deptFilter}     setDeptFilter={setDept}
         depts={depts}
         hasFilters={hasFilters} onClear={clearFilters} resultCount={filtered.length}
       />
@@ -215,10 +222,10 @@ export default function ExaminationPage() {
           {(["", ...ALL_STATUSES] as const).map((s) => (
             <button
               key={s}
-              onClick={() => setStatus(s as ExamStatus | "")}
+              onClick={() => setStatus(s as NoteStatus | "")}
               className={`flex items-center gap-1 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${statusFilter === s ? "border-[var(--action-primary)] bg-[var(--action-primary)] text-white" : "border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"}`}
             >
-              {s ? STATUS_ICON[s as ExamStatus] : null}
+              {s ? STATUS_ICON[s as NoteStatus] : null}
               {s || "All"}
             </button>
           ))}

@@ -1,0 +1,1 @@
+export { BariatricDashboard } from "./BariatricDashboard";

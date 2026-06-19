@@ -5,7 +5,6 @@ import { Search, CheckCircle2, Clock, User, AlertCircle } from "lucide-react";
 import { useAppointmentStore } from "@/store/useAppointmentStore";
 import { usePatientStore } from "@/store/usePatientStore";
 import { useQueueStore } from "@/store/useQueueStore";
-import { QUEUE_DEPTS } from "@/data/seedQueue";
 import { useToast } from "@/components/ui/ToastProvider";
 import { PageHeader } from "@/components/ui/PageHeader";
 
@@ -73,8 +72,6 @@ export default function CheckInPage() {
     toast(`${patientName} checked in — queue token assigned`);
   };
 
-  const deptLabel = (deptId: string) => QUEUE_DEPTS.find((d) => d.id === deptId)?.name ?? deptId;
-
   return (
     <div className="pb-8">
       <PageHeader
@@ -111,7 +108,7 @@ export default function CheckInPage() {
         {query && results.length === 0 && (
           <div className="flex flex-col items-center gap-3 py-12 text-center">
             <AlertCircle size={36} className="text-[var(--text-secondary)]" />
-            <p className="text-sm font-medium text-[var(--text-secondary)]">No appointments found for "{query}" today</p>
+            <p className="text-sm font-medium text-[var(--text-secondary)]">No appointments found for &quot;{query}&quot; today</p>
             <p className="text-xs text-[var(--text-secondary)]">Check spelling or use full UHID. Walk-in patients can be added from the Queue page.</p>
           </div>
         )}
@@ -139,7 +136,7 @@ export default function CheckInPage() {
                     <span className="flex items-center gap-1"><User size={12} /> {a.doctor}</span>
                     <span className="text-xs">{a.dept}</span>
                   </div>
-                  {a.reason && <p className="mt-1 text-xs text-[var(--text-secondary)] italic">"{a.reason}"</p>}
+                  {a.reason && <p className="mt-1 text-xs text-[var(--text-secondary)] italic">&quot;{a.reason}&quot;</p>}
                 </div>
 
                 {/* Check-in button */}
@@ -175,7 +172,7 @@ export default function CheckInPage() {
             <Search size={28} className="text-[var(--action-primary)]" />
           </div>
           <p className="text-sm font-medium text-[var(--text-secondary)]">Search a patient to begin check-in</p>
-          <p className="mt-1 text-xs text-[var(--text-secondary)]">Today's appointments will appear here</p>
+          <p className="mt-1 text-xs text-[var(--text-secondary)]">Today&apos;s appointments will appear here</p>
         </div>
       )}
     </div>

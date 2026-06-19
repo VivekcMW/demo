@@ -29,14 +29,6 @@ function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className={`w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--action-primary)] outline-none ${props.className ?? ""}`} />;
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="col-span-full border-b border-[var(--border-default)] pb-2 pt-2">
-      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{children}</h3>
-    </div>
-  );
-}
-
 export default function NewPatientPage() {
   const router = useRouter();
   const addPatient = usePatientStore((s) => s.addPatient);
@@ -105,10 +97,10 @@ export default function NewPatientPage() {
     return Object.keys(e).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    const patient = addPatient({
+    const patient = await addPatient({
       name: name.trim(),
       age: calcAge(dob),
       dob,

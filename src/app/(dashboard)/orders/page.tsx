@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useOrderStore } from "@/store/useOrderStore";
 import type { OrderType, OrderStatus, OrderPriority } from "@/data/seedOrders";
@@ -79,8 +79,6 @@ const ALL_PRIORITIES: (OrderPriority | "")[] = ["", "Routine", "Urgent", "STAT"]
 
 export default function OrdersPage() {
   const orders = useOrderStore((s) => s.orders);
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => setHydrated(true), []);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter]       = useState<OrderType | "">("");
   const [statusFilter, setStatusFilter]   = useState<OrderStatus | "">("");
@@ -215,23 +213,7 @@ export default function OrdersPage() {
           <span />
         </div>
 
-        {!hydrated ? (
-          <div className="divide-y divide-[var(--border-default)]">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-4 px-5 py-4">
-                <div className="skeleton h-8 w-8 rounded-lg shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <div className="skeleton h-3.5 w-48" />
-                  <div className="skeleton h-3 w-32" />
-                </div>
-                <div className="hidden md:flex gap-6">
-                  <div className="skeleton h-5 w-14 rounded-full" />
-                  <div className="skeleton h-5 w-20 rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
+        {filtered.length === 0 ? (
           <EmptyState
             icon={<ClipboardList size={36} />}
             message="No orders match your filters"

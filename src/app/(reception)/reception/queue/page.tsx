@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Users, ChevronRight, AlertTriangle, Clock,
   Plus, SkipForward, CheckCircle2, Activity,
@@ -8,8 +8,6 @@ import {
 import { useQueueStore } from "@/store/useQueueStore";
 import { QUEUE_DEPTS, type TokenType } from "@/data/seedQueue";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { EmptyState } from "@/components/ui/EmptyState";
-
 const TYPE_CLS: Record<TokenType, string> = {
   OPD:       "bg-[var(--info-bg)] text-[var(--info-fg)]",
   Emergency: "bg-[var(--critical-bg)] text-[var(--critical-fg)] font-bold",

@@ -1,0 +1,1 @@
+export { RheumatologyDashboard } from "./RheumatologyDashboard";

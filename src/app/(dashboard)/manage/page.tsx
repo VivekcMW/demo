@@ -5,16 +5,13 @@ import { useManageStore, type Department, type StaffShift, type SystemAnnounceme
 import { DEPARTMENTS } from "@/data/seedUsers";
 import {
   Building2, Clock, Megaphone, Plus, X, Pencil, Trash2,
-  BedDouble, Users, CheckCircle2, AlertTriangle, ChevronDown,
+  BedDouble, Users, CheckCircle2, AlertTriangle,
 } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
-function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-}
 function fmtTime(iso: string) {
   return new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: true });
 }

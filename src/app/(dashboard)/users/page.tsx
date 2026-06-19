@@ -6,15 +6,13 @@ import { ROLE_LABELS, DEPARTMENTS } from "@/data/seedUsers";
 import { useToast } from "@/components/ui/ToastProvider";
 import {
   Users, UserPlus, ShieldCheck, Stethoscope, HeartPulse,
-  FlaskConical, Pill, PhoneCall, Shield,
+  FlaskConical, Pill, PhoneCall, Shield, Receipt,
   MoreHorizontal, Pencil, Trash2, Lock, CheckCircle2, X,
 } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/ui/FilterDrawerShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
@@ -26,6 +24,7 @@ const ROLE_CLS: Record<UserRole, string> = {
   pharmacist:   "bg-[var(--info-bg)] text-[var(--info-fg)]",
   lab_tech:     "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   receptionist: "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  billing:      "bg-[var(--info-bg)] text-[var(--info-fg)]",
 };
 
 const STATUS_CLS: Record<UserStatus, string> = {
@@ -41,9 +40,10 @@ const ROLE_ICONS: Record<UserRole, React.ReactNode> = {
   pharmacist:   <Pill size={14} />,
   lab_tech:     <FlaskConical size={14} />,
   receptionist: <PhoneCall size={14} />,
+  billing:      <Receipt size={14} />,
 };
 
-const ALL_ROLES: UserRole[] = ["doctor", "nurse", "admin", "pharmacist", "lab_tech", "receptionist"];
+const ALL_ROLES: UserRole[] = ["doctor", "nurse", "admin", "pharmacist", "lab_tech", "receptionist", "billing"];
 const ALL_STATUSES: UserStatus[] = ["Active", "Inactive", "Suspended"];
 
 const AVATAR_COLORS = [

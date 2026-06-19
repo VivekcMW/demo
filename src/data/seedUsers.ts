@@ -1,4 +1,4 @@
-export type UserRole = "doctor" | "nurse" | "admin" | "pharmacist" | "lab_tech" | "receptionist";
+export type UserRole = "doctor" | "nurse" | "admin" | "pharmacist" | "lab_tech" | "receptionist" | "billing";
 export type UserStatus = "Active" | "Inactive" | "Suspended";
 
 export type SeedUser = {
@@ -28,6 +28,7 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   pharmacist:   "Pharmacist",
   lab_tech:     "Lab Technician",
   receptionist: "Receptionist",
+  billing:      "Billing Staff",
 };
 
 export const seedUsers: SeedUser[] = [
@@ -212,6 +213,19 @@ export const seedUsers: SeedUser[] = [
     joinedAt: "2023-06-01",
     lastActive: "2026-06-11",
     qualification: "BBA",
+  },
+  {
+    id: "u-bil-001",
+    name: "Vivek Iyengar",
+    email: "billing@aarogya.app",
+    password: "Billing@123",
+    role: "billing",
+    department: "Billing",
+    phone: "9967890123",
+    status: "Active",
+    joinedAt: "2022-04-01",
+    lastActive: "2026-06-11",
+    qualification: "B.Com, Diploma in Hospital Accounting",
   },
   {
     id: "u-admin-002",

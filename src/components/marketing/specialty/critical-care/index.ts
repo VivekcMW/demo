@@ -1,0 +1,1 @@
+export { CriticalCareDashboard } from "./CriticalCareDashboard";

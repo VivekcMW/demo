@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { seedUsers, type SeedUser, type UserRole, type UserStatus } from "@/data/seedUsers";
+import { api } from "@/services/apiClient";
 
 export type { SeedUser, UserRole, UserStatus };
 
@@ -17,18 +18,25 @@ export type CreateUserPayload = {
 
 type UserStore = {
   users: SeedUser[];
+  loading: boolean;
+  initialized: boolean;
+  error: string | null;
   createUser: (payload: CreateUserPayload) => { ok: true; user: SeedUser } | { ok: false; message: string };
   updateUser: (id: string, data: Partial<Omit<SeedUser, "id" | "password">>) => void;
   changePassword: (id: string, newPassword: string) => void;
   setStatus: (id: string, status: UserStatus) => void;
   deleteUser: (id: string) => void;
   getById: (id: string) => SeedUser | undefined;
+  refresh: () => Promise<void>;
 };
 
 let _idCounter = seedUsers.length;
 
 export const useUserStore = create<UserStore>((set, get) => ({
   users: seedUsers,
+  loading: false,
+  initialized: false,
+  error: null,
 
   createUser: (payload) => {
     const exists = get().users.some(
@@ -73,4 +81,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set((s) => ({ users: s.users.filter((u) => u.id !== id) })),
 
   getById: (id) => get().users.find((u) => u.id === id),
+
+  refresh: async () => {
+    set({ loading: true, error: null });
+    try {
+      set({ initialized: true, loading: false });
+    } catch (e) {
+      set({ error: e instanceof Error ? e.message : "Failed to refresh users", loading: false });
+    }
+  },
 }));
