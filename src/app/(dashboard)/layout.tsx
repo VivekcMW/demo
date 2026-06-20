@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useApiInit } from "@/hooks/useApiInit";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 import { AppShell } from "@/components/layout/AppShell";
 import { SentryErrorBoundary } from "@/components/monitoring/SentryErrorBoundary";
 
@@ -16,6 +17,23 @@ function hasValidSession() {
   const token = localStorage.getItem("api_token");
   const authStore = localStorage.getItem("aarogya-auth-store");
   return !!(token && authStore);
+}
+
+function AuthenticatedShell({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
+  // HIPAA §164.312(a)(2)(iii): Auto-logoff on inactivity (30 min default)
+  const handleTimeout = useCallback(() => {
+    router.replace("/login?reason=timeout");
+  }, [router]);
+
+  useSessionTimeout(handleTimeout);
+
+  return (
+    <SentryErrorBoundary>
+      <AppShell>{children}</AppShell>
+    </SentryErrorBoundary>
+  );
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -40,9 +58,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return <LoadingShell />;
   }
 
-  return (
-    <SentryErrorBoundary>
-      <AppShell>{children}</AppShell>
-    </SentryErrorBoundary>
-  );
+  return <AuthenticatedShell>{children}</AuthenticatedShell>;
 }

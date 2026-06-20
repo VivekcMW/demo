@@ -27,7 +27,6 @@ function mergeUsersWithSeeds(persistedUsers?: SeedUser[]): SeedUser[] {
   for (const user of persistedUsers ?? []) byEmail.set(user.email.toLowerCase(), user);
   return Array.from(byEmail.values());
 }
-
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -82,10 +81,16 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: "aarogya-auth-store",
-      partialize: (state) => ({ users: state.users, currentUser: state.currentUser }),
+      // HIPAA §164.312(a)(2)(ii): Never persist passwords to localStorage
+      partialize: (state) => ({
+        currentUser: state.currentUser
+          ? { ...state.currentUser, password: "" } // Strip password from persisted state
+          : null,
+        // Note: users list not persisted — seed data re-hydrates on load
+      }),
       merge: (persistedState, currentState) => {
         const typedPersisted = (persistedState ?? {}) as Partial<AuthStore>;
-        const users = mergeUsersWithSeeds(typedPersisted.users);
+        const users = mergeUsersWithSeeds();
         const currentUser = typedPersisted.currentUser
           ? users.find((u) => u.email.toLowerCase() === typedPersisted.currentUser!.email.toLowerCase()) ?? typedPersisted.currentUser
           : null;

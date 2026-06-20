@@ -11,9 +11,8 @@ export async function login(email: string, password: string): Promise<LoginResul
   return result;
 }
 
-export async function createSeedUser(): Promise<void> {
-  await api.post("/auth/seed-user");
-}
+// HIPAA §164.312(a)(2)(i): Removed createSeedUser — admin creation must go through
+// authenticated admin interface only, not an unauthenticated public endpoint.
 
 export function logout() {
   setAuthToken(null);
