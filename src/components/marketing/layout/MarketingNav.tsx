@@ -121,6 +121,13 @@ export function MarketingNav() {
             >
               {t("nav.resources")}
             </Link>
+
+            <Link
+              href="/company/partners"
+              className="px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              {t("nav.partners")}
+            </Link>
           </div>
 
           {/* Desktop CTA */}
@@ -198,6 +205,13 @@ export function MarketingNav() {
                 onClick={() => setMobileOpen(false)}
               >
                 {t("nav.resources")}
+              </Link>
+              <Link
+                href="/company/partners"
+                className="block px-3 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] rounded-lg"
+                onClick={() => setMobileOpen(false)}
+              >
+                {t("nav.partners")}
               </Link>
             </div>
             <div className="mt-4 pt-4 border-t border-[var(--border-default)] space-y-3">

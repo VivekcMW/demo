@@ -109,16 +109,15 @@ const templates = [
   { id: "pacemaker", name: "Pacemaker Implant", category: "Intervention", usageCount: 220 },
 ];
 
-const relatedSpecialties = [
-  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
-  { label: t("page.criticalCare"), href: "/specialties/critical-care" },
-  { label: "CTVS", href: "/specialties/ctvs" },
-  { label: t("page.emergencyMedicine"), href: "/specialties/emergency-medicine" },
-  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
-];
-
 export default function CardiologyPage() {
   const { t } = useTranslation();
+  const relatedSpecialties = [
+    { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
+    { label: t("page.criticalCare"), href: "/specialties/critical-care" },
+    { label: t("page.ctvs"), href: "/specialties/ctvs" },
+    { label: t("page.emergencyMedicine"), href: "/specialties/emergency-medicine" },
+    { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
+  ];
   return (
     <>
       <PageBreadcrumb

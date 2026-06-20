@@ -315,7 +315,7 @@ export default function OrthopedicsPage() {
 
       {/* FAQ Section */}
       <FAQSection
-        title="Frequently Asked Questions"
+        title={t("page.frequentlyAskedQuestions")}
         faqs={faqs}
       />
 

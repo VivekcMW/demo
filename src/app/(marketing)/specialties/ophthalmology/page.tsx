@@ -97,16 +97,15 @@ const faqs = [
   },
 ];
 
-const relatedSpecialties = [
-  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
-  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
-  { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
-  { label: "ENT", href: "/specialties/ent" },
-  { label: "Neurology", href: "/specialties/neurology-neurosurgery" },
-];
-
 export default function OphthalmologyPage() {
   const { t } = useTranslation();
+  const relatedSpecialties = [
+    { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
+    { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
+    { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
+    { label: "ENT", href: "/specialties/ent" },
+    { label: "Neurology", href: "/specialties/neurology-neurosurgery" },
+  ];
   return (
     <>
       <PageBreadcrumb

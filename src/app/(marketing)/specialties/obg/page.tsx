@@ -110,16 +110,15 @@ const templates = [
   { id: "newborn-exam", name: "Newborn Examination", category: "Neonatology", usageCount: 1890 },
 ];
 
-const relatedSpecialties = [
-  { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
-  { label: "IVF & Reproductive Medicine", href: "/specialties/ivf-reproductive-medicine" },
-  { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
-  { label: t("page.generalSurgery"), href: "/specialties/general-surgery" },
-  { label: "Anesthesiology", href: "/specialties/anaesthesiology" },
-];
-
 export default function OBGPage() {
   const { t } = useTranslation();
+  const relatedSpecialties = [
+    { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
+    { label: "IVF & Reproductive Medicine", href: "/specialties/ivf-reproductive-medicine" },
+    { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
+    { label: t("page.generalSurgery"), href: "/specialties/general-surgery" },
+    { label: "Anesthesiology", href: "/specialties/anaesthesiology" },
+  ];
   return (
     <>
       <PageBreadcrumb

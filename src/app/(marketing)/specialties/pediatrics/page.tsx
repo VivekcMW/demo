@@ -110,16 +110,15 @@ const templates = [
   { id: "discharge-nicu", name: "NICU Discharge", category: "Neonatal", usageCount: 380 },
 ];
 
-const relatedSpecialties = [
-  { label: t("page.obg"), href: "/specialties/obg" },
-  { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
-  { label: "Pediatric Surgery", href: "/specialties/pediatric-surgery" },
-  { label: "Pediatric Cardiology", href: "/specialties/pediatric-cardiology" },
-  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
-];
-
 export default function PediatricsPage() {
   const { t } = useTranslation();
+  const relatedSpecialties = [
+    { label: t("page.obg"), href: "/specialties/obg" },
+    { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
+    { label: "Pediatric Surgery", href: "/specialties/pediatric-surgery" },
+    { label: "Pediatric Cardiology", href: "/specialties/pediatric-cardiology" },
+    { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
+  ];
   return (
     <>
       <PageBreadcrumb

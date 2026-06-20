@@ -108,16 +108,15 @@ const templates = [
   { id: "referral-note", name: "Specialty Referral", category: "General", usageCount: 3800 },
 ];
 
-const relatedSpecialties = [
-  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
-  { label: t("page.cardiology"), href: "/specialties/cardiology" },
-  { label: "Gastroenterology", href: "/specialties/gastroenterology" },
-  { label: "Pulmonology", href: "/specialties/pulmonology" },
-  { label: "Nephrology", href: "/specialties/nephrology" },
-];
-
 export default function GeneralMedicinePage() {
   const { t } = useTranslation();
+  const relatedSpecialties = [
+    { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
+    { label: t("page.cardiology"), href: "/specialties/cardiology" },
+    { label: t("page.gastroenterology"), href: "/specialties/gastroenterology" },
+    { label: "Pulmonology", href: "/specialties/pulmonology" },
+    { label: "Nephrology", href: "/specialties/nephrology" },
+  ];
   return (
     <>
       <PageBreadcrumb

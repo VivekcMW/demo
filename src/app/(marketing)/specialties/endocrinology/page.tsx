@@ -317,7 +317,7 @@ export default function EndocrinologyPage() {
 
       {/* FAQ Section */}
       <FAQSection
-        title="Frequently Asked Questions"
+        title={t("page.frequentlyAskedQuestions")}
         faqs={faqs}
       />
 

@@ -316,14 +316,14 @@ export default function GeneralSurgeryPage() {
 
       {/* FAQ Section */}
       <FAQSection
-        title="Frequently Asked Questions"
+        title={t("page.frequentlyAskedQuestions")}
         faqs={faqs}
       />
 
       {/* CTA Section */}
       <PageCTA
         title={t("page.ctaTitle", { name: "General Surgery" })}
-        subtitle="Join surgeons across India who have streamlined their workflows with AarogyaEHR."
+        subtitle={t("page.ctaSubtitle")}
         primaryCta={{ label: t("page.startFreeTrial"), href: "/demo" }}
         secondaryCta={{ label: t("page.talkToSales"), href: "/contact" }}
       />
@@ -335,7 +335,7 @@ export default function GeneralSurgeryPage() {
           { href: "/specialties/orthopedics", label: t("page.orthopedics") },
           { href: "/specialties/emergency-medicine", label: t("page.emergencyMedicine") },
           { href: "/specialties/critical-care-icu", label: t("page.criticalCare") },
-          { href: "/specialties/gastroenterology", label: "Gastroenterology" },
+          { href: "/specialties/gastroenterology", label: t("page.gastroenterology") },
         ]}
       />
     </main>
