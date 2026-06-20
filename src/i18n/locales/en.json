@@ -98,9 +98,10 @@
     "talkWhatsapp": "Talk on WhatsApp"
   },
   "stickyCta": {
-    "title": "Ready to see it on your patients?",
-    "subtitle": "45-minute live demo, your specialty pre-configured.",
-    "bookDemo": "Book demo",
+    "eyebrow": "Free personalized demo",
+    "title": "See AarogyaEHR with your specialty workflows",
+    "subtitle": "45-min live session • Pre-configured for your department • No commitment",
+    "bookDemo": "Schedule Now",
     "whatsapp": "WhatsApp"
   },
   "problem": {

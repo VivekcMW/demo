@@ -24,7 +24,7 @@ import {
   extractFeatures,
   extractFAQs,
 } from "@/lib/content";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -37,7 +37,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const content = getContentFile("facilities", slug);
+  const lang = await getContentLanguage();
+  const content = getContentFile("facilities", slug, lang);
   if (!content) {
     return { title: "Facility Not Found" };
   }
@@ -63,7 +64,8 @@ function formatTitle(slug: string): string {
 
 export default async function FacilityPage({ params }: Props) {
   const { slug } = await params;
-  const content = getContentFile("facilities", slug);
+  const lang = await getContentLanguage();
+  const content = getContentFile("facilities", slug, lang);
   if (!content) notFound();
 
   const t = await getServerT();

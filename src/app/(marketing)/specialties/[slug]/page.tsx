@@ -18,7 +18,7 @@ import {
   extractFeatures,
   extractFAQs,
 } from "@/lib/content";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 
 // Dashboard component imports
 import { AnaesthesiologyDashboard } from "@/components/marketing/specialty/anaesthesiology";
@@ -121,7 +121,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const content = getContentFile("specialties", slug);
+  const lang = await getContentLanguage();
+  const content = getContentFile("specialties", slug, lang);
   if (!content) {
     return { title: "Specialty Not Found" };
   }
@@ -156,7 +157,8 @@ function formatTitle(slug: string): string {
 
 export default async function SpecialtyPage({ params }: Readonly<Props>) {
   const { slug } = await params;
-  const content = getContentFile("specialties", slug);
+  const lang = await getContentLanguage();
+  const content = getContentFile("specialties", slug, lang);
   if (!content) notFound();
 
   const t = await getServerT();

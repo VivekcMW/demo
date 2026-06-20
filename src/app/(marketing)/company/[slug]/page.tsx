@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 import {
   Building,
   Users,
@@ -37,8 +37,9 @@ function formatTitle(slug: string): string {
 
 export default async function CompanyPage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("company", slug);
+  const content = getContentFile("company", slug, lang);
 
   if (!content) {
     notFound();

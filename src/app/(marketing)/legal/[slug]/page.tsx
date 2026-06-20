@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 import {
   Shield,
   FileText,
@@ -40,8 +40,9 @@ function getIcon(slug: string) {
 
 export default async function LegalPage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("legal", slug);
+  const content = getContentFile("legal", slug, lang);
 
   if (!content) {
     notFound();

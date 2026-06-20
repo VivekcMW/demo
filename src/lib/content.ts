@@ -4,6 +4,12 @@ import matter from "gray-matter";
 
 const CONTENT_DIR = path.join(process.cwd(), "..", "Website");
 
+const localeContentDirs: Record<string, string> = {
+  hi: "hi", mr: "mr", kn: "kn", ta: "ta", te: "te",
+  bn: "bn", gu: "gu", ml: "ml", pa: "pa", or: "or",
+  as: "as", ur: "ur",
+};
+
 export interface ContentMeta {
   slug: string;
   meta_title?: string;
@@ -27,9 +33,32 @@ function slugFromFilename(filename: string): string {
   return filename.replace(/\.md$/, "").replace(/_index/, "index");
 }
 
+function readContentFile(sectionFolder: string, slug: string): ContentFile | null {
+  const possibleFiles = [
+    `${slug}.md`,
+    slug === "index" ? "_index.md" : null,
+  ].filter(Boolean) as string[];
+
+  for (const filename of possibleFiles) {
+    const filePath = path.join(CONTENT_DIR, sectionFolder, filename);
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const { data, content } = matter(fileContent);
+      return {
+        slug,
+        meta: { slug, ...data } as ContentMeta,
+        content,
+        rawContent: fileContent,
+      };
+    }
+  }
+  return null;
+}
+
 export function getContentFile(
   section: string,
-  slug: string
+  slug: string,
+  language?: string
 ): ContentFile | null {
   const sectionMap: Record<string, string> = {
     core: "01-core",
@@ -46,27 +75,15 @@ export function getContentFile(
   const folder = sectionMap[section];
   if (!folder) return null;
 
-  // Try exact match first, then with _index for index pages
-  const possibleFiles = [
-    `${slug}.md`,
-    slug === "index" ? "_index.md" : null,
-  ].filter(Boolean) as string[];
-
-  for (const filename of possibleFiles) {
-    const filePath = path.join(CONTENT_DIR, folder, filename);
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath, "utf-8");
-      const { data, content } = matter(fileContent);
-      return {
-        slug,
-        meta: { slug, ...data } as ContentMeta,
-        content,
-        rawContent: fileContent,
-      };
-    }
+  // Try locale-specific content first
+  if (language && language !== "en" && localeContentDirs[language]) {
+    const localeFolder = path.join(localeContentDirs[language], folder);
+    const result = readContentFile(localeFolder, slug);
+    if (result) return result;
   }
 
-  return null;
+  // Fall back to English
+  return readContentFile(folder, slug);
 }
 
 export function getAllSlugs(section: string): string[] {

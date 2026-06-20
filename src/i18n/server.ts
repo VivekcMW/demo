@@ -2,6 +2,11 @@ import { cookies } from "next/headers";
 import { LanguageCode, defaultLanguage } from "./config";
 import { getTranslations, TranslationKeys } from "./index";
 
+export async function getContentLanguage(): Promise<LanguageCode> {
+  const cookieStore = await cookies();
+  return (cookieStore.get("aarogya-language")?.value || defaultLanguage) as LanguageCode;
+}
+
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const keys = path.split(".");
   let value: unknown = obj;

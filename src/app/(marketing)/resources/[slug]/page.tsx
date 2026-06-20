@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 import {
   BookOpen,
   FileText,
@@ -52,8 +52,9 @@ function getResourceIcon(slug: string) {
 
 export default async function ResourcePage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("resources", slug);
+  const content = getContentFile("resources", slug, lang);
 
   if (!content) {
     notFound();

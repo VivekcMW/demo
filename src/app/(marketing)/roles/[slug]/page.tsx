@@ -25,7 +25,7 @@ import {
   extractHero,
   extractFAQs,
 } from "@/lib/content";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -59,8 +59,9 @@ function getRoleIcon(slug: string) {
 
 export default async function RolePage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("roles", slug);
+  const content = getContentFile("roles", slug, lang);
 
   if (!content) {
     notFound();

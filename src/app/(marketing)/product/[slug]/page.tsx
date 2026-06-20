@@ -25,7 +25,7 @@ import {
   extractFeatures,
   extractFAQs,
 } from "@/lib/content";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -33,8 +33,9 @@ interface Props {
 
 export default async function ProductPage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("product", slug);
+  const content = getContentFile("product", slug, lang);
 
   if (!content) {
     notFound();

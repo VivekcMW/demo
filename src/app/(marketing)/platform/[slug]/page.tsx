@@ -23,7 +23,7 @@ import {
   extractFAQs,
   extractFeatures,
 } from "@/lib/content";
-import { getServerT } from "@/i18n/server";
+import { getServerT, getContentLanguage } from "@/i18n/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -55,8 +55,9 @@ function getPlatformIcon(slug: string) {
 
 export default async function PlatformPage({ params }: Props) {
   const t = await getServerT();
+  const lang = await getContentLanguage();
   const { slug } = await params;
-  const content = getContentFile("platform", slug);
+  const content = getContentFile("platform", slug, lang);
 
   if (!content) {
     notFound();
