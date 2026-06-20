@@ -2,7 +2,6 @@
 
 import {
   Hero,
-  TrustBar,
   ProblemSection,
   SpecialtyGrid,
   IndiaNativeSection,
@@ -20,7 +19,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <TrustBar />
       <ProblemSection />
       <SpecialtyGrid />
       <IndiaNativeSection />
