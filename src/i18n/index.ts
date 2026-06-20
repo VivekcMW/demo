@@ -5,6 +5,8 @@ import en from "./locales/en.json";
 import hi from "./locales/hi.json";
 import mr from "./locales/mr.json";
 import kn from "./locales/kn.json";
+import ta from "./locales/ta.json";
+import te from "./locales/te.json";
 
 export type TranslationKeys = typeof en;
 
@@ -13,9 +15,9 @@ const translations = {
   hi,
   mr,
   kn,
+  ta,
+  te,
   // Fallback to English for languages not yet translated
-  ta: en,
-  te: en,
   bn: en,
   gu: en,
   ml: en,
