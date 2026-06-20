@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -316,7 +316,7 @@ export default function EndocrinologyPage() {
       </section>
 
       {/* FAQ Section */}
-      <FAQSection
+      <FAQBlock
         title={t("page.frequentlyAskedQuestions")}
         faqs={faqs}
       />

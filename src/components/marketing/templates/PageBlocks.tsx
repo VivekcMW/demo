@@ -112,7 +112,7 @@ interface FAQSectionProps {
   readonly faqs?: Array<{ question: string; answer: string }>;
 }
 
-export function FAQSection({ title, faqs = [] }: FAQSectionProps) {
+export function FAQBlock({ title, faqs = [] }: FAQSectionProps) {
   const { t } = useTranslation();
   const displayTitle = title ?? t("page.frequentlyAskedQuestions");
   return (

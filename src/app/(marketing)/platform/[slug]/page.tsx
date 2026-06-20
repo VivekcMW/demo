@@ -11,7 +11,7 @@ import {
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
   PageHero,
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -158,7 +158,7 @@ export default async function PlatformPage({ params }: Props) {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <FAQSection
+        <FAQBlock
           faqs={faqs.map((f) => ({
             question: f.question,
             answer: f.answer.replace(/\{Product\}/g, "AarogyaEHR"),

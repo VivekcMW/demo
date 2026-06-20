@@ -13,7 +13,7 @@ import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
   PageHero,
   FeatureGrid,
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -103,7 +103,7 @@ export default async function ProductPage({ params }: Props) {
         </Container>
       </section>
 
-      {faqs.length > 0 && <FAQSection faqs={faqs} />}
+      {faqs.length > 0 && <FAQBlock faqs={faqs} />}
 
       <PageCTA
         title={t("page.productCtaTitle", { name: title })}

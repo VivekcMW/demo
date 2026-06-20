@@ -14,7 +14,7 @@ import {
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
   PageHero,
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -180,7 +180,7 @@ export default async function RolePage({ params }: Props) {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <FAQSection
+        <FAQBlock
           title={t("page.whatNameAsk", { name: title.toLowerCase() })}
           faqs={faqs.map((f) => ({
             question: f.question,

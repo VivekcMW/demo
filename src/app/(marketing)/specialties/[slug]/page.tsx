@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -287,7 +287,7 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
         </section>
       )}
 
-      {faqs.length > 0 && <FAQSection faqs={faqs} />}
+      {faqs.length > 0 && <FAQBlock faqs={faqs} />}
 
       <PageCTA
         title={t("page.ctaTitle", { name: title.toLowerCase() })}

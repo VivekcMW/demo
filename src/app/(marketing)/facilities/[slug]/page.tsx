@@ -12,7 +12,7 @@ import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
   PageHero,
   FeatureGrid,
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -169,7 +169,7 @@ export default async function FacilityPage({ params }: Props) {
       )}
 
       {faqs.length > 0 && (
-        <FAQSection
+        <FAQBlock
           faqs={faqs.map((f) => ({
             question: f.question,
             answer: f.answer.replace(/\{Product\}/g, "AarogyaEHR"),

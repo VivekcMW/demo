@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
 import {
-  FAQSection,
+  FAQBlock,
   PageCTA,
   PageBreadcrumb,
   CrossLinks,
@@ -317,7 +317,7 @@ export default function EmergencyMedicinePage() {
       </section>
 
       {/* FAQ Section */}
-      <FAQSection
+      <FAQBlock
         title={t("page.frequentlyAskedQuestions")}
         faqs={faqs}
       />
