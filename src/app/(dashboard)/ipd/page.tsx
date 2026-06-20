@@ -15,6 +15,7 @@ import { FilterDrawerShell, FilterSection, FilterToggleBtn } from "@/components/
 import { KpiCard } from "@/components/ui/KpiCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchBar } from "@/components/ui/SearchBar";
+import { ICD10Search } from "@/components/clinical/ICD10Search";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -243,7 +244,12 @@ function AdmitPatientDrawer({ open, onClose }: AdmitDrawerProps) {
 
           {/* Diagnosis */}
           <Field label="Admitting Diagnosis *" error={errors.diagnosis}>
-            <input className={inputCls(errors.diagnosis)} value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} placeholder="e.g. Acute Myocardial Infarction" />
+            <ICD10Search
+              onSelect={(code, desc) => setDiagnosis(`${code} - ${desc}`)}
+              placeholder="Search ICD-10 code or diagnosis..."
+              billableOnly
+              error={errors.diagnosis}
+            />
           </Field>
 
           {/* Attending Doctor */}
