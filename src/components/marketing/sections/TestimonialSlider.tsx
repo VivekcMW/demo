@@ -20,8 +20,6 @@ const AUTOPLAY_DELAY = 5000;
 
 export function TestimonialSlider() {
   const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [animDir, setAnimDir] = useState<"next" | "prev">("next");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation();
 
@@ -76,21 +74,18 @@ export function TestimonialSlider() {
   const total = testimonials.length;
 
   const go = useCallback((dir: "next" | "prev") => {
-    setAnimDir(dir);
     setCurrent((c) => (dir === "next" ? (c + 1) % total : (c - 1 + total) % total));
   }, [total]);
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (!paused) {
-      timerRef.current = setTimeout(() => go("next"), AUTOPLAY_DELAY);
-    }
-  }, [paused, go]);
+    timerRef.current = setTimeout(() => go("next"), AUTOPLAY_DELAY);
+  }, [go]);
 
   useEffect(() => {
     resetTimer();
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [current, paused, resetTimer]);
+  }, [current, resetTimer]);
 
   const t_ = testimonials[current];
   const avatarColors = [
@@ -109,32 +104,30 @@ export function TestimonialSlider() {
           title={t("testimonials.title")}
         />
 
-        <div
-          className="mt-10 sm:mt-14 max-w-4xl mx-auto"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
+        {/* Slider */}
+        <div className="mt-10 sm:mt-14 max-w-4xl mx-auto">
           {/* Main card */}
           <div
             key={current}
-            className={`relative bg-white rounded-2xl shadow-xl border border-[var(--border-default)] p-8 sm:p-10 md:p-12 animate-slide-card`}
+            className="relative bg-white rounded-2xl shadow-xl border border-(--border-default) p-8 sm:p-10 md:p-12 animate-slide-card"
           >
             {/* Top row: stars + metric */}
             <div className="flex items-start justify-between gap-4 mb-6">
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
               <div className="text-right shrink-0">
-                <div className="text-2xl sm:text-3xl font-bold text-[var(--action-primary)]">{t_.metric}</div>
-                <div className="text-xs text-[var(--text-secondary)]">{t_.metricLabel}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-(--action-primary)">{t_.metric}</div>
+                <div className="text-xs text-(--text-secondary)">{t_.metricLabel}</div>
               </div>
             </div>
 
             {/* Quote */}
-            <Quote className="w-8 h-8 text-[var(--action-primary)] opacity-20 mb-3" />
-            <blockquote className="text-lg sm:text-xl md:text-2xl text-[var(--text-primary)] leading-relaxed font-medium">
+            <Quote className="w-8 h-8 text-(--action-primary) opacity-20 mb-3" />
+            <blockquote className="text-lg sm:text-xl md:text-2xl text-foreground leading-relaxed font-medium">
               &ldquo;{t_.quote}&rdquo;
             </blockquote>
 
@@ -144,20 +137,17 @@ export function TestimonialSlider() {
                 {t_.avatar}
               </div>
               <div>
-                <div className="font-semibold text-[var(--text-primary)]">{t_.author}</div>
-                <div className="text-sm text-[var(--text-secondary)]">{t_.role} · {t_.organization}</div>
+                <div className="font-semibold text-foreground">{t_.author}</div>
+                <div className="text-sm text-(--text-secondary)">{t_.role} · {t_.organization}</div>
               </div>
             </div>
 
             {/* Progress bar */}
-            <div className="mt-8 h-0.5 bg-[var(--border-default)] rounded-full overflow-hidden">
+            <div className="mt-8 h-0.5 bg-(--border-default) rounded-full overflow-hidden">
               <div
                 key={`${current}-progress`}
-                className="h-full bg-[var(--action-primary)] rounded-full"
-                style={{
-                  width: paused ? "0%" : "100%",
-                  transition: paused ? "none" : `width ${AUTOPLAY_DELAY}ms linear`,
-                }}
+                className="h-full bg-(--action-primary) rounded-full"
+                style={{ width: "100%", transition: `width ${AUTOPLAY_DELAY}ms linear` }}
               />
             </div>
           </div>
@@ -166,14 +156,14 @@ export function TestimonialSlider() {
           <div className="mt-6 flex items-center justify-between">
             {/* Dots */}
             <div className="flex items-center gap-2">
-              {testimonials.map((_, i) => (
+              {testimonials.map((item, i) => (
                 <button
-                  key={i}
-                  onClick={() => { setAnimDir(i > current ? "next" : "prev"); setCurrent(i); }}
+                  key={item.avatar}
+                  onClick={() => setCurrent(i)}
                   className={`rounded-full transition-all duration-300 ${
                     i === current
-                      ? "w-6 h-2 bg-[var(--action-primary)]"
-                      : "w-2 h-2 bg-[var(--border-default)] hover:bg-[var(--action-primary)]/40"
+                      ? "w-6 h-2 bg-(--action-primary)"
+                      : "w-2 h-2 bg-(--border-default) hover:bg-(--action-primary)/40"
                   }`}
                   aria-label={`Go to testimonial ${i + 1}`}
                 />
@@ -184,14 +174,14 @@ export function TestimonialSlider() {
             <div className="flex gap-2">
               <button
                 onClick={() => go("prev")}
-                className="w-10 h-10 rounded-full border border-[var(--border-default)] flex items-center justify-center text-[var(--text-secondary)] hover:border-[var(--action-primary)] hover:text-[var(--action-primary)] transition-colors"
+                className="w-10 h-10 rounded-full border border-(--border-default) flex items-center justify-center text-(--text-secondary) hover:border-(--action-primary) hover:text-(--action-primary) transition-colors"
                 aria-label={t("testimonials.previous")}
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => go("next")}
-                className="w-10 h-10 rounded-full border border-[var(--border-default)] flex items-center justify-center text-[var(--text-secondary)] hover:border-[var(--action-primary)] hover:text-[var(--action-primary)] transition-colors"
+                className="w-10 h-10 rounded-full border border-(--border-default) flex items-center justify-center text-(--text-secondary) hover:border-(--action-primary) hover:text-(--action-primary) transition-colors"
                 aria-label={t("testimonials.next")}
               >
                 <ChevronRight className="w-5 h-5" />
@@ -203,60 +193,18 @@ export function TestimonialSlider() {
           <div className="mt-6 grid grid-cols-5 gap-2 opacity-60">
             {testimonials.map((item, i) => (
               <button
-                key={i}
-                onClick={() => { setAnimDir(i > current ? "next" : "prev"); setCurrent(i); }}
+                key={item.avatar}
+                onClick={() => setCurrent(i)}
                 className={`p-2 rounded-lg border text-left transition-all text-xs truncate ${
                   i === current
-                    ? "border-[var(--action-primary)] bg-[var(--action-subtle)] opacity-100"
-                    : "border-[var(--border-default)] bg-white hover:border-[var(--action-primary)]/40"
+                    ? "border-(--action-primary) bg-(--action-subtle) opacity-100"
+                    : "border-(--border-default) bg-white hover:border-(--action-primary)/40"
                 }`}
               >
-                <div className="font-medium text-[var(--text-primary)] truncate">{item.author}</div>
-                <div className="text-[var(--text-secondary)] truncate">{item.organization.split(",")[0]}</div>
+                <div className="font-medium text-foreground truncate">{item.author}</div>
+                <div className="text-(--text-secondary) truncate">{item.organization.split(",")[0]}</div>
               </button>
             ))}
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-            </div>
-
-            {/* Navigation */}
-            <div className="mt-6 sm:mt-8 flex items-center justify-between border-t border-[var(--border-default)] pt-4 sm:pt-6">
-              <div className="flex gap-1.5 sm:gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrent(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === current
-                        ? "bg-[var(--action-primary)]"
-                        : "bg-slate-200 hover:bg-slate-300"
-                    }`}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                  />
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={prev}
-                  className="p-1.5 sm:p-2 rounded-full border border-[var(--border-default)] hover:bg-[var(--surface-sunken)] transition-colors"
-                  aria-label={t("testimonials.previous")}
-                >
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--text-secondary)]" />
-                </button>
-                <button
-                  onClick={next}
-                  className="p-1.5 sm:p-2 rounded-full border border-[var(--border-default)] hover:bg-[var(--surface-sunken)] transition-colors"
-                  aria-label={t("testimonials.next")}
-                >
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--text-secondary)]" />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </Container>
