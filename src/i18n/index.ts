@@ -7,6 +7,10 @@ import mr from "./locales/mr.json";
 import kn from "./locales/kn.json";
 import ta from "./locales/ta.json";
 import te from "./locales/te.json";
+import bn from "./locales/bn.json";
+import gu from "./locales/gu.json";
+import ml from "./locales/ml.json";
+import pa from "./locales/pa.json";
 
 export type TranslationKeys = typeof en;
 
@@ -17,11 +21,10 @@ const translations = {
   kn,
   ta,
   te,
-  // Fallback to English for languages not yet translated
-  bn: en,
-  gu: en,
-  ml: en,
-  pa: en,
+  bn,
+  gu,
+  ml,
+  pa,
 };
 
 export function getTranslations(language: LanguageCode): TranslationKeys {

@@ -70,7 +70,7 @@ export function LanguageSwitcher({ variant = "nav" }: LanguageSwitcherProps) {
           <div className="max-h-[300px] overflow-y-auto">
             {languages.map((lang) => {
               const isActive = language === lang.code;
-              const isAvailable = ["en", "hi", "kn", "ta", "te"].includes(lang.code);
+              const isAvailable = ["en", "hi", "mr", "kn", "ta", "te", "bn", "gu", "ml", "pa"].includes(lang.code);
 
               return (
                 <button
