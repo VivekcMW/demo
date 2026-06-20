@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { MarketingNav, MarketingFooter } from "@/components/marketing";
+import { MarketingNav, MarketingFooter, MobileCtaBar } from "@/components/marketing";
 import { LocationDetector } from "@/hooks/useLocationDetection";
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default function MarketingLayout({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen flex flex-col">
@@ -36,6 +36,7 @@ export default function MarketingLayout({
       <MarketingNav />
       <main className="flex-1">{children}</main>
       <MarketingFooter />
+      <MobileCtaBar />
     </div>
   );
 }

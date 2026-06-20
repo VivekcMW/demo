@@ -9,3 +9,7 @@ export { TestimonialSlider } from "./TestimonialSlider";
 export { IndiaNativeSection } from "./IndiaNativeSection";
 export { WorksEverywhereSection } from "./WorksEverywhereSection";
 export { ClinicalSafetySection } from "./ClinicalSafetySection";
+export { HowItWorksSection } from "./HowItWorksSection";
+export { VideoSection } from "./VideoSection";
+export { ComparisonSection } from "./ComparisonSection";
+export { FAQSection } from "./FAQSection";

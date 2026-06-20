@@ -2,34 +2,41 @@
 
 import {
   Hero,
+  TrustBar,
+  StatsStrip,
   ProblemSection,
+  VideoSection,
+  HowItWorksSection,
   SpecialtyGrid,
   IndiaNativeSection,
   WorksEverywhereSection,
   ClinicalSafetySection,
-  StatsStrip,
+  ComparisonSection,
   TestimonialSlider,
   CTASection,
+  FAQSection,
 } from "@/components/marketing";
-import { useTranslation } from "@/hooks/useTranslation";
 
 export default function HomePage() {
-  const { t } = useTranslation();
-
   return (
     <>
       <Hero />
+      <TrustBar />
+      <StatsStrip />
       <ProblemSection />
+      <VideoSection />
+      <HowItWorksSection />
       <SpecialtyGrid />
       <IndiaNativeSection />
       <WorksEverywhereSection />
       <ClinicalSafetySection />
-      <StatsStrip />
+      <ComparisonSection />
       <TestimonialSlider />
       <CTASection
         titleKey="cta.title"
         subtitleKey="cta.subtitle"
       />
+      <FAQSection />
     </>
   );
 }
