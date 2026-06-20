@@ -111,10 +111,10 @@ const templates = [
 ];
 
 const relatedSpecialties = [
-  { label: "Pediatrics & Neonatology", href: "/specialties/pediatrics-neonatology" },
+  { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
   { label: "IVF & Reproductive Medicine", href: "/specialties/ivf-reproductive-medicine" },
   { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
-  { label: "General Surgery", href: "/specialties/general-surgery" },
+  { label: t("page.generalSurgery"), href: "/specialties/general-surgery" },
   { label: "Anesthesiology", href: "/specialties/anaesthesiology" },
 ];
 
@@ -125,7 +125,7 @@ export default function OBGPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Obstetrics & Gynaecology" },
+          { label: t("page.obg") },
         ]}
       />
 
@@ -249,7 +249,7 @@ export default function OBGPage() {
                     {template.name}
                   </p>
                   <p className="text-xs text-(--text-secondary)">
-                    {template.category} • {template.usageCount.toLocaleString()} uses
+                    {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                   </p>
                 </div>
               </div>

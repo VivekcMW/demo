@@ -25,16 +25,16 @@ interface Props {
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "api-docs": "API Documentation",
-    "blog": "Blog",
-    "case-studies": "Case Studies",
-    "guides": "Guides",
-    "help-center": "Help Center",
-    "roi-calculator": "ROI Calculator",
-    "webinars": "Webinars",
+  const keys: Record<string, string> = {
+    "api-docs": "page.resourcesApiDocs",
+    "blog": "page.resourcesBlog",
+    "case-studies": "page.resourcesCaseStudies",
+    "guides": "page.resourcesGuides",
+    "help-center": "page.resourcesHelpCenter",
+    "roi-calculator": "page.resourcesRoiCalculator",
+    "webinars": "page.resourcesWebinars",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 function getResourceIcon(slug: string) {
@@ -59,14 +59,14 @@ export default async function ResourcePage({ params }: Props) {
     notFound();
   }
 
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
   const ResourceIcon = getResourceIcon(slug);
 
   const placeholderItems = [
-    { title: "Getting started guide", description: "Everything you need to know to begin." },
-    { title: "Best practices", description: "Tips from successful implementations." },
-    { title: "Troubleshooting", description: "Common issues and how to solve them." },
-    { title: "Advanced features", description: "Power-user tips and hidden capabilities." },
+    { title: t("page.placeholderGettingStarted"), description: t("page.placeholderGettingStartedDesc") },
+    { title: t("page.placeholderBestPractices"), description: t("page.placeholderBestPracticesDesc") },
+    { title: t("page.placeholderTroubleshooting"), description: t("page.placeholderTroubleshootingDesc") },
+    { title: t("page.placeholderAdvanced"), description: t("page.placeholderAdvancedDesc") },
   ];
 
   return (

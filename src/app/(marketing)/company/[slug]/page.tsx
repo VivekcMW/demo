@@ -25,14 +25,14 @@ interface Props {
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "about": "About Us",
-    "careers": "Careers",
-    "contact": "Contact",
-    "news": "News",
-    "partners": "Partners",
+  const keys: Record<string, string> = {
+    about: "page.companyAbout",
+    careers: "page.companyCareers",
+    contact: "page.companyContact",
+    news: "page.companyNews",
+    partners: "page.companyPartners",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 export default async function CompanyPage({ params }: Props) {
@@ -44,7 +44,7 @@ export default async function CompanyPage({ params }: Props) {
     notFound();
   }
 
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
 
   function ContactPage() {
     return (
@@ -52,7 +52,7 @@ export default async function CompanyPage({ params }: Props) {
         <PageBreadcrumb
           items={[
             { label: t("page.company"), href: "/company" },
-            { label: "Contact" },
+            { label: t("page.companyContact") },
           ]}
         />
 
@@ -131,11 +131,9 @@ export default async function CompanyPage({ params }: Props) {
                 <div className="flex gap-4 mb-8">
                   <MapPin className="w-6 h-6 text-[var(--action-primary)] flex-shrink-0" />
                   <div>
-                    <p className="text-foreground font-medium">AarogyaEHR Technologies</p>
+                    <p className="text-foreground font-medium">{t("page.companyName")}</p>
                     <p className="text-[var(--text-secondary)]">
-                      123 Tech Park, Whitefield<br />
-                      Bangalore, Karnataka 560066<br />
-                      India
+                      {t("page.companyAddress")}
                     </p>
                   </div>
                 </div>
@@ -149,10 +147,10 @@ export default async function CompanyPage({ params }: Props) {
 
   function CareersPage() {
     const openings = [
-      { title: "Senior Product Engineer", team: "Engineering", location: "Bangalore / Remote" },
-      { title: "Clinical Implementation Specialist", team: "Customer Success", location: "Mumbai" },
-      { title: "Product Designer", team: "Design", location: "Bangalore" },
-      { title: "Sales Development Representative", team: "Sales", location: "Delhi NCR" },
+      { title: t("page.job1Title"), team: t("page.job1Team"), location: t("page.job1Location") },
+      { title: t("page.job2Title"), team: t("page.job2Team"), location: t("page.job2Location") },
+      { title: t("page.job3Title"), team: t("page.job3Team"), location: t("page.job3Location") },
+      { title: t("page.job4Title"), team: t("page.job4Team"), location: t("page.job4Location") },
     ];
 
     return (
@@ -160,7 +158,7 @@ export default async function CompanyPage({ params }: Props) {
         <PageBreadcrumb
           items={[
             { label: t("page.company"), href: "/company" },
-            { label: "Careers" },
+            { label: t("page.companyCareers") },
           ]}
         />
 
@@ -215,10 +213,9 @@ export default async function CompanyPage({ params }: Props) {
         <PageBreadcrumb
           items={[
             { label: t("page.company"), href: "/company" },
-            { label: "About" },
+            { label: t("page.companyAbout") },
           ]}
         />
-
         <section className="py-20 md:py-28 bg-gradient-to-b from-[var(--bg-subtle)] to-white">
           <Container>
             <div className="max-w-3xl mx-auto text-center">
@@ -228,48 +225,20 @@ export default async function CompanyPage({ params }: Props) {
             </div>
           </Container>
         </section>
-
         <section className="py-16 md:py-24">
           <Container narrow>
             <div className="prose prose-slate prose-lg max-w-none">
-              <h2>Why we exist</h2>
-              <p>
-                Indian healthcare digitised its billing a decade ago and stopped. Clinical
-                records — the part that determines whether the 3 am decision is informed —
-                largely stayed on paper, because the software on offer was built for Western
-                workflows, priced for metro chains, and designed for machines Indian hospitals
-                don't have.
-              </p>
-              <p>
-                We started AarogyaEHR to close that gap: an EHR with genuine specialty depth,
-                native ABDM compliance, nine Indian languages in the clinical interface, and
-                engineering that respects the 1366×768 desktop at a Tier-2 city nursing station.
-              </p>
-
-              <h2>What we believe</h2>
-              <p>
-                <strong>Specialty depth is the product.</strong> A cardiologist needs a cath
-                report, not a customisable form. Depth is why doctors adopt, and doctor adoption
-                is the only metric that predicts whether a hospital's digitisation survives.
-              </p>
-              <p>
-                <strong>Compliance is never an upsell.</strong> ABDM, NABH reporting, statutory
-                registers — built in, for every customer, at every size.
-              </p>
-              <p>
-                <strong>Patient safety is a design discipline.</strong> Allergy banners that
-                can't be hidden, colour never used alone, ASCII numerals for every dose. Our
-                design system treats these as hard rules, not preferences.
-              </p>
-              <p>
-                <strong>Honesty compounds.</strong> Our exit-rights promise is public. Our case
-                studies include what went wrong. Our calculator shows our price next to the
-                benefit. We'd rather lose a deal than win it on fog.
-              </p>
+              <h2>{t("aboutContent.whyWeExistTitle")}</h2>
+              <p>{t("aboutContent.whyWeExistP1")}</p>
+              <p>{t("aboutContent.whyWeExistP2")}</p>
+              <h2>{t("aboutContent.whatWeBelieveTitle")}</h2>
+              <p><strong>{t("aboutContent.believe1Title")}</strong> {t("aboutContent.believe1Desc")}</p>
+              <p><strong>{t("aboutContent.believe2Title")}</strong> {t("aboutContent.believe2Desc")}</p>
+              <p><strong>{t("aboutContent.believe3Title")}</strong> {t("aboutContent.believe3Desc")}</p>
+              <p><strong>{t("aboutContent.believe4Title")}</strong> {t("aboutContent.believe4Desc")}</p>
             </div>
           </Container>
         </section>
-
         <PageCTA
           title={t("page.seeWhatWeBuilt")}
           subtitle={t("page.ctaSubtitle")}
@@ -317,7 +286,7 @@ export default async function CompanyPage({ params }: Props) {
       <section className="py-16 md:py-24">
         <Container narrow>
           <p className="text-[var(--text-secondary)] text-center">
-            Content coming soon.
+            {t("page.contentComingSoon")}
           </p>
         </Container>
       </section>

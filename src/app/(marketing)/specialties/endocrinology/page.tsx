@@ -134,7 +134,7 @@ export default function EndocrinologyPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Endocrinology & Diabetology" },
+          { label: t("page.endocrinology") },
         ]}
       />
 
@@ -157,11 +157,11 @@ export default function EndocrinologyPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="gap-2 bg-violet-600 hover:bg-violet-700">
                 <Stethoscope className="w-5 h-5" />
-                Request Demo
+                {t("page.requestDemo")}
               </Button>
               <Button variant="secondary" size="lg" className="gap-2">
                 <Calendar className="w-5 h-5" />
-                Schedule Consultation
+                {t("page.scheduleConsultation")}
               </Button>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function EndocrinologyPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Challenges"
+            eyebrow={t("page.challenges")}
             title="Diabetes Management Challenges"
             subtitle="With 77 million diabetics in India, managing chronic care at scale requires specialized tools."
           />
@@ -202,7 +202,7 @@ export default function EndocrinologyPage() {
       <section className="py-16 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            eyebrow="Capabilities"
+            eyebrow={t("page.capabilities")}
             title="Purpose-Built for Endocrine Practice"
             subtitle="Every feature designed for the unique needs of diabetes and thyroid management."
           />
@@ -240,7 +240,7 @@ export default function EndocrinologyPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Live Preview"
+            eyebrow={t("page.livePreview")}
             title="See It In Action"
             subtitle="Experience the endocrinology dashboard that helps physicians manage hundreds of diabetic patients."
           />
@@ -254,7 +254,7 @@ export default function EndocrinologyPage() {
       <section className="py-16 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            eyebrow="Documentation"
+            eyebrow={t("page.documentation")}
             title="Endocrine Templates Library"
             subtitle="Specialized templates for diabetes, thyroid, and metabolic disorders."
           />
@@ -274,7 +274,7 @@ export default function EndocrinologyPage() {
                   </div>
                 </div>
                 <span className="text-xs text-(--text-secondary) bg-gray-100 px-2 py-1 rounded">
-                  {template.usageCount.toLocaleString()} uses
+                  {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                 </span>
               </div>
             ))}
@@ -286,7 +286,7 @@ export default function EndocrinologyPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Integrations"
+            eyebrow={t("page.integrations")}
             title="Connected Diabetes Ecosystem"
             subtitle="Seamlessly integrate with devices, labs, and patient apps."
           />
@@ -325,17 +325,17 @@ export default function EndocrinologyPage() {
       <PageCTA
         title={t("page.ctaTitle", { name: "Endocrinology" })}
         subtitle="Join endocrinologists across India delivering better chronic care with AarogyaEHR."
-        primaryCta={{ label: "Start Free Trial", href: "/demo" }}
-        secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
+        primaryCta={{ label: t("page.startFreeTrial"), href: "/demo" }}
+        secondaryCta={{ label: t("page.talkToSales"), href: "/contact" }}
       />
 
       {/* Cross Links */}
       <CrossLinks
         title={t("page.relatedSpecialties")}
         links={[
-          { href: "/specialties/cardiology", label: "Cardiology" },
+          { href: "/specialties/cardiology", label: t("page.cardiology") },
           { href: "/specialties/nephrology", label: "Nephrology" },
-          { href: "/specialties/general-medicine", label: "General Medicine" },
+          { href: "/specialties/general-medicine", label: t("page.generalMedicine") },
           { href: "/specialties/bariatric-surgery", label: "Bariatric Surgery" },
         ]}
       />

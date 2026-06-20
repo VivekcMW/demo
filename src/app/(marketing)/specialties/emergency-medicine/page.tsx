@@ -135,7 +135,7 @@ export default function EmergencyMedicinePage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Emergency Medicine" },
+          { label: t("page.emergencyMedicine") },
         ]}
       />
 
@@ -158,11 +158,11 @@ export default function EmergencyMedicinePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="gap-2 bg-red-600 hover:bg-red-700">
                 <Stethoscope className="w-5 h-5" />
-                Request Demo
+                {t("page.requestDemo")}
               </Button>
               <Button variant="secondary" size="lg" className="gap-2">
                 <Calendar className="w-5 h-5" />
-                Schedule Consultation
+                {t("page.scheduleConsultation")}
               </Button>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function EmergencyMedicinePage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Challenges"
+            eyebrow={t("page.challenges")}
             title="Emergency Department Bottlenecks"
             subtitle="Manual processes and disconnected systems cost precious time in life-threatening emergencies."
           />
@@ -203,7 +203,7 @@ export default function EmergencyMedicinePage() {
       <section className="py-16 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            eyebrow="Capabilities"
+            eyebrow={t("page.capabilities")}
             title="Built for Emergency Excellence"
             subtitle="Every feature designed with input from emergency physicians across India."
           />
@@ -241,7 +241,7 @@ export default function EmergencyMedicinePage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Live Preview"
+            eyebrow={t("page.livePreview")}
             title="See It In Action"
             subtitle="Experience the emergency dashboard that powers high-volume EDs across India."
           />
@@ -255,7 +255,7 @@ export default function EmergencyMedicinePage() {
       <section className="py-16 bg-(--bg-subtle)">
         <Container>
           <SectionHeader
-            eyebrow="Protocols"
+            eyebrow={t("page.protocols")}
             title="Emergency Templates"
             subtitle="Pre-built protocols for every emergency scenario — from triage to disposition."
           />
@@ -275,7 +275,7 @@ export default function EmergencyMedicinePage() {
                   </div>
                 </div>
                 <span className="text-xs text-(--text-secondary) bg-gray-100 px-2 py-1 rounded">
-                  {template.usageCount.toLocaleString()} uses
+                  {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                 </span>
               </div>
             ))}
@@ -287,7 +287,7 @@ export default function EmergencyMedicinePage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Integrations"
+            eyebrow={t("page.integrations")}
             title="Connected Emergency Ecosystem"
             subtitle="Seamlessly integrate with ambulances, labs, and specialty teams."
           />
@@ -326,17 +326,17 @@ export default function EmergencyMedicinePage() {
       <PageCTA
         title={t("page.ctaTitle", { name: "Emergency Medicine" })}
         subtitle="Join hospitals across India saving more lives with faster, smarter emergency care."
-        primaryCta={{ label: "Start Free Trial", href: "/demo" }}
-        secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
+        primaryCta={{ label: t("page.startFreeTrial"), href: "/demo" }}
+        secondaryCta={{ label: t("page.talkToSales"), href: "/contact" }}
       />
 
       {/* Cross Links */}
       <CrossLinks
         title={t("page.relatedSpecialties")}
         links={[
-          { href: "/specialties/critical-care-icu", label: "Critical Care/ICU" },
-          { href: "/specialties/general-surgery", label: "General Surgery" },
-          { href: "/specialties/cardiology", label: "Cardiology" },
+          { href: "/specialties/critical-care-icu", label: t("page.criticalCare") },
+          { href: "/specialties/general-surgery", label: t("page.generalSurgery") },
+          { href: "/specialties/cardiology", label: t("page.cardiology") },
           { href: "/specialties/trauma-surgery", label: "Trauma Surgery" },
         ]}
       />

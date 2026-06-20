@@ -32,16 +32,16 @@ interface Props {
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "administrators": "Administrators",
-    "billing-tpa-teams": "Billing & TPA Teams",
-    "doctors": "Doctors",
-    "front-desk": "Front Desk",
-    "lab-technicians": "Lab Technicians",
-    "nurses": "Nurses",
-    "pharmacists": "Pharmacists",
+  const keys: Record<string, string> = {
+    administrators: "page.rolesAdmin",
+    "billing-tpa-teams": "page.rolesBillingTpa",
+    doctors: "page.rolesDoctors",
+    "front-desk": "page.rolesFrontDesk",
+    "lab-technicians": "page.rolesLabTechnicians",
+    nurses: "page.rolesNurses",
+    pharmacists: "page.rolesPharmacists",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 function getRoleIcon(slug: string) {
@@ -68,7 +68,7 @@ export default async function RolePage({ params }: Props) {
 
   const hero = extractHero(content.content);
   const faqs = extractFAQs(content.content);
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
   const RoleIcon = getRoleIcon(slug);
 
   // Extract first H1 from content
@@ -94,7 +94,7 @@ export default async function RolePage({ params }: Props) {
   const relatedRoles = getAllSlugs("roles")
     .filter((s) => s !== slug)
     .map((s) => ({
-      label: `For ${formatTitle(s)}`,
+      label: t("page.forRole", { name: t(formatTitle(s)).toLowerCase() }),
       href: `/roles/${s}`,
     }));
 
@@ -103,7 +103,7 @@ export default async function RolePage({ params }: Props) {
       <PageBreadcrumb
         items={[
           { label: t("page.byRole"), href: "/roles" },
-          { label: `For ${title}` },
+          { label: t("page.forRole", { name: title.toLowerCase() }) },
         ]}
       />
 

@@ -10,6 +10,7 @@ const planKeys = [
   {
     nameKey: "pricing.starter",
     descKey: "pricing.starterDesc",
+    priceKey: "",
     price: "₹1",
     unitKey: "",
     featureKeys: [
@@ -27,6 +28,7 @@ const planKeys = [
   {
     nameKey: "pricing.growthPlan",
     descKey: "pricing.growthPlanDesc",
+    priceKey: "",
     price: "₹1-2",
     unitKey: "pricing.growthPriceUnit",
     featureKeys: [
@@ -45,7 +47,8 @@ const planKeys = [
   {
     nameKey: "pricing.enterprisePlan",
     descKey: "pricing.enterprisePlanDesc",
-    price: "pricing.enterprisePrice",
+    priceKey: "pricing.enterprisePrice",
+    price: "",
     unitKey: "",
     featureKeys: [
       "pricing.enterpriseFeature1",
@@ -124,7 +127,7 @@ export default function PricingPage() {
                 </p>
                 <div className="mb-4 sm:mb-6">
                   <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-                    {plan.price}
+                    {plan.priceKey ? t(plan.priceKey) : plan.price}
                   </span>
                   {plan.unitKey && (
                     <span className="text-sm sm:text-base text-[var(--text-secondary)]">

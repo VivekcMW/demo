@@ -110,11 +110,11 @@ const templates = [
 ];
 
 const relatedSpecialties = [
-  { label: "General Medicine", href: "/specialties/general-medicine" },
-  { label: "Critical Care / ICU", href: "/specialties/critical-care" },
+  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
+  { label: t("page.criticalCare"), href: "/specialties/critical-care" },
   { label: "CTVS", href: "/specialties/ctvs" },
-  { label: "Emergency Medicine", href: "/specialties/emergency-medicine" },
-  { label: "Endocrinology", href: "/specialties/endocrinology-diabetology" },
+  { label: t("page.emergencyMedicine"), href: "/specialties/emergency-medicine" },
+  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
 ];
 
 export default function CardiologyPage() {
@@ -124,7 +124,7 @@ export default function CardiologyPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Cardiology" },
+          { label: t("page.cardiology") },
         ]}
       />
 
@@ -247,7 +247,7 @@ export default function CardiologyPage() {
                     {template.name}
                   </p>
                   <p className="text-xs text-(--text-secondary)">
-                    {template.category} • {template.usageCount.toLocaleString()} uses
+                    {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                   </p>
                 </div>
               </div>
@@ -261,7 +261,7 @@ export default function CardiologyPage() {
         <Container>
           <SectionHeader
             title={t("page.integrationsTitle")}
-            subtitle="Connected to your existing cardiac equipment."
+            subtitle={t("page.integrationsCardiology")}
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
             {[

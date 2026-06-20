@@ -41,23 +41,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!content) {
     return { title: "Facility Not Found" };
   }
+  const t = await getServerT();
   return {
-    title: content.meta.meta_title || `${formatTitle(slug)} EMR — AarogyaEHR`,
+    title: content.meta.meta_title || `${t(formatTitle(slug))} EMR — AarogyaEHR`,
     description: content.meta.meta_description,
   };
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "clinics-polyclinics": "Clinics & Polyclinics",
-    "diagnostic-centers-labs": "Diagnostic Centers & Labs",
-    "dialysis-daycare-centers": "Dialysis & Daycare Centers",
-    "multi-specialty-hospitals": "Multi-specialty Hospitals",
-    "nursing-homes": "Nursing Homes",
-    "single-specialty-chains": "Single-specialty Chains",
-    "super-specialty-chains": "Super-specialty & Chains",
+  const keys: Record<string, string> = {
+    "clinics-polyclinics": "page.clinicsPolyclinics",
+    "diagnostic-centers-labs": "page.diagnosticCentersLabs",
+    "dialysis-daycare-centers": "page.dialysisDaycareCenters",
+    "multi-specialty-hospitals": "page.multiSpecialtyHospitals",
+    "nursing-homes": "page.nursingHomesPage",
+    "single-specialty-chains": "page.singleSpecialtyChains",
+    "super-specialty-chains": "page.superSpecialtyChains",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 export default async function FacilityPage({ params }: Props) {
@@ -69,7 +70,7 @@ export default async function FacilityPage({ params }: Props) {
   const hero = extractHero(content.content);
   const features = extractFeatures(content.content);
   const faqs = extractFAQs(content.content);
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
 
   // Extract first H1 from content if no hero.h1
   const h1Match = content.content.match(/^#\s+(.+)$/m);
@@ -90,7 +91,7 @@ export default async function FacilityPage({ params }: Props) {
   const relatedFacilities = getAllSlugs("facilities")
     .filter((s) => s !== slug)
     .map((s) => ({
-      label: formatTitle(s),
+      label: t(formatTitle(s)),
       href: `/facilities/${s}`,
     }));
 

@@ -19,13 +19,13 @@ interface Props {
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "privacy-policy": "Privacy Policy",
-    "terms-of-service": "Terms of Service",
-    "cookie-policy": "Cookie Policy",
-    "refund-policy": "Refund Policy",
+  const keys: Record<string, string> = {
+    "privacy-policy": "page.legalPrivacyPolicy",
+    "terms-of-service": "page.legalTermsOfService",
+    "cookie-policy": "page.legalCookiePolicy",
+    "refund-policy": "page.legalRefundPolicy",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 function getIcon(slug: string) {
@@ -47,10 +47,10 @@ export default async function LegalPage({ params }: Props) {
     notFound();
   }
 
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
   const Icon = getIcon(slug);
 
-  const LegalContent = getLegalContent(slug);
+  const LegalContent = <LegalContentRenderer slug={slug} t={t} />;
 
   return (
     <>
@@ -91,205 +91,114 @@ export default async function LegalPage({ params }: Props) {
   );
 }
 
-function getLegalContent(slug: string) {
+function LegalContentRenderer({ slug, t }: { slug: string; t: (key: string) => string }) {
   switch (slug) {
     case "privacy-policy":
-      return <PrivacyPolicyContent />;
+      return (
+        <>
+          <h2>{t("legalContent.privacyTitleIntroduction")}</h2>
+          <p>{t("legalContent.privacyP1")}</p>
+          <h2>{t("legalContent.privacyTitleCollect")}</h2>
+          <h3>{t("legalContent.privacyTitleYouProvide")}</h3>
+          <ul>
+            <li>{t("legalContent.privacyLiAccount")}</li>
+            <li>{t("legalContent.privacyLiPhi")}</li>
+            <li>{t("legalContent.privacyLiPayment")}</li>
+          </ul>
+          <h3>{t("legalContent.privacyTitleAuto")}</h3>
+          <ul>
+            <li>{t("legalContent.privacyLiDevice")}</li>
+            <li>{t("legalContent.privacyLiUsage")}</li>
+            <li>{t("legalContent.privacyLiIp")}</li>
+          </ul>
+          <h2>{t("legalContent.privacyTitleUse")}</h2>
+          <ul>
+            <li>{t("legalContent.privacyLiProvide")}</li>
+            <li>{t("legalContent.privacyLiComply")}</li>
+            <li>{t("legalContent.privacyLiImprove")}</li>
+            <li>{t("legalContent.privacyLiComm")}</li>
+            <li>{t("legalContent.privacyLiFraud")}</li>
+          </ul>
+          <h2>{t("legalContent.privacyTitleStorage")}</h2>
+          <p>{t("legalContent.privacyStorageP")}</p>
+          <h2>{t("legalContent.privacyTitleRights")}</h2>
+          <p>{t("legalContent.privacyRightsP")}</p>
+          <h2>{t("legalContent.privacyTitleContact")}</h2>
+          <p>{t("legalContent.privacyContactP")}</p>
+        </>
+      );
     case "terms-of-service":
-      return <TermsOfServiceContent />;
+      return (
+        <>
+          <h2>{t("legalContent.termsTitleAgreement")}</h2>
+          <p>{t("legalContent.termsAgreementP")}</p>
+          <h2>{t("legalContent.termsTitleLicense")}</h2>
+          <p>{t("legalContent.termsLicenseP")}</p>
+          <h2>{t("legalContent.termsTitleResponsibilities")}</h2>
+          <ul>
+            <li>{t("legalContent.termsLiCredentials")}</li>
+            <li>{t("legalContent.termsLiComply")}</li>
+            <li>{t("legalContent.termsLiLawful")}</li>
+            <li>{t("legalContent.termsLiReport")}</li>
+          </ul>
+          <h2>{t("legalContent.termsTitleOwnership")}</h2>
+          <p>{t("legalContent.termsOwnershipP")}</p>
+          <h2>{t("legalContent.termsTitleExit")}</h2>
+          <p>{t("legalContent.termsExitP")}</p>
+          <h2>{t("legalContent.termsTitleSla")}</h2>
+          <p>{t("legalContent.termsSlaP")}</p>
+          <h2>{t("legalContent.termsTitleLiability")}</h2>
+          <p>{t("legalContent.termsLiabilityP")}</p>
+          <h2>{t("legalContent.termsTitleChanges")}</h2>
+          <p>{t("legalContent.termsChangesP")}</p>
+        </>
+      );
     case "cookie-policy":
-      return <CookiePolicyContent />;
+      return (
+        <>
+          <h2>{t("legalContent.cookieTitleWhat")}</h2>
+          <p>{t("legalContent.cookieWhatP")}</p>
+          <h2>{t("legalContent.cookieTitleWeUse")}</h2>
+          <h3>{t("legalContent.cookieTitleEssential")}</h3>
+          <p>{t("legalContent.cookieEssentialP")}</p>
+          <h3>{t("legalContent.cookieTitleAnalytics")}</h3>
+          <p>{t("legalContent.cookieAnalyticsP")}</p>
+          <h3>{t("legalContent.cookieTitlePreference")}</h3>
+          <p>{t("legalContent.cookiePreferenceP")}</p>
+          <h2>{t("legalContent.cookieTitleThirdParty")}</h2>
+          <p>{t("legalContent.cookieThirdPartyP")}</p>
+          <h2>{t("legalContent.cookieTitleManaging")}</h2>
+          <p>{t("legalContent.cookieManagingP")}</p>
+          <h2>{t("legalContent.cookieTitleContact")}</h2>
+          <p>{t("legalContent.cookieContactP")}</p>
+        </>
+      );
     case "refund-policy":
-      return <RefundPolicyContent />;
+      return (
+        <>
+          <h2>{t("legalContent.refundTitleCommitment")}</h2>
+          <p>{t("legalContent.refundCommitmentP")}</p>
+          <h2>{t("legalContent.refundTitleSubscription")}</h2>
+          <h3>{t("legalContent.refundTitleAnnual")}</h3>
+          <p>{t("legalContent.refundAnnualP")}</p>
+          <h3>{t("legalContent.refundTitleMonthly")}</h3>
+          <p>{t("legalContent.refundMonthlyP")}</p>
+          <h2>{t("legalContent.refundTitleImplementation")}</h2>
+          <p>{t("legalContent.refundImplementationP")}</p>
+          <h2>{t("legalContent.refundTitlePartial")}</h2>
+          <p>{t("legalContent.refundPartialP")}</p>
+          <h2>{t("legalContent.refundTitleHowTo")}</h2>
+          <ol>
+            <li>{t("legalContent.refundLi1")}</li>
+            <li>{t("legalContent.refundLi2")}</li>
+            <li>{t("legalContent.refundLi3")}</li>
+            <li>{t("legalContent.refundLi4")}</li>
+          </ol>
+          <h2>{t("legalContent.refundTitleDisputes")}</h2>
+          <p>{t("legalContent.refundDisputesP")}</p>
+        </>
+      );
     default:
-      return <p>Content coming soon.</p>;
+      return <p>{t("page.contentComingSoon")}</p>;
   }
-}
-
-function PrivacyPolicyContent() {
-  return (
-    <>
-      <h2>Introduction</h2>
-      <p>
-        AarogyaEHR Technologies Private Limited ("AarogyaEHR", "we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our electronic health record software and related services.
-      </p>
-
-      <h2>Information We Collect</h2>
-      <h3>Information You Provide</h3>
-      <ul>
-        <li><strong>Account Information:</strong> Name, email address, phone number, and organizational details when you register.</li>
-        <li><strong>Patient Health Information (PHI):</strong> Clinical data entered by healthcare providers using our software.</li>
-        <li><strong>Payment Information:</strong> Billing details processed through secure payment gateways.</li>
-      </ul>
-
-      <h3>Information Collected Automatically</h3>
-      <ul>
-        <li>Device information (browser type, operating system)</li>
-        <li>Usage data (features accessed, time spent)</li>
-        <li>IP addresses and approximate location</li>
-      </ul>
-
-      <h2>How We Use Your Information</h2>
-      <ul>
-        <li>To provide and maintain our services</li>
-        <li>To comply with healthcare regulations (ABDM, NABH)</li>
-        <li>To improve our product and user experience</li>
-        <li>To communicate service updates and support</li>
-        <li>To detect and prevent fraud or security issues</li>
-      </ul>
-
-      <h2>Data Storage and Security</h2>
-      <p>
-        All data is stored on servers located in India. We implement industry-standard security measures including encryption at rest and in transit, access controls, and regular security audits.
-      </p>
-
-      <h2>Your Rights</h2>
-      <p>
-        You have the right to access, correct, or delete your personal information. Healthcare organizations retain ownership of patient data and can export it at any time.
-      </p>
-
-      <h2>Contact Us</h2>
-      <p>
-        For privacy-related inquiries, contact our Data Protection Officer at{" "}
-        <a href="mailto:privacy@aarogyaehr.com">privacy@aarogyaehr.com</a>.
-      </p>
-    </>
-  );
-}
-
-function TermsOfServiceContent() {
-  return (
-    <>
-      <h2>Agreement to Terms</h2>
-      <p>
-        By accessing or using AarogyaEHR, you agree to be bound by these Terms of Service. If you disagree with any part, you may not access our services.
-      </p>
-
-      <h2>Use License</h2>
-      <p>
-        We grant you a limited, non-exclusive, non-transferable license to use AarogyaEHR for your internal healthcare operations in accordance with your subscription plan.
-      </p>
-
-      <h2>User Responsibilities</h2>
-      <ul>
-        <li>Maintain the confidentiality of your account credentials</li>
-        <li>Ensure all users comply with applicable healthcare regulations</li>
-        <li>Use the software only for lawful healthcare purposes</li>
-        <li>Report any security vulnerabilities or breaches promptly</li>
-      </ul>
-
-      <h2>Data Ownership</h2>
-      <p>
-        <strong>You own your data.</strong> All patient health information and clinical data entered into AarogyaEHR remains your property. We process it only to provide our services.
-      </p>
-
-      <h2>Exit Rights</h2>
-      <p>
-        Upon termination of your subscription, you may request a full export of your data in standard formats (HL7 FHIR, CSV) within 30 days at no additional charge. We will delete your data from our systems within 90 days of termination, unless retention is required by law.
-      </p>
-
-      <h2>Service Level Agreement</h2>
-      <p>
-        We commit to 99.9% uptime for cloud-hosted deployments. Scheduled maintenance will be communicated at least 48 hours in advance.
-      </p>
-
-      <h2>Limitation of Liability</h2>
-      <p>
-        AarogyaEHR is a tool to support clinical decision-making, not a substitute for professional medical judgment. We are not liable for clinical decisions made using our software.
-      </p>
-
-      <h2>Changes to Terms</h2>
-      <p>
-        We may update these terms with 30 days notice. Continued use after changes constitutes acceptance.
-      </p>
-    </>
-  );
-}
-
-function CookiePolicyContent() {
-  return (
-    <>
-      <h2>What Are Cookies</h2>
-      <p>
-        Cookies are small text files stored on your device when you visit our website or use our application. They help us remember your preferences and improve your experience.
-      </p>
-
-      <h2>Cookies We Use</h2>
-      <h3>Essential Cookies</h3>
-      <p>
-        Required for the application to function. These include session cookies for authentication and security.
-      </p>
-
-      <h3>Analytics Cookies</h3>
-      <p>
-        Help us understand how users interact with our software. We use anonymized, aggregated data to improve our product.
-      </p>
-
-      <h3>Preference Cookies</h3>
-      <p>
-        Remember your settings like language preference and interface customizations.
-      </p>
-
-      <h2>Third-Party Cookies</h2>
-      <p>
-        We do not use third-party advertising cookies. Our analytics tools are configured for privacy compliance.
-      </p>
-
-      <h2>Managing Cookies</h2>
-      <p>
-        You can control cookies through your browser settings. Note that disabling essential cookies may affect application functionality.
-      </p>
-
-      <h2>Contact</h2>
-      <p>
-        Questions about our cookie practices? Email{" "}
-        <a href="mailto:privacy@aarogyaehr.com">privacy@aarogyaehr.com</a>.
-      </p>
-    </>
-  );
-}
-
-function RefundPolicyContent() {
-  return (
-    <>
-      <h2>Our Commitment</h2>
-      <p>
-        We believe in fair, transparent billing. This policy explains when and how refunds are processed.
-      </p>
-
-      <h2>Subscription Refunds</h2>
-      <h3>Annual Plans</h3>
-      <p>
-        If you cancel within 30 days of purchase or renewal, you'll receive a full refund minus any setup or implementation costs already incurred.
-      </p>
-
-      <h3>Monthly Plans</h3>
-      <p>
-        Monthly subscriptions are non-refundable but you may cancel at any time to prevent future charges.
-      </p>
-
-      <h2>Implementation Services</h2>
-      <p>
-        Custom implementation, training, and integration services are non-refundable once work has begun. We provide detailed statements of work before starting.
-      </p>
-
-      <h2>Partial Refunds</h2>
-      <p>
-        If service availability falls below our 99.9% SLA commitment, you're entitled to service credits as outlined in your service agreement.
-      </p>
-
-      <h2>How to Request a Refund</h2>
-      <ol>
-        <li>Email <a href="mailto:billing@aarogyaehr.com">billing@aarogyaehr.com</a> with your account details</li>
-        <li>Include your reason for the refund request</li>
-        <li>We'll respond within 3 business days</li>
-        <li>Approved refunds are processed within 10 business days</li>
-      </ol>
-
-      <h2>Payment Disputes</h2>
-      <p>
-        If you notice an incorrect charge, contact us immediately. We'll investigate and correct any billing errors.
-      </p>
-    </>
-  );
 }

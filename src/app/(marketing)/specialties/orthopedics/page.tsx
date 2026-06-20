@@ -132,7 +132,7 @@ export default function OrthopedicsPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Orthopedics" },
+          { label: t("page.orthopedics") },
         ]}
       />
 
@@ -155,11 +155,11 @@ export default function OrthopedicsPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="gap-2">
                 <Stethoscope className="w-5 h-5" />
-                Request Demo
+                {t("page.requestDemo")}
               </Button>
               <Button variant="secondary" size="lg" className="gap-2">
                 <Calendar className="w-5 h-5" />
-                Schedule Consultation
+                {t("page.scheduleConsultation")}
               </Button>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function OrthopedicsPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Challenges"
+            eyebrow={t("page.challenges")}
             title="Orthopedic Practice Pain Points"
             subtitle="Managing implants, surgeries, and rehab across disconnected systems creates gaps in care."
           />
@@ -200,7 +200,7 @@ export default function OrthopedicsPage() {
       <section className="py-16 bg-[var(--bg-subtle)]">
         <Container>
           <SectionHeader
-            eyebrow="Capabilities"
+            eyebrow={t("page.capabilities")}
             title="Built for Orthopedic Excellence"
             subtitle="Every feature designed with input from practicing orthopedic surgeons across India."
           />
@@ -238,7 +238,7 @@ export default function OrthopedicsPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Live Preview"
+            eyebrow={t("page.livePreview")}
             title="See It In Action"
             subtitle="Experience the orthopedic dashboard that powers hundreds of surgeons daily."
           />
@@ -252,7 +252,7 @@ export default function OrthopedicsPage() {
       <section className="py-16 bg-[var(--bg-subtle)]">
         <Container>
           <SectionHeader
-            eyebrow="Documentation"
+            eyebrow={t("page.documentation")}
             title="Orthopedic Templates"
             subtitle="Pre-built templates for every orthopedic scenario — from OPD to OT to physio."
           />
@@ -272,7 +272,7 @@ export default function OrthopedicsPage() {
                   </div>
                 </div>
                 <span className="text-xs text-[var(--text-secondary)] bg-gray-100 px-2 py-1 rounded">
-                  {template.usageCount.toLocaleString()} uses
+                  {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                 </span>
               </div>
             ))}
@@ -284,7 +284,7 @@ export default function OrthopedicsPage() {
       <section className="py-16 bg-white">
         <Container>
           <SectionHeader
-            eyebrow="Integrations"
+            eyebrow={t("page.integrations")}
             title="Connected Orthopedic Ecosystem"
             subtitle="Seamlessly integrate with imaging, labs, and billing systems."
           />
@@ -323,16 +323,16 @@ export default function OrthopedicsPage() {
       <PageCTA
         title={t("page.ctaTitle", { name: "Orthopedics" })}
         subtitle="Join surgeons across India who have transformed their workflows with AarogyaEHR."
-        primaryCta={{ label: "Start Free Trial", href: "/demo" }}
-        secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
+        primaryCta={{ label: t("page.startFreeTrial"), href: "/demo" }}
+        secondaryCta={{ label: t("page.talkToSales"), href: "/contact" }}
       />
 
       {/* Cross Links */}
       <CrossLinks
         title={t("page.relatedSpecialties")}
         links={[
-          { href: "/specialties/general-surgery", label: "General Surgery" },
-          { href: "/specialties/emergency-medicine", label: "Emergency Medicine" },
+          { href: "/specialties/general-surgery", label: t("page.generalSurgery") },
+          { href: "/specialties/emergency-medicine", label: t("page.emergencyMedicine") },
           { href: "/specialties/rheumatology", label: "Rheumatology" },
           { href: "/specialties/sports-medicine", label: "Sports Medicine" },
         ]}

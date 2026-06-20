@@ -44,17 +44,15 @@ export default async function ProductPage({ params }: Props) {
   const features = extractFeatures(content.content);
   const faqs = extractFAQs(content.content);
 
-  // Format title from slug
-  const title = hero.h1 || slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  // Format title from slug (uses translation key when available)
+  const slugKey = `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
+  const title = hero.h1 || t(slugKey);
 
   const relatedProducts = getAllSlugs("product")
     .filter((s) => s !== slug)
     .slice(0, 4)
     .map((s) => ({
-      label: s.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+      label: t(`page.${s.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`),
       href: `/product/${s}`,
     }));
 

@@ -111,11 +111,11 @@ const templates = [
 ];
 
 const relatedSpecialties = [
-  { label: "Obstetrics & Gynaecology", href: "/specialties/obg" },
+  { label: t("page.obg"), href: "/specialties/obg" },
   { label: "Fetal Medicine", href: "/specialties/fetal-medicine" },
   { label: "Pediatric Surgery", href: "/specialties/pediatric-surgery" },
   { label: "Pediatric Cardiology", href: "/specialties/pediatric-cardiology" },
-  { label: "General Medicine", href: "/specialties/general-medicine" },
+  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
 ];
 
 export default function PediatricsPage() {
@@ -125,7 +125,7 @@ export default function PediatricsPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Pediatrics & Neonatology" },
+          { label: t("page.pediatrics") },
         ]}
       />
 
@@ -249,7 +249,7 @@ export default function PediatricsPage() {
                     {template.name}
                   </p>
                   <p className="text-xs text-(--text-secondary)">
-                    {template.category} • {template.usageCount.toLocaleString()} uses
+                    {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                   </p>
                 </div>
               </div>
@@ -263,7 +263,7 @@ export default function PediatricsPage() {
         <Container>
           <SectionHeader
             title={t("page.integrationsTitle")}
-            subtitle="Connected to every department your little patients touch."
+            subtitle={t("page.integrationsPediatrics")}
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
             {[

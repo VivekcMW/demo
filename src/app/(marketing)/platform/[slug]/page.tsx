@@ -30,15 +30,15 @@ interface Props {
 }
 
 function formatTitle(slug: string): string {
-  const cases: Record<string, string> = {
-    "abdm-compliance": "ABDM Compliance",
-    "ai-capabilities": "AI Capabilities",
-    "architecture-reliability": "Architecture & Reliability",
-    "integrations": "Integrations",
-    "interoperability": "Interoperability",
-    "security-data-privacy": "Security & Data Privacy",
+  const keys: Record<string, string> = {
+    "abdm-compliance": "page.platformAbdm",
+    "ai-capabilities": "page.platformAi",
+    "architecture-reliability": "page.platformArchitecture",
+    integrations: "page.platformIntegrations",
+    interoperability: "page.platformInteroperability",
+    "security-data-privacy": "page.platformSecurity",
   };
-  return cases[slug] || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 function getPlatformIcon(slug: string) {
@@ -65,7 +65,7 @@ export default async function PlatformPage({ params }: Props) {
   const hero = extractHero(content.content);
   const faqs = extractFAQs(content.content);
   const features = extractFeatures(content.content);
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
   const PlatformIcon = getPlatformIcon(slug);
 
   // Extract first H1 from content
@@ -83,7 +83,7 @@ export default async function PlatformPage({ params }: Props) {
   const relatedPlatform = getAllSlugs("platform")
     .filter((s) => s !== slug)
     .map((s) => ({
-      label: formatTitle(s),
+      label: t(formatTitle(s)),
       href: `/platform/${s}`,
     }));
 

@@ -98,9 +98,9 @@ const faqs = [
 ];
 
 const relatedSpecialties = [
-  { label: "Endocrinology", href: "/specialties/endocrinology-diabetology" },
-  { label: "General Medicine", href: "/specialties/general-medicine" },
-  { label: "Pediatrics", href: "/specialties/pediatrics-neonatology" },
+  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
+  { label: t("page.generalMedicine"), href: "/specialties/general-medicine" },
+  { label: t("page.pediatrics"), href: "/specialties/pediatrics-neonatology" },
   { label: "ENT", href: "/specialties/ent" },
   { label: "Neurology", href: "/specialties/neurology-neurosurgery" },
 ];
@@ -112,7 +112,7 @@ export default function OphthalmologyPage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "Ophthalmology" },
+          { label: t("page.ophthalmology") },
         ]}
       />
 
@@ -236,7 +236,7 @@ export default function OphthalmologyPage() {
                     {template.name}
                   </p>
                   <p className="text-xs text-(--text-secondary)">
-                    {template.category} • {template.usageCount.toLocaleString()} uses
+                    {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                   </p>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export default function OphthalmologyPage() {
         <Container>
           <SectionHeader
             title={t("page.integrationsTitle")}
-            subtitle="Connect your existing equipment for seamless data flow."
+            subtitle={t("page.integrationsOphthalmology")}
           />
           <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
             {[

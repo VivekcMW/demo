@@ -125,33 +125,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!content) {
     return { title: "Specialty Not Found" };
   }
+  const t = await getServerT();
   return {
-    title: content.meta.meta_title || `${formatTitle(slug)} EMR — AarogyaEHR`,
+    title: content.meta.meta_title || `${t(formatTitle(slug))} EMR — AarogyaEHR`,
     description: content.meta.meta_description,
   };
 }
 
 function formatTitle(slug: string): string {
-  const specialCases: Record<string, string> = {
-    "obstetrics-gynaecology": "Obstetrics & Gynaecology",
-    "critical-care-icu": "Critical Care / ICU",
-    "nephrology-dialysis": "Nephrology & Dialysis",
-    "neurology-neurosurgery": "Neurology & Neurosurgery",
-    "pediatrics-neonatology": "Pediatrics & Neonatology",
-    "dermatology-cosmetology": "Dermatology & Cosmetology",
-    "endocrinology-diabetology": "Endocrinology & Diabetology",
-    "ivf-reproductive-medicine": "IVF & Reproductive Medicine",
-    "palliative-geriatrics": "Palliative & Geriatrics",
-    "psychiatry-mental-health": "Psychiatry & Mental Health",
-    "physiotherapy-rehab": "Physiotherapy & Rehab",
-    "dental-maxillofacial": "Dental & Maxillofacial",
-    "bariatric-metabolic-surgery": "Bariatric & Metabolic Surgery",
-    ctvs: "CTVS",
-    ent: "ENT",
-    ayush: "AYUSH",
+  const keys: Record<string, string> = {
+    "obstetrics-gynaecology": "page.obg",
+    "critical-care-icu": "page.criticalCare",
+    "nephrology-dialysis": "page.nephrology",
+    "neurology-neurosurgery": "page.neurology",
+    "pediatrics-neonatology": "page.pediatrics",
+    "dermatology-cosmetology": "page.dermatologyCosmetology",
+    "endocrinology-diabetology": "page.endocrinology",
+    "ivf-reproductive-medicine": "page.ivfReproductiveMedicine",
+    "palliative-geriatrics": "page.palliativeGeriatrics",
+    "psychiatry-mental-health": "page.psychiatry",
+    "physiotherapy-rehab": "page.physiotherapyRehab",
+    "dental-maxillofacial": "page.dentalMaxillofacial",
+    "bariatric-metabolic-surgery": "page.bariatricMetabolicSurgery",
+    ctvs: "page.ctvs",
+    ent: "page.ent",
+    ayush: "page.ayush",
   };
-  if (specialCases[slug]) return specialCases[slug];
-  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return keys[slug] || `page.${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}`;
 }
 
 export default async function SpecialtyPage({ params }: Readonly<Props>) {
@@ -162,7 +162,7 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
   const t = await getServerT();
   const hero = extractHero(content.content);
   const faqs = extractFAQs(content.content);
-  const title = formatTitle(slug);
+  const title = t(formatTitle(slug));
 
   // Extract problems section
   const problemsMatch = content.content.match(/## The problems we built around\n([\s\S]*?)(?=\n## |$)/);
@@ -183,7 +183,7 @@ export default async function SpecialtyPage({ params }: Readonly<Props>) {
   const relatedSpecialties = allSlugs
     .filter((s) => s !== slug)
     .slice(0, 5)
-    .map((s) => ({ label: formatTitle(s), href: `/specialties/${s}` }));
+    .map((s) => ({ label: t(formatTitle(s)), href: `/specialties/${s}` }));
 
   const DashboardComponent = dashboardComponents[slug];
 

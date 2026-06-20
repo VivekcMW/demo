@@ -109,8 +109,8 @@ const templates = [
 ];
 
 const relatedSpecialties = [
-  { label: "Endocrinology & Diabetology", href: "/specialties/endocrinology-diabetology" },
-  { label: "Cardiology", href: "/specialties/cardiology" },
+  { label: t("page.endocrinology"), href: "/specialties/endocrinology-diabetology" },
+  { label: t("page.cardiology"), href: "/specialties/cardiology" },
   { label: "Gastroenterology", href: "/specialties/gastroenterology" },
   { label: "Pulmonology", href: "/specialties/pulmonology" },
   { label: "Nephrology", href: "/specialties/nephrology" },
@@ -123,7 +123,7 @@ export default function GeneralMedicinePage() {
       <PageBreadcrumb
         items={[
           { label: t("page.specialties"), href: "/specialties" },
-          { label: "General Medicine" },
+          { label: t("page.generalMedicine") },
         ]}
       />
 
@@ -247,7 +247,7 @@ export default function GeneralMedicinePage() {
                     {template.name}
                   </p>
                   <p className="text-xs text-(--text-secondary)">
-                    {template.category} • {template.usageCount.toLocaleString()} uses
+                    {t("page.templateMeta", { category: template.category, count: template.usageCount.toLocaleString() })}
                   </p>
                 </div>
               </div>
