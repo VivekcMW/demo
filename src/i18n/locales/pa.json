@@ -84,23 +84,12 @@
     "caption": "ਇੱਕ ਸਿਸਟਮ, ਦਿਨ ਦੀ OPD ਤੋਂ ਰਾਤ ਦੀ ICU ਤੱਕ।",
     "allergyLabel": "ਐਲਰਜੀ: ਪੈਨਿਸਿਲਿਨ",
     "systolicLabel": "ਸਿਸਟੌਲਿਕ",
-    "diastolicLabel": "ਡਾਇਆਸਟੌਲਿਕ",
-    "icuDashboardLabel": "ICU ਡੈਸ਼ਬੋਰਡ",
-    "spo2Label": "SpO₂",
-    "hrLabel": "HR",
-    "tempLabel": "ਤਾਪਮਾਨ"
+    "diastolicLabel": "ਡਾਇਆਸਟੌਲਿਕ"
   },
   "cta": {
     "title": "AarogyaEHR ਨੂੰ ਆਪਣੇ ਮਰੀਜ਼ਾਂ ਦੇ ਸਫ਼ਰ 'ਤੇ ਦੇਖੋ।",
     "subtitle": "45-ਮਿੰਟ ਦਾ ਡੈਮੋ, ਤੁਹਾਡੀ ਸਪੈਸ਼ਲਿਟੀ ਮਿਕਸ ਮੁਤਾਬਕ ਕੌਂਫਿਗਰ। ਕੋਈ ਸਲਾਈਡਵੇਅਰ ਨਹੀਂ — ਅਸਲ ਪ੍ਰੋਡਕਟ।",
     "talkWhatsapp": "WhatsApp 'ਤੇ ਗੱਲ ਕਰੋ"
-  },
-  "stickyCta": {
-    "eyebrow": "ਮੁਫ਼ਤ ਵਿਅਕਤੀਗਤ ਡੈਮੋ",
-    "title": "ਤੁਹਾਡੀ ਸਪੈਸ਼ਲਿਟੀ ਵਰਕਫਲੋ ਨਾਲ AarogyaEHR ਦੇਖੋ",
-    "subtitle": "45 ਮਿੰਟ ਲਾਈਵ ਸੈਸ਼ਨ • ਤੁਹਾਡੇ ਵਿਭਾਗ ਲਈ ਕੌਂਫਿਗਰ • ਕੋਈ ਬੰਧਨ ਨਹੀਂ",
-    "bookDemo": "ਹੁਣੇ ਸ਼ੈਡਿਊਲ ਕਰੋ",
-    "whatsapp": "WhatsApp"
   },
   "problem": {
     "title": "ਜ਼ਿਆਦਾਤਰ ਹਸਪਤਾਲ ਸੌਫਟਵੇਅਰ ਬਿਲਿੰਗ ਲਈ ਬਣਾਏ ਗਏ ਸਨ। ਤੁਹਾਡਾ ਸੌਫਟਵੇਅਰ ਦੇਖਭਾਲ ਲਈ ਬਣਿਆ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",

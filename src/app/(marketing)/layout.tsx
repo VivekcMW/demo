@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { MarketingNav, MarketingFooter, StickyCTA } from "@/components/marketing";
+import { MarketingNav, MarketingFooter } from "@/components/marketing";
 import { LocationDetector } from "@/hooks/useLocationDetection";
 
 export const metadata: Metadata = {
@@ -36,7 +36,6 @@ export default function MarketingLayout({
       <MarketingNav />
       <main className="flex-1">{children}</main>
       <MarketingFooter />
-      <StickyCTA />
     </div>
   );
 }

@@ -23,9 +23,7 @@
     "startWithStarter": "Start with Starter",
     "mostPopular": "Most popular",
     "seeTheirScreen": "See their screen",
-    "learnMore": "Learn more",
     "bookDemoForYourFacility": "Book a demo for your facility",
-    "bookDemo": "Book a demo",
     "talkToEngineering": "Talk to engineering",
     "scheduleTechnicalCall": "Schedule a technical call",
     "viewAllSpecialties": "View all specialties",
@@ -86,23 +84,12 @@
     "caption": "One system, daylight OPD to night-shift ICU.",
     "allergyLabel": "Allergy: Penicillin",
     "systolicLabel": "Systolic",
-    "diastolicLabel": "Diastolic",
-    "icuDashboardLabel": "ICU Dashboard",
-    "spo2Label": "SpO₂",
-    "hrLabel": "HR",
-    "tempLabel": "Temp"
+    "diastolicLabel": "Diastolic"
   },
   "cta": {
     "title": "See AarogyaEHR on your own patients' journeys.",
     "subtitle": "A 45-minute demo, configured to your specialty mix. No slideware — the real product.",
     "talkWhatsapp": "Talk on WhatsApp"
-  },
-  "stickyCta": {
-    "eyebrow": "Free personalized demo",
-    "title": "See AarogyaEHR with your specialty workflows",
-    "subtitle": "45-min live session • Pre-configured for your department • No commitment",
-    "bookDemo": "Schedule Now",
-    "whatsapp": "WhatsApp"
   },
   "problem": {
     "title": "Most hospital software was built for billing. Yours should be built for care.",

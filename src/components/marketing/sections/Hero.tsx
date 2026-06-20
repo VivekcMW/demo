@@ -140,25 +140,6 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Floating card - second screen hint */}
-            <div className="absolute -bottom-4 -left-4 lg:-bottom-6 lg:-left-6 w-40 lg:w-48 rounded-lg shadow-xl border border-[var(--border-default)] bg-slate-900 p-2 lg:p-3 hidden sm:block animate-float">
-              <div className="text-[10px] lg:text-xs text-slate-400 mb-1 lg:mb-2">{t("hero.icuDashboardLabel")}</div>
-              <div className="grid grid-cols-3 gap-1 lg:gap-2">
-                <div className="text-center">
-                  <div className="text-xs lg:text-sm font-semibold text-green-400">98</div>
-                  <div className="text-[8px] lg:text-[10px] text-slate-500">{t("hero.spo2Label")}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xs lg:text-sm font-semibold text-amber-400">102</div>
-                  <div className="text-[8px] lg:text-[10px] text-slate-500">{t("hero.hrLabel")}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xs lg:text-sm font-semibold text-slate-300">36.8</div>
-                  <div className="text-[8px] lg:text-[10px] text-slate-500">{t("hero.tempLabel")}</div>
-                </div>
-              </div>
-            </div>
-
             {/* Caption */}
             <p className="mt-6 lg:mt-8 text-xs sm:text-sm text-center text-[var(--text-secondary)]">
               {t("hero.caption")}
