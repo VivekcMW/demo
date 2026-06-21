@@ -12,7 +12,6 @@ import {
   Cpu,
   Award,
   CheckCircle,
-  Star,
   ArrowRight,
 } from "lucide-react";
 import { Container, Button, SectionHeader } from "@/components/marketing/ui";
@@ -116,27 +115,6 @@ const partnerTypes = [
     name: "Technology Partner",
     ideal: "Device manufacturers, LIS/RIS vendors, diagnostics companies",
     focus: "Integration & bundled offerings",
-  },
-];
-
-const testimonials = [
-  {
-    quote: "In 18 months, we've onboarded 23 hospitals across Karnataka. AarogyaEHR's recurring model means our revenue compounds — not the typical one-time project fees.",
-    author: "Rajesh K.",
-    role: "Gold Partner, Bengaluru",
-    rating: 5,
-  },
-  {
-    quote: "The certification program gave my team confidence. We now close deals in half the time we used to.",
-    author: "Priya M.",
-    role: "Silver Partner, Lucknow",
-    rating: 5,
-  },
-  {
-    quote: "As an NABH consultant, I used to only advise. Now I can offer a complete solution. Referral income from AarogyaEHR adds 30% to my consulting revenue.",
-    author: "Dr. Anand S.",
-    role: "Referral Partner, Chennai",
-    rating: 5,
   },
 ];
 
@@ -350,34 +328,6 @@ export default function PartnersPage() {
                     <span className="text-[var(--text-secondary)]">Focus:</span>
                     <p className="text-foreground font-medium">{type.focus}</p>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-16 md:py-24">
-        <Container>
-          <SectionHeader
-            title="Partner Success Stories"
-            subtitle="Hear from partners who've built successful businesses with AarogyaEHR"
-          />
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <div key={idx} className="p-6 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-default)]">
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <blockquote className="text-foreground mb-6 leading-relaxed">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </blockquote>
-                <div>
-                  <div className="font-semibold text-foreground">{testimonial.author}</div>
-                  <div className="text-sm text-[var(--text-secondary)]">{testimonial.role}</div>
                 </div>
               </div>
             ))}
