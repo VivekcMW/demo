@@ -9,6 +9,7 @@ import {
   AlertCircle, PackageCheck, Package, X, Loader2,
   Clock, ClipboardList, FileText, AlertTriangle,
 } from "lucide-react";
+import { PdfDownloadButton } from "@/components/ui/PdfActions";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -272,6 +273,7 @@ export default function PharmacyDetailPage({ params }: { params: Promise<{ rxId:
                 Cancel
               </button>
             )}
+            <PdfDownloadButton template="prescription" id={rx.id} filename={`prescription-${rx.id}.pdf`} />
           </div>
         </div>
       </div>

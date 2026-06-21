@@ -16,7 +16,7 @@ const FEATURES = [
   { label: "Per-patient pricing", aarogya: true, legacy: false, paper: true },
   { label: "Mobile + shared-terminal friendly", aarogya: true, legacy: "partial", paper: true },
   { label: "Drug interaction / allergy alerts", aarogya: true, legacy: "partial", paper: false },
-];
+] as const;
 
 function Cell({ value }: { readonly value: boolean | "partial" }) {
   if (value === true)

@@ -16,6 +16,7 @@ import {
   Heart, Pill, Droplets, ClipboardCheck, MessageSquareText, ListChecks,
   Plus, Syringe, Thermometer, Weight,
 } from "lucide-react";
+import { PdfActions } from "@/components/ui/PdfActions";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -1012,6 +1013,7 @@ export default function IPDDetailPage({ params }: { params: Promise<{ admissionI
               >
                 Discharge
               </button>
+              <PdfActions template="discharge-summary" id={admission.id} filename={`discharge-summary-${admission.id}.pdf`} />
             </div>
           )}
         </div>

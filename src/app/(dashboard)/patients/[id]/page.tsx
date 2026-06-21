@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { usePatientStore } from "@/store/usePatientStore";
 import type {
@@ -23,6 +23,7 @@ import {
   ClipboardList, ScanLine, UserCheck, Stethoscope, UtensilsCrossed, Plus, ChevronRight,
   ShieldCheck, PenLine, BedDouble, Receipt, Syringe, Eye, Lock,
 } from "lucide-react";
+import { PdfDownloadButton } from "@/components/ui/PdfActions";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -886,15 +887,28 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const [activeTab, setActiveTab] = useState<"demographics" | "clinical" | "labs" | "meds" | "finance" | "docs">("clinical");
 
   const patientId = patient?.id ?? "";
-  const patientOrderCount = useOrderStore((s) => s.getByPatient(patientId).length);
-  const patientPendingOrders = useOrderStore((s) => s.getByPatient(patientId).filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length);
-  const examCount = useExaminationStore((s) => s.getByPatient(patientId).length);
-  const examInProgress = useExaminationStore((s) => s.getByPatient(patientId).filter((e) => e.status === "Draft").length);
-  const ipdAdmissions = useIPDStore((s) => s.getByPatient(patientId));
-  const activeAdmission = ipdAdmissions.find((a) => a.status === "Active");
-  const bills = useBillingStore((s) => s.getByPatient(patientId));
-  const pendingBillTotal = bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0);
-  const rxHistory = usePharmacyStore((s) => s.getByPatient(patientId));
+
+  // Select raw arrays from Zustand (stable references) + memoize derived
+  const orders = useOrderStore((s) => s.orders);
+  const patientOrders = useMemo(() => orders.filter((o) => o.patientId === patientId), [orders, patientId]);
+  const patientOrderCount = patientOrders.length;
+  const patientPendingOrders = useMemo(() => patientOrders.filter((o) => o.status !== "Completed" && o.status !== "Cancelled").length, [patientOrders]);
+
+  const examinations = useExaminationStore((s) => s.examinations);
+  const patientExams = useMemo(() => examinations.filter((e) => e.patientId === patientId), [examinations, patientId]);
+  const examCount = patientExams.length;
+  const examInProgress = useMemo(() => patientExams.filter((e) => e.status === "Draft").length, [patientExams]);
+
+  const admissions = useIPDStore((s) => s.admissions);
+  const ipdAdmissions = useMemo(() => admissions.filter((a) => a.patientId === patientId), [admissions, patientId]);
+  const activeAdmission = useMemo(() => ipdAdmissions.find((a) => a.status === "Active"), [ipdAdmissions]);
+
+  const allBills = useBillingStore((s) => s.bills);
+  const bills = useMemo(() => allBills.filter((b) => b.patientId === patientId), [allBills, patientId]);
+  const pendingBillTotal = useMemo(() => bills.filter((b) => b.status === "Pending" || b.status === "Overdue").reduce((s, b) => s + b.amountDue, 0), [bills]);
+
+  const prescriptions = usePharmacyStore((s) => s.prescriptions);
+  const rxHistory = useMemo(() => prescriptions.filter((r) => r.patientId === patientId), [prescriptions, patientId]);
 
   if (!patient) {
     return (
@@ -915,7 +929,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const criticalLabCount = patient.labs.filter((l) => l.flag === "HH" || l.flag === "LL").length;
   const activeMedCount   = patient.medications.filter((m) => m.active).length;
   const sex = patient.sex === "M" ? "Male" : patient.sex === "F" ? "Female" : "Other";
-  const activeRx = rxHistory.filter((r) => r.status === "Pending" || r.status === "Verified" || r.status === "Dispensing").length;
+  const activeRx = useMemo(() => rxHistory.filter((r) => r.status === "Pending" || r.status === "Verified" || r.status === "Dispensing").length, [rxHistory]);
 
   type Tab = "demographics" | "clinical" | "labs" | "meds" | "finance" | "docs";
   type TabDef = { id: Tab; label: string; icon: React.ReactNode; badge?: number; critical?: boolean };
@@ -979,6 +993,9 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
               <span className="text-xs">{patient.phone}</span>
             </div>
           </div>
+          {patient.id && (
+            <PdfDownloadButton template="referral" id={patient.id} filename={`patient-${patient.id}-referral.pdf`} label="Referral PDF" />
+          )}
         </div>
       </div>
 

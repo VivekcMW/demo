@@ -11,6 +11,7 @@ import {
   ChevronRight, User, ShieldAlert, FileText, Image,
   Upload, Printer, Camera, Clock, History,
 } from "lucide-react";
+import { PdfActions } from "@/components/ui/PdfActions";
 
 function fmtDateTime(dt: string) {
   return new Date(dt).toLocaleString("en-IN", {
@@ -481,12 +482,7 @@ function ReportEntryForm({ orderId, onSubmit }: { orderId: string; onSubmit: () 
         >
           {saving ? "Submitting…" : "Complete Report"}
         </button>
-        <button
-          onClick={() => window.print()}
-          className="rounded-xl border border-[var(--border-default)] px-4 py-3 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors"
-        >
-          <Printer size={14} className="inline mr-1" /> Print
-        </button>
+        <PdfActions template="radiology-report" id={orderId} filename={`radiology-report-${orderId}.pdf`} />
       </div>
     </div>
   );

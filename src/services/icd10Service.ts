@@ -29,7 +29,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     throw new Error(body || res.statusText);
   }
   const text = await res.text();
-  return text ? JSON.parse(text) : undefined;
+  if (!text) throw new Error("Empty response");
+  return JSON.parse(text) as T;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

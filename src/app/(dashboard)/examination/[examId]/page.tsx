@@ -21,6 +21,7 @@ import {
   FlaskConical, AlertCircle, X, Pill, ChevronDown, ChevronUp, Send,
   Eye, Lock, History, FilePlus, ArrowRight, Printer,
 } from "lucide-react";
+import { PdfActions } from "@/components/ui/PdfActions";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -327,12 +328,7 @@ function SchemaFormEditor({ examId, exam, template }: {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => window.print()}
-              className="flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors"
-            >
-              <Printer size={14} /> Print
-            </button>
+            <PdfActions template="opd-slip" id={examId} filename={`opd-slip-${examId}.pdf`} />
             {!isReadOnly && (
               <button
                 onClick={handleSave}
@@ -615,12 +611,7 @@ function SOAPEditor({ examId, exam }: {
 
             {currentStatus === "Draft" && (
               <>
-                <button
-                  onClick={() => window.print()}
-                  className="flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] px-2.5 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
-                >
-                  <Printer size={13} /> Print
-                </button>
+                <PdfActions template="opd-slip" id={examId} filename={`opd-slip-${examId}.pdf`} showPrint={false} />
                 <button
                   onClick={handleSave}
                   className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all duration-200 ${

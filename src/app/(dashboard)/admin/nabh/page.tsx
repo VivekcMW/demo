@@ -7,6 +7,7 @@ import {
   Clock, Download, Shield, Plus,
 } from "lucide-react";
 import { CreateRegisterModal, CreateCommitteeModal, ManualIndicatorModal } from "./components";
+import { PdfDownloadButton } from "@/components/ui/PdfActions";
 
 interface IndicatorDef {
   id: string;
@@ -385,9 +386,7 @@ export default function NabhPage() {
                     <CheckCircle2 size={12} /> Finalize
                   </button>
                 )}
-                <button className="flex items-center gap-1 rounded-lg border border-[var(--border-default)] px-2.5 py-1.5 text-[10px] font-medium text-[var(--text-secondary)] hover:text-[var(--action-primary)]">
-                  <Download size={12} /> Export
-                </button>
+                <PdfDownloadButton template="evidence-pack" id={ep.id} filename={`evidence-pack-${ep.id}.pdf`} label="Export" />
               </div>
             </div>
           ))}

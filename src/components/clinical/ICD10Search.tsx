@@ -138,7 +138,7 @@ export function ICD10Search({
         e.preventDefault();
         if (highlightedIndex >= 0 && highlightedIndex < items.length) {
           const item = items[highlightedIndex];
-          if ("shortDesc" in item) {
+          if ("code" in item) {
             handleSelect(item.code, item.shortDesc);
           } else {
             handleSelect(item.icdCode, item.shortDesc || "");

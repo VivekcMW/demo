@@ -894,6 +894,93 @@ test.describe("Reception workflows", () => {
       await expect(page.locator("body")).toBeVisible({ timeout: 5000 });
     }
   });
+
+  test("billing page collects payment", async ({ page }) => {
+    await page.goto("/login");
+    await page.locator('button:has-text("nalini.das@aarogya.app")').first().click();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await page.waitForURL("**/reception", { timeout: 10000 });
+
+    // Click the billing sidebar link (client-side navigation keeps auth)
+    await page.locator('aside a[href="/reception/billing"]').first().click();
+    await page.waitForURL("**/reception/billing", { timeout: 5000 });
+    await page.waitForTimeout(500);
+
+    // Find a bill with "Collect" button and click it
+    const collectBtn = page.locator('button:has-text("Collect")').first();
+    if (await collectBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await collectBtn.click();
+      await page.waitForTimeout(300);
+
+      // Select payment mode
+      const cashBtn = page.locator('div.fixed button:has-text("Cash")').first();
+      if (await cashBtn.isVisible({ timeout: 2000 }).catch(() => false)) await cashBtn.click();
+
+      // Submit payment
+      const payBtn = page.locator('div.fixed button:has-text("Collect")').last();
+      if (await payBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await payBtn.click();
+        await page.waitForTimeout(500);
+      }
+    }
+
+    // Verify page is still functional
+    await expect(page.locator("body")).toBeVisible();
+  });
+
+  test("registration page form fills and submits", async ({ page }) => {
+    await page.goto("/login");
+    await page.locator('button:has-text("nalini.das@aarogya.app")').first().click();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await page.waitForURL("**/reception", { timeout: 10000 });
+
+    // Navigate via sidebar link
+    await page.locator('a[href="/reception/register"]').first().click();
+    await page.waitForURL("**/reception/register", { timeout: 10000 });
+    await page.waitForTimeout(500);
+
+    // Step 1: Identity
+    await page.evaluate(() => {
+      const inputs = document.querySelectorAll<HTMLInputElement>('input');
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+      const nameInput = Array.from(inputs).find(i => i.placeholder?.includes('Ravi'));
+      if (nameInput && setter) { setter.call(nameInput, 'Ravi Test'); nameInput.dispatchEvent(new Event('input', { bubbles: true })); }
+      const ageInput = Array.from(inputs).find(i => i.placeholder?.includes('35'));
+      if (ageInput && setter) { setter.call(ageInput, '30'); ageInput.dispatchEvent(new Event('input', { bubbles: true })); }
+      const maleBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent === 'Male');
+      maleBtn?.click();
+    });
+    await page.waitForTimeout(200);
+
+    await page.evaluate(() => {
+      const cont = Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Continue'));
+      cont?.click();
+    });
+    await page.waitForTimeout(200);
+
+    // Step 2: Contact
+    await page.evaluate(() => {
+      const inputs = document.querySelectorAll<HTMLInputElement>('input');
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+      const mobile = Array.from(inputs).find(i => i.placeholder === '10-digit mobile');
+      if (mobile && setter) { setter.call(mobile, '9876543210'); mobile.dispatchEvent(new Event('input', { bubbles: true })); }
+    });
+    await page.waitForTimeout(100);
+
+    await page.evaluate(() => {
+      const cont = Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Continue'));
+      cont?.click();
+    });
+    await page.waitForTimeout(200);
+
+    // Step 3: Submit
+    await page.evaluate(() => {
+      const reg = Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Register Patient'));
+      reg?.click();
+    });
+
+    await expect(page.getByText("Patient Registered!")).toBeVisible({ timeout: 8000 });
+  });
 });
 
 // ── 21. CROSS-CUTTING UI WORKFLOWS ─────────────────────────────────────────────

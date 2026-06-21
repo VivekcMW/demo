@@ -11,6 +11,7 @@ import {
   BedDouble, Printer, Receipt, BadgePercent, RotateCcw,
   Package, FileText,
 } from "lucide-react";
+import { PdfActions } from "@/components/ui/PdfActions";
 
 // ── DS helpers ────────────────────────────────────────────────────────────────
 
@@ -476,9 +477,7 @@ export default function BillDetailPage({ params }: { params: Promise<{ billId: s
 
           {/* Actions */}
           <div className="flex flex-wrap gap-2 ml-auto">
-            <button onClick={() => window.print()} className="flex items-center gap-1.5 rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
-              <Printer size={13} /> Print
-            </button>
+            <PdfActions template="invoice" id={bill.id} filename={`invoice-${bill.id}.pdf`} />
             {canPay && (
               <button onClick={() => setPackageDialogOpen(true)} className="rounded-xl border border-[var(--border-default)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]">
                 <Package size={13} className="inline mr-1" />Package
